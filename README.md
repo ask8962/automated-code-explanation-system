@@ -85,9 +85,6 @@ Follow these steps to run the project locally.
 5.  **Open locally**
     Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📸 Screenshots
-
-*(Add screenshots of your Dashboard and Optimization panel here)*
 
 ---
 Developed with ❤️ by the **GLA University Mini Project Team**
