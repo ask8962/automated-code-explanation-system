@@ -74,7 +74,10 @@ Follow these steps to run the project locally.
     GROQ_API_KEY=your_groq_api_key
     ```
 
-4.  **Run the development server**
+4.  **Configure Firestore Rules**
+    Copy the contents of `firestore.rules` into your Firebase Console > Firestore Database > Rules tab to secure user data.
+
+5.  **Run the development server**
     ```bash
     npm run dev
     ```
