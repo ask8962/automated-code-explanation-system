@@ -13,7 +13,7 @@ This project was developed as a Mini Project for the B.Tech CSE program at **GLA
 
 ## ✨ Key Features
 
-- **🤖 AI-Powered Explanations**: Paste any code (Python, Java, C++, C, JS) and get a detailed breakdown.
+- **🤖 AI-Powered Explanations**: Paste any code (Python, Java, C++, C, JS, PHP) and get a detailed breakdown.
 - **⚡ "Make it Faster" Mode**: One-click optimization to rewrite $O(n^2)$ code into efficient $O(n)$ or $O(n \log n)$ solutions.
 - **📊 Complexity Analysis**: Visual cards comparing Time and Space complexity.
 - **🎨 Premium UI/UX**: clean, card-based interface with syntax highlighting and glassmorphism design.
