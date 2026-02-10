@@ -103,9 +103,20 @@ export default function OptimizationPanel({ data }: OptimizationPanelProps) {
                         Copy Code
                     </Button>
                 </div>
-                <pre className="bg-zinc-950 rounded-lg p-4 overflow-x-auto border border-border/50 text-sm font-mono text-zinc-100 shadow-inner">
-                    {data.optimizedCode}
-                </pre>
+                import {CodeBlock} from '@/components/code-block';
+
+                // ... inside component render
+                {/* Optimized Code Display */}
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-foreground">Optimized Solution</h3>
+                        <Button variant="outline" size="sm" onClick={handleCopy} className="h-8">
+                            <Copy className="w-4 h-4 mr-2" />
+                            Copy Code
+                        </Button>
+                    </div>
+                    <CodeBlock language="python" code={data.optimizedCode} />
+                </div>
             </div>
         </div>
     );
