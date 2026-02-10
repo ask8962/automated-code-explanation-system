@@ -11,7 +11,7 @@ const _geistMono = Geist_Mono({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'AI Code Explainer - Learn Code Better',
   description: 'Understand any code with AI-powered explanations. Perfect for beginners, exams, and interviews.',
-  generator: 'v0.app',
+  generator: 'Anukalp',
 }
 
 export const viewport: Viewport = {
