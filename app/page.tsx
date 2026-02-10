@@ -74,26 +74,10 @@ export default function Page() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              {
-                icon: Code2,
-                title: 'Multiple Languages',
-                description: 'Support for Python, Java, C++, and C',
-              },
-              {
-                icon: BookOpen,
-                title: 'Learning Modes',
-                description: 'Beginner-friendly, Exam, and Interview modes',
-              },
-              {
-                icon: Zap,
-                title: 'AI-Powered',
-                description: 'Advanced AI models for accurate explanations',
-              },
-              {
-                icon: BarChart3,
-                title: 'Complexity Analysis',
-                description: 'Time and space complexity breakdowns',
-              },
+              { icon: Code2, title: 'Multiple Languages', description: 'Support for Python, Java, C++, and C' },
+              { icon: BookOpen, title: 'Learning Modes', description: 'Beginner-friendly, Exam, and Interview modes' },
+              { icon: Zap, title: 'AI-Powered', description: 'Advanced AI models for accurate explanations' },
+              { icon: BarChart3, title: 'Complexity Analysis', description: 'Time and space complexity breakdowns' },
             ].map((feature, index) => {
               const Icon = feature.icon;
               return (
@@ -153,60 +137,57 @@ export default function Page() {
       {/* Footer */}
       <footer className="border-t border-border bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-2 md:col-span-4">
-              <h3 className="font-semibold text-foreground mb-4">Team (GLA University Mini Project - B.Tech CSE)</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm text-left text-muted-foreground">
-                  <thead className="text-xs text-foreground uppercase bg-secondary/50">
-                    <tr>
-                      <th className="px-3 py-2 rounded-l-md">Name</th>
-                      <th className="px-3 py-2">Class Roll</th>
-                      <th className="px-3 py-2">Uni Roll</th>
-                      <th className="px-3 py-2 rounded-r-md">Sec</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-border/50">
-                      <td className="px-3 py-2 font-medium text-foreground">Anukalp Gupta</td>
-                      <td className="px-3 py-2">12</td>
-                      <td className="px-3 py-2">2315000373</td>
-                      <td className="px-3 py-2">AA</td>
-                    </tr>
-                    <tr className="border-b border-border/50">
-                      <td className="px-3 py-2 font-medium text-foreground">Nishant Singh</td>
-                      <td className="px-3 py-2">47</td>
-                      <td className="px-3 py-2">2315001492</td>
-                      <td className="px-3 py-2">AA</td>
-                    </tr>
-                    <tr className="border-b border-border/50">
-                      <td className="px-3 py-2 font-medium text-foreground">Prince Kumar</td>
-                      <td className="px-3 py-2">54</td>
-                      <td className="px-3 py-2">2315001678</td>
-                      <td className="px-3 py-2">AA</td>
-                    </tr>
-                    <tr>
-                      <td className="px-3 py-2 font-medium text-foreground">Utpal Kumar</td>
-                      <td className="px-3 py-2">69</td>
-                      <td className="px-3 py-2">2315002369</td>
-                      <td className="px-3 py-2">AA</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <h3 className="font-semibold text-foreground mb-4">
+            Team (GLA University Mini Project - B.Tech CSE)
+          </h3>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left text-muted-foreground">
+              <thead className="text-xs text-foreground uppercase bg-secondary/50">
+                <tr>
+                  <th className="px-3 py-2">Name</th>
+                  <th className="px-3 py-2">Class Roll</th>
+                  <th className="px-3 py-2">Uni Roll</th>
+                  <th className="px-3 py-2">Sec</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="px-3 py-2 font-medium text-foreground">Anukalp Gupta</td>
+                  <td className="px-3 py-2">12</td>
+                  <td className="px-3 py-2">2315000373</td>
+                  <td className="px-3 py-2">AA</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2 font-medium text-foreground">Nishant Singh</td>
+                  <td className="px-3 py-2">47</td>
+                  <td className="px-3 py-2">2315001492</td>
+                  <td className="px-3 py-2">AA</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2 font-medium text-foreground">Prince Kumar</td>
+                  <td className="px-3 py-2">54</td>
+                  <td className="px-3 py-2">2315001678</td>
+                  <td className="px-3 py-2">AA</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2 font-medium text-foreground">Utpal Kumar</td>
+                  <td className="px-3 py-2">69</td>
+                  <td className="px-3 py-2">2315002369</td>
+                  <td className="px-3 py-2">AA</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2 font-medium text-foreground">Jatin Chauhan</td>
+                  <td className="px-3 py-2">35</td>
+                  <td className="px-3 py-2">2315001014</td>
+                  <td className="px-3 py-2">AA</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between">
-            <p className="text-sm text-muted-foreground">© 2024 AI Code Explainer. All rights reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="#" className="text-muted-foreground hover:text-foreground text-sm">
-                Twitter
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground text-sm">
-                GitHub
-              </a>
-            </div>
+          <div className="border-t border-border pt-8 mt-8 text-center text-sm text-muted-foreground">
+            © 2024 AI Code Explainer. All rights reserved.
           </div>
         </div>
       </footer>
