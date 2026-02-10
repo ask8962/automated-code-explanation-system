@@ -22,7 +22,7 @@ This project was developed as a Mini Project for the B.Tech CSE program at **GLA
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14, React, Tailwind CSS, Shadcn UI, Lucide Icons
+- **Frontend**: Next.js 14, React, Tailwind CSS, Shadcn UI, Lucide Icon
 - **Backend (AI)**: Groq API (Llama-3.3-70b-versatile)
 - **Database**: Google Firebase (Firestore)
 - **Authentication**: Firebase Auth
