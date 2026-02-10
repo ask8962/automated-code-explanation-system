@@ -15,21 +15,41 @@ export default function CodeExplanationPanel({
   data,
   onCopy,
 }: CodeExplanationPanelProps) {
-  const handleDownload = () => {
-    const element = document.createElement('a');
-    const content = `AI Code Explanation\n\nOverview: ${data.overview}\n\nSteps:\n${data.steps
-      .map((s, i) => `${i + 1}. ${s.title}: ${s.description}`)
-      .join('\n')}\n\nKey Concepts:\n${data.keyConcepts
-        .map((c) => `- ${c.title}: ${c.description}`)
-        .join('\n')}\n\nTime Complexity: ${data.timeComplexity.value} - ${data.timeComplexity.reason
-      }\nSpace Complexity: ${data.spaceComplexity.value} - ${data.spaceComplexity.reason}`;
+  const handleDownload = async () => {
+    try {
+      const { jsPDF } = await import('jspdf');
+      const doc = new jsPDF();
 
-    const file = new Blob([content], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = 'explanation.txt';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+      doc.setFontSize(20);
+      doc.text('AI Code Explanation', 20, 20);
+
+      doc.setFontSize(12);
+      doc.text(`Overview:\n${data.overview}`, 20, 35, { maxWidth: 170 });
+
+      doc.addPage();
+      doc.text('Steps:', 20, 20);
+
+      let y = 30;
+      data.steps.forEach((step, i) => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.setFontSize(14);
+        doc.text(`${i + 1}. ${step.title}`, 20, y);
+        y += 7;
+        doc.setFontSize(10);
+        const splitDesc = doc.splitTextToSize(step.description, 170);
+        doc.text(splitDesc, 20, y);
+        y += (splitDesc.length * 5) + 10;
+      });
+
+      doc.save('explanation.pdf');
+      toast.success('PDF Downloaded successfully!');
+    } catch (error) {
+      console.error('PDF Export Failed:', error);
+      toast.error('Failed to export PDF');
+    }
   };
 
   return (
