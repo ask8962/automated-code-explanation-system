@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Copy, Download, Lightbulb, Clock, Database, ChevronRight, Activity, Zap } from 'lucide-react';
-import { ExplanationData } from '@/hooks/use-generate-explanation';
+// import { toast } from 'sonner';
+// import { jsPDF } from 'jspdf'; // Disabled for build stability
 
 interface CodeExplanationPanelProps {
   data: ExplanationData;
@@ -16,40 +15,42 @@ export default function CodeExplanationPanel({
   onCopy,
 }: CodeExplanationPanelProps) {
   const handleDownload = async () => {
-    try {
-      const { jsPDF } = await import('jspdf');
-      const doc = new jsPDF();
+    // try {
+    //   const jsPDFModule = await import('jspdf');
+    //   const jsPDF = jsPDFModule.default || (jsPDFModule as any).jsPDF;
+    //   const doc = new jsPDF();
 
-      doc.setFontSize(20);
-      doc.text('AI Code Explanation', 20, 20);
+    //   doc.setFontSize(20);
+    //   doc.text('AI Code Explanation', 20, 20);
 
-      doc.setFontSize(12);
-      doc.text(`Overview:\n${data.overview}`, 20, 35, { maxWidth: 170 });
+    //   doc.setFontSize(12);
+    //   doc.text(`Overview:\n${data.overview}`, 20, 35, { maxWidth: 170 });
 
-      doc.addPage();
-      doc.text('Steps:', 20, 20);
+    //   doc.addPage();
+    //   doc.text('Steps:', 20, 20);
 
-      let y = 30;
-      data.steps.forEach((step, i) => {
-        if (y > 270) {
-          doc.addPage();
-          y = 20;
-        }
-        doc.setFontSize(14);
-        doc.text(`${i + 1}. ${step.title}`, 20, y);
-        y += 7;
-        doc.setFontSize(10);
-        const splitDesc = doc.splitTextToSize(step.description, 170);
-        doc.text(splitDesc, 20, y);
-        y += (splitDesc.length * 5) + 10;
-      });
+    //   let y = 30;
+    //   data.steps.forEach((step, i) => {
+    //     if (y > 270) {
+    //       doc.addPage();
+    //       y = 20;
+    //     }
+    //     doc.setFontSize(14);
+    //     doc.text(`${i + 1}. ${step.title}`, 20, y);
+    //     y += 7;
+    //     doc.setFontSize(10);
+    //     const splitDesc = doc.splitTextToSize(step.description, 170);
+    //     doc.text(splitDesc, 20, y);
+    //     y += (splitDesc.length * 5) + 10;
+    //   });
 
-      doc.save('explanation.pdf');
-      toast.success('PDF Downloaded successfully!');
-    } catch (error) {
-      console.error('PDF Export Failed:', error);
-      toast.error('Failed to export PDF');
-    }
+    //   doc.save('explanation.pdf');
+    //   toast.success('PDF Downloaded successfully!');
+    // } catch (error) {
+    //   console.error('PDF Export Failed:', error);
+    //   toast.error('Failed to export PDF');
+    // }
+    alert('PDF Export coming soon!');
   };
 
   return (
@@ -69,10 +70,11 @@ export default function CodeExplanationPanel({
           onClick={handleDownload}
           size="sm"
           variant="outline"
-          className="border-border hover:bg-secondary text-foreground bg-background/50 backdrop-blur"
+          className="border-border hover:bg-secondary text-foreground bg-background/50 backdrop-blur opacity-50 cursor-not-allowed"
+          disabled
         >
           <Download className="w-4 h-4 mr-2" />
-          Download
+          Download (Soon)
         </Button>
       </div>
 
