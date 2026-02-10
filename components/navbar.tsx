@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { Menu, X, LogOut, Settings } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -44,6 +45,7 @@ export function Navbar() {
           {/* User Menu / Mobile */}
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-2">
+              <ThemeToggle />
               {user && <span className="text-sm text-muted-foreground">{user.email}</span>}
               <Button
                 onClick={logout}
