@@ -149,10 +149,17 @@ export default function DashboardPage() {
               </div>
             </div>
 
+            import {ExplanationSkeleton} from '@/components/explanation-skeleton';
+            // ... imports
+
+            // ... inside component
             <CodeInput onExplain={handleExplain} isLoading={isLoading} />
 
+            {/* Loading Skeleton */}
+            {isLoading && !explanationData && <ExplanationSkeleton />}
+
             {/* Actions Bar */}
-            {explanationData && (
+            {!isLoading && explanationData && (
               <div className="flex justify-end pt-2">
                 <Button
                   onClick={handleOptimize}
@@ -170,12 +177,12 @@ export default function DashboardPage() {
             )}
 
             {/* Optimization Output */}
-            {showOptimization && optimizationData && (
+            {!isLoading && showOptimization && optimizationData && (
               <OptimizationPanel data={optimizationData} />
             )}
 
             {/* Explanation Output */}
-            {explanationData && !showOptimization && (
+            {!isLoading && explanationData && !showOptimization && (
               <CodeExplanationPanel
                 data={explanationData}
                 onCopy={handleCopyExplanation}
