@@ -95,6 +95,10 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
               placeholder="Paste your code here..."
               className="w-full h-64 px-4 py-3 bg-input border border-border rounded-md text-foreground font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             />
+            <div className="flex justify-end gap-4 mt-2 text-xs text-muted-foreground">
+              <span>{code.length} characters</span>
+              <span>{code.split('\n').length} lines</span>
+            </div>
           </div>
 
           {/* Submit Button */}
