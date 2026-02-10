@@ -5,7 +5,7 @@
 
 ![Project Badge](https://img.shields.io/badge/Status-Complete-green) ![Tech](https://img.shields.io/badge/Built%20With-Next.js%20%7C%20AI-blue)
 
-## 📖 Overview
+## 📖 Overview of the project
 
 The **Automated Code Explanation System** is an AI-powered educational tool designed to help students and developers understand complex code snippets. By leveraging advanced Large Language Models (LLMs), specifically **Llama 3 via Groq**, it provides instant, structured explanations, time complexity analysis, and performance optimization suggestions.
 
