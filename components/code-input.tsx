@@ -142,6 +142,37 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
         <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.04] bg-white/[0.02]">
           <div className="text-[10px] text-muted-foreground font-mono">
             {code.length > 0 ? `${lineCount} lines · ${code.length} chars` : 'Ready'}
+          {/* Code Editor */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-foreground">Code Snippet</label>
+              <button
+                onClick={copyToClipboard}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="Paste your code here..."
+              className="w-full h-64 px-4 py-3 bg-input border border-border rounded-md text-foreground font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            />
+            <div className="flex justify-end gap-4 mt-2 text-xs text-muted-foreground">
+              <span>{code.length} characters</span>
+              <span>{code.split('\n').length} lines</span>
+            </div>
           </div>
 
           <Button
