@@ -1,192 +1,228 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Copy, Download, Lightbulb, Clock, Database, ChevronRight, Activity, Zap } from 'lucide-react';
-import { ExplanationData } from '@/hooks/use-generate-explanation';
+import {
+  Copy, Check, Download, ChevronDown, ChevronUp, Sparkles,
+  Clock, HardDrive, BookOpen, Code2, Lightbulb, Layers
+} from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExplanationData } from '@/hooks/use-generate-explanation';
 
-interface CodeExplanationPanelProps {
+interface Props {
   data: ExplanationData;
   onCopy: () => void;
 }
 
-export default function CodeExplanationPanel({
-  data,
-  onCopy,
-}: CodeExplanationPanelProps) {
-  const handleDownload = async () => {
-    try {
-      const jsPDFModule = await import('jspdf');
-      const doc = new jsPDFModule.default();
+export default function CodeExplanationPanel({ data, onCopy }: Props) {
+  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set([0]));
+  const [copied, setCopied] = useState(false);
 
-      doc.setFontSize(20);
-      doc.text('AI Code Explanation', 20, 20);
+  const toggleStep = (index: number) => {
+    const newSet = new Set(expandedSteps);
+    if (newSet.has(index)) {
+      newSet.delete(index);
+    } else {
+      newSet.add(index);
+    }
+    setExpandedSteps(newSet);
+  };
+
+  const handleCopy = () => {
+    onCopy();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      const { default: jsPDF } = await import('jspdf');
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text('Code Explanation', 20, 20);
 
       doc.setFontSize(12);
-      doc.text(`Overview:\n${data.overview}`, 20, 35, { maxWidth: 170 });
+      doc.text('Overview:', 20, 35);
+      doc.setFontSize(10);
+      const overviewLines = doc.splitTextToSize(data.overview, 170);
+      doc.text(overviewLines, 20, 42);
 
-      doc.addPage();
-      doc.text('Steps:', 20, 20);
+      let yPos = 42 + overviewLines.length * 5 + 10;
 
-      let y = 30;
+      doc.setFontSize(12);
+      doc.text('Steps:', 20, yPos);
+      yPos += 7;
+
       data.steps.forEach((step, i) => {
-        if (y > 270) {
-          doc.addPage();
-          y = 20;
-        }
-        doc.setFontSize(14);
-        doc.text(`${i + 1}. ${step.title}`, 20, y);
-        y += 7;
         doc.setFontSize(10);
-        const splitDesc = doc.splitTextToSize(step.description, 170);
-        doc.text(splitDesc, 20, y);
-        y += (splitDesc.length * 5) + 10;
+        doc.text(`${i + 1}. ${step.title}`, 20, yPos);
+        yPos += 5;
+        const descLines = doc.splitTextToSize(step.description, 165);
+        doc.text(descLines, 25, yPos);
+        yPos += descLines.length * 5 + 5;
+
+        if (yPos > 270) {
+          doc.addPage();
+          yPos = 20;
+        }
       });
 
-      doc.save('explanation.pdf');
-      toast.success('PDF Downloaded successfully!');
+      doc.save('code-explanation.pdf');
+      toast.success('PDF downloaded');
     } catch (error) {
-      console.error('PDF Export Failed:', error);
-      toast.error('Failed to export PDF');
+      toast.error('Failed to generate PDF');
     }
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header Actions */}
-      <div className="flex justify-end gap-2">
-        <Button
-          onClick={onCopy}
-          size="sm"
-          variant="outline"
-          className="border-border hover:bg-secondary text-foreground bg-background/50 backdrop-blur"
-        >
-          <Copy className="w-4 h-4 mr-2" />
-          Copy
-        </Button>
-        <Button
-          onClick={handleDownload}
-          size="sm"
-          variant="outline"
-          className="border-border hover:bg-secondary text-foreground bg-background/50 backdrop-blur"
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Download
-        </Button>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500/20 to-indigo-500/20 flex items-center justify-center">
+            <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+          </div>
+          <h3 className="text-sm font-semibold">AI Explanation</h3>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={handleCopy}
+            variant="ghost"
+            size="sm"
+            className="h-7 text-[11px] text-muted-foreground hover:text-foreground hover:bg-white/[0.04] rounded-lg"
+          >
+            {copied ? <Check className="w-3 h-3 mr-1 text-emerald-400" /> : <Copy className="w-3 h-3 mr-1" />}
+            {copied ? 'Copied' : 'Copy'}
+          </Button>
+          <Button
+            onClick={handleDownloadPDF}
+            variant="ghost"
+            size="sm"
+            className="h-7 text-[11px] text-muted-foreground hover:text-foreground hover:bg-white/[0.04] rounded-lg"
+          >
+            <Download className="w-3 h-3 mr-1" />
+            PDF
+          </Button>
+        </div>
       </div>
 
-      {/* Overview Card */}
-      <Card className="border-l-4 border-l-primary bg-card/50 backdrop-blur border-y border-r border-border shadow-lg">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xl flex items-center gap-2 text-primary">
-            <Activity className="w-5 h-5" />
-            Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground leading-relaxed text-lg">
-            {data.overview}
-          </p>
-        </CardContent>
-      </Card>
+      {/* Overview */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm"
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <BookOpen className="w-3.5 h-3.5 text-primary" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary">Overview</span>
+        </div>
+        <p className="text-sm text-foreground/80 leading-relaxed">{data.overview}</p>
+      </motion.div>
 
-      {/* How It Works & Key Concepts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left Column: Step-by-Step (Spans 2 columns) */}
-        <div className="md:col-span-2 space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2 text-foreground">
-            <Zap className="w-5 h-5 text-yellow-500" />
-            How It Works
-          </h3>
-          <div className="space-y-4">
-            {data.steps.map((step, index) => (
-              <div
-                key={index}
-                className="bg-secondary/30 rounded-lg p-4 border border-border/50 hover:border-primary/50 transition-colors"
-              >
-                <div className="flex gap-3">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">
-                      {step.title}
-                    </h4>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
+      {/* Steps */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 px-1 mb-1">
+          <Layers className="w-3.5 h-3.5 text-primary" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary">Step-by-Step</span>
+        </div>
+        {data.steps.map((step, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: i * 0.05 }}
+          >
+            <button
+              onClick={() => toggleStep(i)}
+              className="w-full text-left p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary flex-shrink-0">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm font-medium group-hover:text-foreground transition-colors">{step.title}</span>
                 </div>
+                <motion.div
+                  animate={{ rotate: expandedSteps.has(i) ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                </motion.div>
+              </div>
+
+              <AnimatePresence>
+                {expandedSteps.has(i) && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-3 pl-9">{step.description}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Key Concepts */}
+      {data.keyConcepts && data.keyConcepts.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+          className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">Key Concepts</span>
+          </div>
+          <div className="space-y-3">
+            {data.keyConcepts.map((concept, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <span className="px-2 py-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-xs font-semibold text-foreground/80 flex-shrink-0">
+                  {concept.title}
+                </span>
+                <p className="text-xs text-muted-foreground leading-relaxed pt-1">{concept.description}</p>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
+      )}
 
-        {/* Right Column: Key Concepts */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2 text-foreground">
-            <Lightbulb className="w-5 h-5 text-yellow-500" />
-            Key Concepts
-          </h3>
-          <div className="space-y-3">
-            {data.keyConcepts.map((concept, index) => (
-              <Card key={index} className="bg-card border-border shadow-sm">
-                <CardContent className="p-4">
-                  <h4 className="font-semibold text-primary mb-1 text-sm">
-                    {concept.title}
-                  </h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {concept.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+      {/* Complexity */}
+      {data.timeComplexity && data.spaceComplexity && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+          className="grid grid-cols-2 gap-3"
+        >
+          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] text-center group hover:border-red-500/20 transition-colors">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <Clock className="w-3 h-3 text-red-400" />
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Time</span>
+            </div>
+            <div className="text-xl font-bold font-mono text-red-400">{data.timeComplexity.value}</div>
+            <p className="text-[10px] text-muted-foreground mt-1">{data.timeComplexity.reason}</p>
           </div>
-        </div>
-      </div>
-
-      {/* Complexity Analysis */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-        <Card className="bg-secondary/10 border-border">
-          <CardContent className="p-4 flex items-start gap-4">
-            <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500">
-              <Clock className="w-6 h-6" />
+          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] text-center group hover:border-emerald-500/20 transition-colors">
+            <div className="flex items-center justify-center gap-1.5 mb-2">
+              <HardDrive className="w-3 h-3 text-emerald-400" />
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Space</span>
             </div>
-            <div>
-              <h4 className="font-semibold text-foreground mb-1">
-                Time Complexity
-              </h4>
-              <p className="text-2xl font-bold text-primary mb-1">
-                {data.timeComplexity.value}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {data.timeComplexity.reason}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-secondary/10 border-border">
-          <CardContent className="p-4 flex items-start gap-4">
-            <div className="p-2 bg-purple-500/10 rounded-lg text-purple-500">
-              <Database className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-foreground mb-1">
-                Space Complexity
-              </h4>
-              <p className="text-2xl font-bold text-primary mb-1">
-                {data.spaceComplexity.value}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {data.spaceComplexity.reason}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="text-xl font-bold font-mono text-emerald-400">{data.spaceComplexity.value}</div>
+            <p className="text-[10px] text-muted-foreground mt-1">{data.spaceComplexity.reason}</p>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

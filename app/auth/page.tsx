@@ -5,12 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Terminal, ArrowRight } from 'lucide-react';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { initializeFirebase } from '@/lib/firebase';
+import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+const Scene = dynamic(() => import('@/components/Scene'), { ssr: false });
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -39,39 +43,28 @@ export default function AuthPage() {
       }
 
       if (isDemo) {
-        // Demo mode - accept any email/password combination
         const demoUser = {
           uid: 'demo-' + Date.now(),
           email: email,
         };
         localStorage.setItem('demo-user-session', JSON.stringify(demoUser));
-        toast.success(`Welcome to demo mode, ${email}!`);
+        toast.success(`Welcome, ${email}!`);
       } else {
-        // Firebase mode - try to authenticate
         try {
           const { auth } = await initializeFirebase();
 
           if (isSignUp) {
             const { createUserWithEmailAndPassword } = await import('firebase/auth');
-
-            if (!auth) {
-              throw new Error('Firebase not configured');
-            }
-
-            const result = await createUserWithEmailAndPassword(auth, email, password);
-            toast.success('Account created successfully!');
+            if (!auth) throw new Error('Firebase not configured');
+            await createUserWithEmailAndPassword(auth, email, password);
+            toast.success('Account created!');
           } else {
             const { signInWithEmailAndPassword } = await import('firebase/auth');
-
-            if (!auth) {
-              throw new Error('Firebase not configured');
-            }
-
+            if (!auth) throw new Error('Firebase not configured');
             await signInWithEmailAndPassword(auth, email, password);
-            toast.success('Logged in successfully!');
+            toast.success('Welcome back!');
           }
         } catch (firebaseError: any) {
-          console.error('[Auth] Firebase error:', firebaseError.message);
           toast.error(firebaseError.message || 'Authentication failed');
           setLoading(false);
           return;
@@ -89,15 +82,14 @@ export default function AuthPage() {
   const handleDemoLogin = async () => {
     setLoading(true);
     try {
-      const demoEmail = 'demo@example.com';
       const demoUser = {
         uid: 'demo-user-123',
-        email: demoEmail,
+        email: 'demo@example.com',
       };
       localStorage.setItem('demo-user-session', JSON.stringify(demoUser));
       toast.success('Welcome to demo mode!');
       router.push('/dashboard');
-    } catch (error: any) {
+    } catch {
       toast.error('Failed to start demo');
     } finally {
       setLoading(false);
@@ -108,16 +100,11 @@ export default function AuthPage() {
     setLoading(true);
     try {
       const { auth } = await initializeFirebase();
-
-      if (!auth) {
-        throw new Error('Firebase not configured');
-      }
-
-      const result = await signInWithPopup(auth, googleAuthProvider);
-      toast.success('Logged in with Google successfully!');
+      if (!auth) throw new Error('Firebase not configured');
+      await signInWithPopup(auth, googleAuthProvider);
+      toast.success('Signed in with Google!');
       router.push('/dashboard');
     } catch (error: any) {
-      console.error('[Auth] Google sign-in error:', error.message);
       toast.error(error.message || 'Google sign-in failed');
     } finally {
       setLoading(false);
@@ -125,133 +112,162 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-4">
-        {isDemo && (
-          <Alert className="border-amber-500/50 bg-amber-500/10">
-            <AlertCircle className="h-4 w-4 text-amber-600" />
-            <AlertDescription className="text-amber-700">
-              Running in demo mode. Firebase not configured. <a href="/QUICKSTART.md" className="underline font-medium">Setup Firebase here.</a>
-            </AlertDescription>
-          </Alert>
-        )}
+    <div className="min-h-screen flex relative overflow-hidden">
+      {/* Left Side — 3D Scene */}
+      <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center">
+        <div className="absolute inset-0">
+          <Suspense fallback={null}>
+            <Scene />
+          </Suspense>
+          <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px]" />
+        </div>
 
-        <Card className="border-border bg-card">
-          <CardHeader className="space-y-2 text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">{'</>'}</span>
-              </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative z-10 text-center px-12"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-violet-500/20">
+            <Terminal className="w-7 h-7 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold tracking-tight mb-3">AI Code Explain</h2>
+          <p className="text-muted-foreground text-sm max-w-sm mx-auto leading-relaxed">
+            Understand any code with AI-powered explanations, complexity analysis, and smart optimizations.
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Right Side — Auth Form */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12 bg-background relative">
+        {/* Ambient glow */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-600/[0.03] rounded-full blur-[120px] pointer-events-none" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-sm space-y-6 relative z-10"
+        >
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex justify-center mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+              <Terminal className="w-6 h-6 text-white" />
             </div>
-            <CardTitle className="text-2xl text-foreground">AI Code Explainer</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              {isSignUp ? 'Create an account to get started' : 'Sign in to your account'}
-            </CardDescription>
-          </CardHeader>
+          </div>
 
-          <CardContent className="space-y-4">
-            <form onSubmit={handleEmailAuth} className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Email</label>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Password</label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                {loading ? 'Loading...' : isSignUp ? 'Sign Up' : 'Sign In'}
-              </Button>
-            </form>
-
-            {isDemo && (
-              <>
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-card text-muted-foreground">Or try demo</span>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  onClick={handleDemoLogin}
-                  disabled={loading}
-                  variant="outline"
-                  className="w-full border-border hover:bg-secondary text-foreground bg-transparent"
-                >
-                  Continue as Demo User
-                </Button>
-              </>
-            )}
-
-            {!isDemo && (
-              <>
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-card text-muted-foreground">Or continue with</span>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  onClick={handleGoogleSignIn}
-                  disabled={loading}
-                  variant="outline"
-                  className="w-full border-border hover:bg-secondary text-foreground bg-transparent"
-                >
-                  <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                    <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
-                  </svg>
-                  Sign in with Google
-                </Button>
-              </>
-            )}
-
-            <p className="text-center text-sm text-muted-foreground">
-              {isSignUp ? 'Already have an account?' : `Don't have an account?`}{' '}
-              <button
-                onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setEmail('');
-                  setPassword('');
-                }}
-                className="text-primary hover:underline font-medium"
-              >
-                {isSignUp ? 'Sign In' : 'Sign Up'}
-              </button>
+          {/* Heading */}
+          <div className="text-center lg:text-left">
+            <h1 className="text-2xl font-bold tracking-tight mb-1">
+              {isSignUp ? 'Create account' : 'Welcome back'}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {isSignUp ? 'Start explaining code with AI' : 'Sign in to continue'}
             </p>
-          </CardContent>
-        </Card>
+          </div>
 
-        <p className="text-center text-xs text-muted-foreground">
-          By signing in, you agree to our terms and privacy policy
-        </p>
+          {isDemo && (
+            <Alert className="border-amber-500/20 bg-amber-500/[0.05] rounded-xl">
+              <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
+              <AlertDescription className="text-xs text-amber-500/80">
+                Demo mode — Firebase not configured.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleEmailAuth} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-foreground/70">Email</label>
+              <Input
+                type="email"
+                placeholder="you@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="h-11 bg-white/[0.03] border-white/[0.06] rounded-xl text-sm placeholder:text-white/15 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-foreground/70">Password</label>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="h-11 bg-white/[0.03] border-white/[0.06] rounded-xl text-sm placeholder:text-white/15 focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-11 bg-white text-black hover:bg-white/90 font-semibold rounded-xl text-sm shadow-lg shadow-white/5 hover:scale-[1.01] active:scale-[0.99] transition-all"
+            >
+              {loading ? 'Loading...' : isSignUp ? 'Create Account' : 'Sign In'}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/[0.06]" />
+            </div>
+            <div className="relative flex justify-center text-[10px]">
+              <span className="px-3 bg-background text-muted-foreground uppercase tracking-widest">
+                {isDemo ? 'or try demo' : 'or continue with'}
+              </span>
+            </div>
+          </div>
+
+          {/* Social / Demo */}
+          {isDemo ? (
+            <Button
+              type="button"
+              onClick={handleDemoLogin}
+              disabled={loading}
+              variant="outline"
+              className="w-full h-11 border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] rounded-xl text-sm transition-all"
+            >
+              Continue as Demo User
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              variant="outline"
+              className="w-full h-11 border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] rounded-xl text-sm transition-all"
+            >
+              <svg className="mr-2 h-4 w-4" viewBox="0 0 488 512">
+                <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
+              </svg>
+              Sign in with Google
+            </Button>
+          )}
+
+          {/* Toggle Sign Up / Sign In */}
+          <p className="text-center text-xs text-muted-foreground">
+            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+            <button
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setEmail('');
+                setPassword('');
+              }}
+              className="text-primary hover:underline font-medium"
+            >
+              {isSignUp ? 'Sign In' : 'Sign Up'}
+            </button>
+          </p>
+
+          <p className="text-center text-[10px] text-muted-foreground/50">
+            By signing in, you agree to our terms and privacy policy
+          </p>
+        </motion.div>
       </div>
     </div>
   );

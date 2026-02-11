@@ -1,112 +1,153 @@
 'use client';
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Zap, ArrowRight, CheckCircle2, Copy } from 'lucide-react';
-import { OptimizationData } from '@/hooks/use-optimize-code';
+import { Copy, Check, Zap, TrendingUp, ArrowRight, Clock, HardDrive, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { OptimizationData } from '@/hooks/use-optimize-code';
 
-interface OptimizationPanelProps {
+interface Props {
     data: OptimizationData;
 }
 
-export default function OptimizationPanel({ data }: OptimizationPanelProps) {
+export default function OptimizationPanel({ data }: Props) {
+    const [copied, setCopied] = useState(false);
+
     const handleCopy = () => {
         navigator.clipboard.writeText(data.optimizedCode);
-        toast.success('Optimized code copied! ⚡');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        toast.success('Optimized code copied');
     };
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-yellow-500/10 rounded-full">
-                    <Zap className="w-6 h-6 text-yellow-500 fill-yellow-500" />
+        <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
+                    <Zap className="w-3.5 h-3.5 text-amber-400" />
                 </div>
-                <div>
-                    <h2 className="text-xl font-bold text-foreground">Performance Optimization</h2>
-                    <p className="text-sm text-muted-foreground">AI-enhanced efficiency check</p>
-                </div>
+                <h3 className="text-sm font-semibold">Code Optimization</h3>
             </div>
 
             {/* Complexity Comparison */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="bg-destructive/10 border-destructive/20 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                        <Zap className="w-24 h-24" />
-                    </div>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-destructive">Original Complexity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-1">
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Time</span>
-                                <span className="font-mono text-lg font-bold text-destructive">{data.originalComplexity.time}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Space</span>
-                                <span className="font-mono text-lg font-bold text-destructive">{data.originalComplexity.space}</span>
-                            </div>
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-[1fr_auto_1fr] gap-3 items-center"
+            >
+                {/* Before */}
+                <div className="p-4 rounded-xl bg-red-500/[0.04] border border-red-500/10 text-center">
+                    <span className="text-[10px] text-red-300/60 uppercase tracking-widest font-medium block mb-3">Before</span>
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-center gap-1.5">
+                            <Clock className="w-3 h-3 text-red-400/60" />
+                            <span className="text-lg font-bold font-mono text-red-400">{data.originalComplexity.time}</span>
                         </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-green-500/10 border-green-500/20 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                        <CheckCircle2 className="w-24 h-24" />
-                    </div>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-green-500">New Complexity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-1">
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Time</span>
-                                <span className="font-mono text-lg font-bold text-green-500">{data.newComplexity.time}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm text-muted-foreground">Space</span>
-                                <span className="font-mono text-lg font-bold text-green-500">{data.newComplexity.space}</span>
-                            </div>
+                        <div className="flex items-center justify-center gap-1.5">
+                            <HardDrive className="w-3 h-3 text-red-400/40" />
+                            <span className="text-sm font-mono text-red-400/70">{data.originalComplexity.space}</span>
                         </div>
-                    </CardContent>
-                </Card>
-            </div>
+                    </div>
+                </div>
 
-            {/* Overview & Improvements */}
-            <Card className="border-border bg-card">
-                <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                        Key Improvements
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">{data.overview}</p>
+                {/* Arrow */}
+                <div className="flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
+                        <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
+                    </div>
+                </div>
+
+                {/* After */}
+                <div className="p-4 rounded-xl bg-emerald-500/[0.04] border border-emerald-500/10 text-center">
+                    <span className="text-[10px] text-emerald-300/60 uppercase tracking-widest font-medium block mb-3">After</span>
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-center gap-1.5">
+                            <Clock className="w-3 h-3 text-emerald-400/60" />
+                            <span className="text-lg font-bold font-mono text-emerald-400">{data.newComplexity.time}</span>
+                        </div>
+                        <div className="flex items-center justify-center gap-1.5">
+                            <HardDrive className="w-3 h-3 text-emerald-400/40" />
+                            <span className="text-sm font-mono text-emerald-400/70">{data.newComplexity.space}</span>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* Overview */}
+            {data.overview && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.05 }}
+                    className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+                >
+                    <p className="text-sm text-foreground/80 leading-relaxed">{data.overview}</p>
+                </motion.div>
+            )}
+
+            {/* Improvements */}
+            {data.improvements && data.improvements.length > 0 && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+                >
+                    <div className="flex items-center gap-2 mb-3">
+                        <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Improvements</span>
+                    </div>
                     <ul className="space-y-2">
-                        {data.improvements.map((item, index) => (
-                            <li key={index} className="flex items-start gap-2 text-sm text-foreground">
-                                <CheckCircle2 className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" />
-                                <span>{item}</span>
-                            </li>
+                        {data.improvements.map((imp, i) => (
+                            <motion.li
+                                key={i}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.15 + i * 0.05 }}
+                                className="flex items-start gap-2 text-sm text-muted-foreground"
+                            >
+                                <ChevronRight className="w-3.5 h-3.5 text-emerald-400/60 mt-0.5 flex-shrink-0" />
+                                <span>{imp}</span>
+                            </motion.li>
                         ))}
                     </ul>
-                </CardContent>
-            </Card>
+                </motion.div>
+            )}
 
-            {/* Optimized Code Display */}
-            <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-foreground">Optimized Solution</h3>
-                    <Button variant="outline" size="sm" onClick={handleCopy} className="h-8">
-                        <Copy className="w-4 h-4 mr-2" />
-                        Copy Code
-                    </Button>
+            {/* Optimized Code */}
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="rounded-xl border border-white/[0.06] bg-black/30 backdrop-blur-xl overflow-hidden"
+            >
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.04] bg-white/[0.02]">
+                    <div className="flex items-center gap-2">
+                        <div className="flex gap-1.5">
+                            <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
+                        </div>
+                        <span className="text-[11px] text-emerald-400/80 font-medium ml-2">✦ Optimized</span>
+                    </div>
+                    <button
+                        onClick={handleCopy}
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 px-2 py-1 rounded hover:bg-white/[0.04]"
+                    >
+                        {copied ? (
+                            <><Check className="w-3 h-3 text-emerald-400" /> Copied</>
+                        ) : (
+                            <><Copy className="w-3 h-3" /> Copy</>
+                        )}
+                    </button>
                 </div>
-                <pre className="bg-zinc-950 rounded-lg p-4 overflow-x-auto border border-border/50 text-sm font-mono text-zinc-100 shadow-inner">
-                    {data.optimizedCode}
+                <pre className="p-5 overflow-x-auto text-sm font-mono text-foreground/80 leading-relaxed">
+                    <code>{data.optimizedCode}</code>
                 </pre>
-            </div>
+            </motion.div>
         </div>
     );
 }
