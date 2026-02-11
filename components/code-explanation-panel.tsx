@@ -113,13 +113,13 @@ export default function CodeExplanationPanel({ data, onCopy }: Props) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06] backdrop-blur-sm"
+        className="p-5 rounded-xl bg-gradient-to-br from-violet-500/[0.08] to-indigo-500/[0.04] border border-violet-500/20 backdrop-blur-md hover:border-violet-500/30 transition-all"
       >
         <div className="flex items-center gap-2 mb-3">
-          <BookOpen className="w-3.5 h-3.5 text-primary" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-primary">Overview</span>
+          <BookOpen className="w-3.5 h-3.5 text-violet-400" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-violet-400">Overview</span>
         </div>
-        <p className="text-sm text-foreground/80 leading-relaxed">{data.overview}</p>
+        <p className="text-sm text-foreground/90 leading-relaxed">{data.overview}</p>
       </motion.div>
 
       {/* Steps */}
@@ -137,7 +137,7 @@ export default function CodeExplanationPanel({ data, onCopy }: Props) {
           >
             <button
               onClick={() => toggleStep(i)}
-              className="w-full text-left p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all group"
+              className="w-full text-left p-4 rounded-xl bg-gradient-to-r from-slate-700/10 to-slate-600/5 border border-slate-500/20 hover:border-violet-500/30 hover:bg-gradient-to-r hover:from-slate-700/15 hover:to-slate-600/10 transition-all group"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -178,7 +178,7 @@ export default function CodeExplanationPanel({ data, onCopy }: Props) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+          className="p-5 rounded-xl bg-gradient-to-br from-amber-500/[0.08] to-orange-500/[0.04] border border-amber-500/20 backdrop-blur-md hover:border-amber-500/30 transition-all"
         >
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
@@ -205,21 +205,21 @@ export default function CodeExplanationPanel({ data, onCopy }: Props) {
           transition={{ duration: 0.3, delay: 0.3 }}
           className="grid grid-cols-2 gap-3"
         >
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] text-center group hover:border-red-500/20 transition-colors">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-red-500/[0.12] to-red-600/[0.05] border border-red-500/25 text-center group hover:border-red-500/40 hover:bg-gradient-to-br hover:from-red-500/[0.16] hover:to-red-600/[0.08] transition-all">
             <div className="flex items-center justify-center gap-1.5 mb-2">
               <Clock className="w-3 h-3 text-red-400" />
-              <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Time</span>
+              <span className="text-[10px] text-red-300 uppercase tracking-widest font-medium">Time</span>
             </div>
-            <div className="text-xl font-bold font-mono text-red-400">{data.timeComplexity.value}</div>
-            <p className="text-[10px] text-muted-foreground mt-1">{data.timeComplexity.reason}</p>
+            <div className="text-xl font-bold font-mono text-red-300">{data.timeComplexity.value}</div>
+            <p className="text-[10px] text-red-300/70 mt-1">{data.timeComplexity.reason}</p>
           </div>
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] text-center group hover:border-emerald-500/20 transition-colors">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/[0.12] to-emerald-600/[0.05] border border-emerald-500/25 text-center group hover:border-emerald-500/40 hover:bg-gradient-to-br hover:from-emerald-500/[0.16] hover:to-emerald-600/[0.08] transition-all">
             <div className="flex items-center justify-center gap-1.5 mb-2">
               <HardDrive className="w-3 h-3 text-emerald-400" />
-              <span className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Space</span>
+              <span className="text-[10px] text-emerald-300 uppercase tracking-widest font-medium">Space</span>
             </div>
-            <div className="text-xl font-bold font-mono text-emerald-400">{data.spaceComplexity.value}</div>
-            <p className="text-[10px] text-muted-foreground mt-1">{data.spaceComplexity.reason}</p>
+            <div className="text-xl font-bold font-mono text-emerald-300">{data.spaceComplexity.value}</div>
+            <p className="text-[10px] text-emerald-300/70 mt-1">{data.spaceComplexity.reason}</p>
           </div>
         </motion.div>
       )}
