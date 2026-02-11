@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Copy, Download, Lightbulb, Clock, Database, ChevronRight, Activity, Zap } from 'lucide-react';
 import { ExplanationData } from '@/hooks/use-generate-explanation';
+import { toast } from 'sonner';
 
 interface CodeExplanationPanelProps {
   data: ExplanationData;
@@ -17,8 +18,8 @@ export default function CodeExplanationPanel({
 }: CodeExplanationPanelProps) {
   const handleDownload = async () => {
     try {
-      const { jsPDF } = await import('jspdf');
-      const doc = new jsPDF();
+      const jsPDFModule = await import('jspdf');
+      const doc = new jsPDFModule.default();
 
       doc.setFontSize(20);
       doc.text('AI Code Explanation', 20, 20);

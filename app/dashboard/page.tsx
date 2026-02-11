@@ -13,6 +13,7 @@ import { CodeInput } from '@/components/code-input';
 import { Navbar } from '@/components/navbar';
 import { Loader2, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import { ExplanationSkeleton } from '@/components/explanation-skeleton';
 
 export type ExplanationMode = 'beginner' | 'exam' | 'interview';
 export type Language = 'python' | 'javascript' | 'java' | 'cpp' | 'c';
@@ -149,10 +150,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            import {ExplanationSkeleton} from '@/components/explanation-skeleton';
-            // ... imports
+            {/* Code Input Section */}
 
-            // ... inside component
             <CodeInput onExplain={handleExplain} isLoading={isLoading} />
 
             {/* Loading Skeleton */}
