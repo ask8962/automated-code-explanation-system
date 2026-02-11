@@ -94,24 +94,32 @@ pre,
 
   .light {
     --background: 0 0% 99%;
-    --foreground: 0 0% 5%;
-    --card: 0 0% 97%;
-    --card-foreground: 0 0% 5%;
+    --foreground: 0 0% 8%;
+    --card: 0 0% 96%;
+    --card-foreground: 0 0% 8%;
     --popover: 0 0% 99%;
-    --popover-foreground: 0 0% 5%;
+    --popover-foreground: 0 0% 8%;
     --primary: 252 87% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 94%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 0 0% 92%;
-    --muted-foreground: 0 0% 40%;
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 15%;
+    --muted: 0 0% 88%;
+    --muted-foreground: 0 0% 45%;
     --accent: 252 87% 55%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 88%;
-    --input: 0 0% 93%;
+    --border: 0 0% 85%;
+    --input: 0 0% 92%;
     --ring: 252 87% 55%;
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 0 0% 8%;
+    --sidebar-primary: 252 87% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 88%;
+    --sidebar-accent-foreground: 252 87% 55%;
+    --sidebar-border: 0 0% 85%;
+    --sidebar-ring: 252 87% 55%;
   }
 
   * {
@@ -205,6 +213,13 @@ pre,
   animation: gradient-shift 6s ease-in-out infinite;
 }
 
+.light .gradient-text {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 25%, #3b82f6 50%, #8b5cf6 75%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .gradient-border {
   position: relative;
 }
@@ -232,6 +247,96 @@ pre,
 
 .glow-lg {
   box-shadow: 0 0 60px rgba(139, 92, 246, 0.2), 0 0 120px rgba(139, 92, 246, 0.1);
+}
+
+/* Light mode glass effects */
+.light .glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.light .glass-card:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Light mode text color adjustments */
+.light {
+  color-scheme: light;
+}
+
+.light h1,
+.light h2,
+.light h3,
+.light h4,
+.light h5,
+.light h6 {
+  color: var(--foreground);
+}
+
+.light .text-white {
+  color: var(--foreground);
+}
+
+.light .text-emerald-400 {
+  color: #059669;
+}
+
+.light .text-emerald-300 {
+  color: #10b981;
+}
+
+.light .text-violet-400 {
+  color: #a855f7;
+}
+
+.light .text-violet-300 {
+  color: #c084fc;
+}
+
+.light .text-blue-400 {
+  color: #3b82f6;
+}
+
+.light .text-blue-300 {
+  color: #93c5fd;
+}
+
+.light .text-yellow-400 {
+  color: #facc15;
+}
+
+.light .text-yellow-300 {
+  color: #fcd34d;
+}
+
+.light .bg-white\/\[0\.03\] {
+  background-color: rgba(59, 59, 59, 0.05);
+}
+
+.light .bg-white\/\[0\.01\] {
+  background-color: rgba(59, 59, 59, 0.02);
+}
+
+.light .bg-white\/\[0\.05\] {
+  background-color: rgba(59, 59, 59, 0.08);
+}
+
+.light .border-white\/\[0\.08\] {
+  border-color: rgba(139, 92, 246, 0.15);
+}
+
+.light .border-white\/\[0\.04\] {
+  border-color: rgba(139, 92, 246, 0.08);
 }
 
 /* =============================================

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Menu, X, LogOut, Code2, History, User, Terminal, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -59,6 +60,7 @@ export function Navbar() {
                 {user.email}
               </span>
             )}
+            <ThemeToggle />
             <Button
               onClick={logout}
               variant="ghost"

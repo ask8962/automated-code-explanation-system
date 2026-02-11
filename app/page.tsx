@@ -4,6 +4,7 @@ import React, { Suspense, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 import {
     ArrowRight,
     Code2,
@@ -139,7 +140,7 @@ export default function Page() {
                             <Terminal className="w-5 h-5 text-white" />
                             <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
-                        <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Code Explain</span>
+                        <span className="font-bold text-lg tracking-tight dark:bg-gradient-to-r dark:from-white dark:to-white/80 dark:bg-clip-text dark:text-transparent text-foreground">AI Code Explain</span>
                     </Link>
 
                     <div className="hidden md:flex items-center gap-10 text-sm font-medium">
@@ -149,6 +150,7 @@ export default function Page() {
                     </div>
 
                     <div className="flex items-center gap-3">
+                        <ThemeToggle />
                         <Link href="/auth">
                             <Button variant="ghost" className="text-sm font-semibold hover:bg-white/10 rounded-full transition-colors duration-300">Sign In</Button>
                         </Link>
@@ -183,7 +185,7 @@ export default function Page() {
                     {/* Main Headline */}
                     <RevealText delay={0.2} className="text-center mb-10">
                         <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black tracking-tight leading-[0.95] mb-6">
-                            <span className="text-white">Understand</span><br />
+                            <span className="text-foreground">Understand</span><br />
                             <span className="gradient-text">Any Code. Instantly.</span>
                         </h1>
                     </RevealText>
@@ -321,7 +323,7 @@ export default function Page() {
                                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-violet-500/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                                             <f.icon className="w-6 h-6 text-violet-400" />
                                         </div>
-                                        <h3 className="text-xl font-bold mb-3 tracking-tight text-white">{f.title}</h3>
+                                        <h3 className="text-xl font-bold mb-3 tracking-tight text-foreground">{f.title}</h3>
                                         <p className="text-sm text-foreground/60 leading-relaxed">{f.desc}</p>
                                     </div>
                                 </div>
@@ -353,12 +355,12 @@ export default function Page() {
                             <FloatingCard key={i} delay={0.15 * i}>
                                 <div className="relative p-8 rounded-3xl h-full border border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] hover:border-white/[0.12] hover:from-white/[0.05] hover:to-white/[0.02] backdrop-blur-lg transition-all duration-300 group">
                                     <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                    <div className="text-8xl font-black text-white/[0.05] absolute -top-8 right-4 select-none">{item.step}</div>
+                                    <div className="text-8xl font-black text-foreground/10 absolute -top-8 right-4 select-none">{item.step}</div>
                                     <div className="relative">
                                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                                             <item.icon className="w-6 h-6 text-blue-400" />
                                         </div>
-                                        <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">{item.title}</h3>
+                                        <h3 className="text-2xl font-bold mb-3 tracking-tight text-foreground">{item.title}</h3>
                                         <p className="text-sm text-foreground/60 leading-relaxed">{item.desc}</p>
                                     </div>
                                 </div>
@@ -388,7 +390,7 @@ export default function Page() {
                                     <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                                         <mode.icon className={`w-6 h-6 ${mode.accent}`} />
                                     </div>
-                                    <h3 className="text-2xl font-bold mb-3 text-white">{mode.title}</h3>
+                                    <h3 className="text-2xl font-bold mb-3 text-foreground">{mode.title}</h3>
                                     <p className="text-sm text-foreground/60">{mode.desc}</p>
                                 </div>
                             </FloatingCard>
@@ -412,7 +414,7 @@ export default function Page() {
                             <RevealText key={i} delay={0.12 * i}>
                                 <div className="p-6 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-lg text-center group hover:border-white/[0.12] transition-all duration-300">
                                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
-                                        <stat.icon className="w-5 h-5 text-white/60" />
+                                        <stat.icon className="w-5 h-5 text-foreground/50" />
                                     </div>
                                     <div className="text-4xl md:text-5xl font-black tracking-tight gradient-text mb-2">
                                         <AnimatedCounter target={stat.value} suffix={stat.suffix} />
@@ -461,7 +463,7 @@ export default function Page() {
                         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 via-indigo-600 to-cyan-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
                             <Terminal className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Code Explain</span>
+                        <span className="text-sm font-bold dark:bg-gradient-to-r dark:from-white dark:to-white/80 dark:bg-clip-text dark:text-transparent text-foreground">AI Code Explain</span>
                     </div>
                     <p className="text-xs text-foreground/50 text-center md:text-right font-light">
                         © 2024 GLA University • Built with passion by Anukalp, Nishant, Prince, Utpal, Jatin
