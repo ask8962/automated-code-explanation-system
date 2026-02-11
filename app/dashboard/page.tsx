@@ -192,6 +192,7 @@ export default function DashboardPage() {
                 </motion.div>
               )}
             </AnimatePresence>
+          </div>
         </div>
       </main>
     </div>
