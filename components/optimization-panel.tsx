@@ -39,16 +39,16 @@ export default function OptimizationPanel({ data }: Props) {
                 className="grid grid-cols-[1fr_auto_1fr] gap-3 items-center"
             >
                 {/* Before */}
-                <div className="p-4 rounded-xl bg-red-500/[0.04] border border-red-500/10 text-center">
-                    <span className="text-[10px] text-red-300/60 uppercase tracking-widest font-medium block mb-3">Before</span>
+                <div className="p-4 rounded-xl bg-gradient-to-br from-red-500/[0.15] to-red-600/[0.05] border border-red-500/30 text-center hover:border-red-500/50 hover:bg-gradient-to-br hover:from-red-500/[0.2] hover:to-red-600/[0.08] transition-all">
+                    <span className="text-[10px] text-red-300 uppercase tracking-widest font-medium block mb-3">Before</span>
                     <div className="space-y-2">
                         <div className="flex items-center justify-center gap-1.5">
-                            <Clock className="w-3 h-3 text-red-400/60" />
-                            <span className="text-lg font-bold font-mono text-red-400">{data.originalComplexity.time}</span>
+                            <Clock className="w-3 h-3 text-red-400" />
+                            <span className="text-lg font-bold font-mono text-red-300">{data.originalComplexity.time}</span>
                         </div>
                         <div className="flex items-center justify-center gap-1.5">
-                            <HardDrive className="w-3 h-3 text-red-400/40" />
-                            <span className="text-sm font-mono text-red-400/70">{data.originalComplexity.space}</span>
+                            <HardDrive className="w-3 h-3 text-red-400" />
+                            <span className="text-sm font-mono text-red-300">{data.originalComplexity.space}</span>
                         </div>
                     </div>
                 </div>
@@ -61,16 +61,16 @@ export default function OptimizationPanel({ data }: Props) {
                 </div>
 
                 {/* After */}
-                <div className="p-4 rounded-xl bg-emerald-500/[0.04] border border-emerald-500/10 text-center">
-                    <span className="text-[10px] text-emerald-300/60 uppercase tracking-widest font-medium block mb-3">After</span>
+                <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/[0.15] to-emerald-600/[0.05] border border-emerald-500/30 text-center hover:border-emerald-500/50 hover:bg-gradient-to-br hover:from-emerald-500/[0.2] hover:to-emerald-600/[0.08] transition-all">
+                    <span className="text-[10px] text-emerald-300 uppercase tracking-widest font-medium block mb-3">After</span>
                     <div className="space-y-2">
                         <div className="flex items-center justify-center gap-1.5">
-                            <Clock className="w-3 h-3 text-emerald-400/60" />
-                            <span className="text-lg font-bold font-mono text-emerald-400">{data.newComplexity.time}</span>
+                            <Clock className="w-3 h-3 text-emerald-400" />
+                            <span className="text-lg font-bold font-mono text-emerald-300">{data.newComplexity.time}</span>
                         </div>
                         <div className="flex items-center justify-center gap-1.5">
-                            <HardDrive className="w-3 h-3 text-emerald-400/40" />
-                            <span className="text-sm font-mono text-emerald-400/70">{data.newComplexity.space}</span>
+                            <HardDrive className="w-3 h-3 text-emerald-400" />
+                            <span className="text-sm font-mono text-emerald-300">{data.newComplexity.space}</span>
                         </div>
                     </div>
                 </div>
@@ -82,9 +82,9 @@ export default function OptimizationPanel({ data }: Props) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: 0.05 }}
-                    className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+                    className="p-4 rounded-xl bg-gradient-to-br from-blue-500/[0.08] to-cyan-500/[0.04] border border-blue-500/20 backdrop-blur-md hover:border-blue-500/30 transition-all"
                 >
-                    <p className="text-sm text-foreground/80 leading-relaxed">{data.overview}</p>
+                    <p className="text-sm text-foreground/90 leading-relaxed">{data.overview}</p>
                 </motion.div>
             )}
 
@@ -94,7 +94,7 @@ export default function OptimizationPanel({ data }: Props) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: 0.1 }}
-                    className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]"
+                    className="p-5 rounded-xl bg-gradient-to-br from-emerald-500/[0.08] to-teal-500/[0.04] border border-emerald-500/20 backdrop-blur-md hover:border-emerald-500/30 transition-all"
                 >
                     <div className="flex items-center gap-2 mb-3">
                         <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
