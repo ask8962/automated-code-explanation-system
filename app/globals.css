@@ -265,35 +265,3 @@ html {
 .delay-700 {
   animation-delay: 700ms;
 }
-
-/* Marquee animation for tech ticker */
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-\[marquee_30s_linear_infinite\] {
-  animation: marquee 30s linear infinite;
-}
-
-/* Gradient animation for heading text */
-@keyframes gradient-x {
-
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-.animate-\[gradient-x_3s_ease_infinite\] {
-  animation: gradient-x 3s ease infinite;
-}

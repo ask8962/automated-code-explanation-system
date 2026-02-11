@@ -75,8 +75,7 @@ ${code}
     const { text } = await generateText({
       model: groq('llama-3.3-70b-versatile'),
       prompt,
-      temperature: 0.5, // Lower temperature for more consistent JSON
-      maxTokens: 1500,
+      temperature: 0.5,
     });
 
     let explanationData;

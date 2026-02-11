@@ -1,92 +1,103 @@
 'use client';
 
-import { useRef, useState, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Points, PointMaterial } from '@react-three/drei';
-import * as random from 'maath/random';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { PointMaterial, Float } from '@react-three/drei';
+import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { useTheme } from 'next-themes';
 
-/* Rotating Starfield */
-function Stars() {
-    const ref = useRef<any>();
-    const [sphere] = useState(() =>
-        random.inSphere(new Float32Array(8001), { radius: 1.8 })
-    );
+function ParticleField(props: any) {
+    const ref = useRef<THREE.Points>(null!);
 
-    useFrame((_state, delta) => {
+    const [positions, colors] = useMemo(() => {
+        const count = 4000;
+        const positions = new Float32Array(count * 3);
+        const colors = new Float32Array(count * 3);
+
+        const color1 = new THREE.Color('#8b5cf6'); // Violet
+        const color2 = new THREE.Color('#6366f1'); // Indigo
+        const color3 = new THREE.Color('#d946ef'); // Fuchsia
+
+        for (let i = 0; i < count; i++) {
+            // Spherical distribution with variation
+            const r = 3 + Math.random() * 2;
+            const theta = 2 * Math.PI * Math.random();
+            const phi = Math.acos(2 * Math.random() - 1);
+
+            const x = r * Math.sin(phi) * Math.cos(theta);
+            const y = r * Math.sin(phi) * Math.sin(theta);
+            const z = r * Math.cos(phi);
+
+            positions[i * 3] = x;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = z;
+
+            const mixedColor = color1.clone().lerp(color2, Math.random()).lerp(color3, Math.random());
+
+            colors[i * 3] = mixedColor.r;
+            colors[i * 3 + 1] = mixedColor.g;
+            colors[i * 3 + 2] = mixedColor.b;
+        }
+
+        return [positions, colors];
+    }, []);
+
+    useFrame((state, delta) => {
         if (ref.current) {
-            ref.current.rotation.x -= delta / 12;
-            ref.current.rotation.y -= delta / 18;
+            ref.current.rotation.x -= delta / 15;
+            ref.current.rotation.y -= delta / 20;
         }
     });
 
     return (
         <group rotation={[0, 0, Math.PI / 4]}>
-            <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
+            <points ref={ref} {...props}>
+                <bufferGeometry>
+                    <bufferAttribute
+                        attach="attributes-position"
+                        count={positions.length / 3}
+                        array={positions}
+                        itemSize={3}
+                    />
+                    <bufferAttribute
+                        attach="attributes-color"
+                        count={colors.length / 3}
+                        array={colors}
+                        itemSize={3}
+                    />
+                </bufferGeometry>
                 <PointMaterial
                     transparent
-                    color="#7c3aed"
-                    size={0.0015}
-                    sizeAttenuation
+                    vertexColors
+                    size={0.02}
+                    sizeAttenuation={true}
                     depthWrite={false}
                     blending={THREE.AdditiveBlending}
                 />
-            </Points>
+            </points>
         </group>
     );
 }
 
-/* Glowing Wireframe Icosahedron */
-function GlowingSphere() {
-    const meshRef = useRef<THREE.Mesh>(null);
+function MouseRig() {
+    const { camera, mouse } = useThree();
+    const vec = new THREE.Vector3();
 
-    useFrame(({ clock }) => {
-        if (meshRef.current) {
-            meshRef.current.rotation.x = clock.getElapsedTime() * 0.05;
-            meshRef.current.rotation.y = clock.getElapsedTime() * 0.08;
-        }
+    useFrame(() => {
+        camera.position.lerp(vec.set(mouse.x * 0.5, mouse.y * 0.5, camera.position.z), 0.05);
+        camera.lookAt(0, 0, 0);
     });
-
-    return (
-        <mesh ref={meshRef} position={[0, 0, 0]} scale={0.8}>
-            <icosahedronGeometry args={[1, 1]} />
-            <meshBasicMaterial
-                wireframe
-                color="#7c3aed"
-                transparent
-                opacity={0.06}
-            />
-        </mesh>
-    );
-}
-
-/* Secondary Ring */
-function FloatingRing() {
-    const meshRef = useRef<THREE.Mesh>(null);
-
-    useFrame(({ clock }) => {
-        if (meshRef.current) {
-            meshRef.current.rotation.x = Math.PI / 2 + Math.sin(clock.getElapsedTime() * 0.3) * 0.1;
-            meshRef.current.rotation.z = clock.getElapsedTime() * 0.05;
-        }
-    });
-
-    return (
-        <mesh ref={meshRef} position={[0, 0, 0]}>
-            <torusGeometry args={[1.2, 0.003, 16, 100]} />
-            <meshBasicMaterial color="#7c3aed" transparent opacity={0.15} />
-        </mesh>
-    );
+    return null;
 }
 
 export default function Scene() {
     return (
-        <div className="absolute inset-0 bg-[#030303]">
-            <Canvas camera={{ position: [0, 0, 1.8], fov: 60 }} dpr={[1, 2]}>
-                <Stars />
-                <GlowingSphere />
-                <FloatingRing />
+        <div className="absolute inset-0 z-0 h-full w-full">
+            <Canvas camera={{ position: [0, 0, 5], fov: 50 }} gl={{ antialias: true, alpha: true }}>
+                <ambientLight intensity={0.5} />
+                <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+                    <ParticleField />
+                </Float>
+                <MouseRig />
             </Canvas>
         </div>
     );

@@ -3,18 +3,18 @@ import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 
 const groq = createGroq({
-    apiKey: process.env.GROQ_API_KEY,
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 export async function POST(req: Request) {
-    try {
-        const { code, language } = await req.json();
+  try {
+    const { code, language } = await req.json();
 
-        if (!code) {
-            return NextResponse.json({ error: 'Code is required' }, { status: 400 });
-        }
+    if (!code) {
+      return NextResponse.json({ error: 'Code is required' }, { status: 400 });
+    }
 
-        const prompt = `You are an expert algorithm optimization engineer.
+    const prompt = `You are an expert algorithm optimization engineer.
 Your goal is to rewrite the provided ${language} code to be more efficient in terms of Time and/or Space Complexity.
 
 ### Input Code:
@@ -45,25 +45,24 @@ You must output valid JSON. No markdown backticks.
   "overview": "Brief summary of changes."
 }`;
 
-        const { text } = await generateText({
-            model: groq('llama-3.3-70b-versatile'),
-            prompt,
-            temperature: 0.3, // Low temp for precision
-            maxTokens: 2000,
-        });
+    const { text } = await generateText({
+      model: groq('llama-3.3-70b-versatile'),
+      prompt,
+      temperature: 0.3, // Low temp for precision
+    });
 
-        let data;
-        try {
-            const cleanText = text.replace(/```json\n?|\n?```/g, '').trim();
-            data = JSON.parse(cleanText);
-        } catch (e) {
-            console.error('Failed to parse optimization JSON:', e);
-            return NextResponse.json({ error: 'Failed to parse AI response' }, { status: 500 });
-        }
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('Error optimizing code:', error);
-        return NextResponse.json({ error: 'Failed to optimize code' }, { status: 500 });
+    let data;
+    try {
+      const cleanText = text.replace(/```json\n?|\n?```/g, '').trim();
+      data = JSON.parse(cleanText);
+    } catch (e) {
+      console.error('Failed to parse optimization JSON:', e);
+      return NextResponse.json({ error: 'Failed to parse AI response' }, { status: 500 });
     }
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error optimizing code:', error);
+    return NextResponse.json({ error: 'Failed to optimize code' }, { status: 500 });
+  }
 }
