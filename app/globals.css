@@ -526,8 +526,8 @@ pre,
    SCROLLBAR
    ============================================= */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -535,12 +535,26 @@ pre,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(139, 92, 246, 0.3);
   border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(139, 92, 246, 0.5);
+  background-clip: content-box;
+}
+
+/* Light mode scrollbar */
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.2);
+  background-clip: content-box;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.4);
+  background-clip: content-box;
 }
 
 /* =============================================
@@ -585,6 +599,36 @@ html {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
+
+/* Analysis results scroll container */
+.analysis-scroll-container {
+  height: calc(100vh - 200px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+
+.analysis-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.analysis-scroll-container::-webkit-scrollbar-track {
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 10px;
+  margin-right: 2px;
+}
+
+.analysis-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.analysis-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+  background-clip: content-box;
 }
 
 /* Code block styling */

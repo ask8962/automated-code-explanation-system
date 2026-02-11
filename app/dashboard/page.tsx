@@ -91,7 +91,7 @@ export default function DashboardPage() {
       {/* Subtle ambient glow */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-violet-600/[0.04] rounded-full blur-[120px] pointer-events-none" />
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -99,84 +99,98 @@ export default function DashboardPage() {
           transition={{ duration: 0.4 }}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold tracking-tight mb-1">Code Workspace</h1>
-          <p className="text-sm text-muted-foreground">
-            Paste your code below to get AI-powered explanations and optimizations.
+          <h1 className="text-3xl font-bold tracking-tight mb-2">Code Workspace</h1>
+          <p className="text-base text-muted-foreground">
+            Paste your code on the left to get instant AI-powered explanations and optimizations on the right.
           </p>
         </motion.div>
 
-        <div className="space-y-6">
-          {/* Code Input */}
-          <CodeInput onExplain={handleExplain} isLoading={isLoading} />
+        {/* Two-Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column: Code Input */}
+          <div className="space-y-4">
+            <div className="sticky top-20 z-30">
+              <CodeInput onExplain={handleExplain} isLoading={isLoading} />
+            </div>
+          </div>
 
-          {/* Loading State */}
-          <AnimatePresence>
-            {isLoading && !explanationData && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ExplanationSkeleton />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Optimize Action */}
-          <AnimatePresence>
-            {!isLoading && explanationData && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="flex justify-end"
-              >
-                <Button
-                  onClick={handleOptimize}
-                  disabled={isOptimizing}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-9 px-5 text-sm"
+          {/* Right Column: Analysis Results */}
+          <div className="analysis-scroll-container rounded-lg p-1">
+            {/* Loading State */}
+            <AnimatePresence>
+              {isLoading && !explanationData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {isOptimizing ? (
-                    <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                  ) : (
-                    <Zap className="w-3.5 h-3.5 mr-2" />
-                  )}
-                  Optimize Code
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <ExplanationSkeleton />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Optimization Panel */}
-          <AnimatePresence>
-            {!isLoading && showOptimization && optimizationData && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-              >
-                <OptimizationPanel data={optimizationData} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {/* Optimize Action */}
+            <AnimatePresence>
+              {!isLoading && explanationData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex gap-3"
+                >
+                  <Button
+                    onClick={handleOptimize}
+                    disabled={isOptimizing}
+                    className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-10 text-sm"
+                  >
+                    {isOptimizing ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Zap className="w-4 h-4 mr-2" />
+                    )}
+                    Optimize Code
+                  </Button>
+                  <Button
+                    onClick={handleCopyExplanation}
+                    variant="outline"
+                    className="h-10 px-5 rounded-xl text-sm font-medium"
+                  >
+                    Copy
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Explanation Panel */}
-          <AnimatePresence>
-            {!isLoading && explanationData && !showOptimization && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-              >
-                <CodeExplanationPanel
-                  data={explanationData}
-                  onCopy={handleCopyExplanation}
-                />
-              </motion.div>
-            )}
+            {/* Optimization Panel */}
+            <AnimatePresence>
+              {!isLoading && showOptimization && optimizationData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <OptimizationPanel data={optimizationData} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Explanation Panel */}
+            <AnimatePresence>
+              {!isLoading && explanationData && !showOptimization && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <CodeExplanationPanel
+                    data={explanationData}
+                    onCopy={handleCopyExplanation}
+                  />
+                </motion.div>
+              )}
           </AnimatePresence>
         </div>
       </main>
