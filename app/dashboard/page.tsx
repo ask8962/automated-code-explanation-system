@@ -191,7 +191,7 @@ export default function DashboardPage() {
                   />
                 </motion.div>
               )}
-          </AnimatePresence>
+            </AnimatePresence>
         </div>
       </main>
     </div>
