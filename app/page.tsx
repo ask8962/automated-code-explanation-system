@@ -130,30 +130,30 @@ export default function Page() {
             </div>
 
             {/* =============================================
-                NAVIGATION
+                PREMIUM NAVIGATION
                ============================================= */}
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.04] bg-background/50 backdrop-blur-2xl">
+            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.05] bg-gradient-to-b from-background/80 to-background/40 backdrop-blur-3xl">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-all duration-300 group-hover:scale-105">
-                            <Terminal className="w-4 h-4 text-white" />
-                            <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 via-indigo-600 to-cyan-600 flex items-center justify-center shadow-lg shadow-violet-500/30 group-hover:shadow-violet-500/50 group-hover:scale-110 transition-all duration-300">
+                            <Terminal className="w-5 h-5 text-white" />
+                            <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
-                        <span className="font-bold text-lg tracking-tight">AI Code Explain</span>
+                        <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Code Explain</span>
                     </Link>
 
-                    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-                        <Link href="#features" className="hover:text-foreground transition-colors duration-200">Features</Link>
-                        <Link href="#how-it-works" className="hover:text-foreground transition-colors duration-200">How it Works</Link>
-                        <Link href="#modes" className="hover:text-foreground transition-colors duration-200">Modes</Link>
+                    <div className="hidden md:flex items-center gap-10 text-sm font-medium">
+                        <Link href="#features" className="text-foreground/70 hover:text-foreground transition-colors duration-300">Features</Link>
+                        <Link href="#how-it-works" className="text-foreground/70 hover:text-foreground transition-colors duration-300">How it Works</Link>
+                        <Link href="#modes" className="text-foreground/70 hover:text-foreground transition-colors duration-300">Modes</Link>
                     </div>
 
                     <div className="flex items-center gap-3">
                         <Link href="/auth">
-                            <Button variant="ghost" className="text-sm font-medium hover:bg-white/5 rounded-full">Sign In</Button>
+                            <Button variant="ghost" className="text-sm font-semibold hover:bg-white/10 rounded-full transition-colors duration-300">Sign In</Button>
                         </Link>
                         <Link href="/auth">
-                            <Button className="bg-white text-black hover:bg-white/90 shadow-lg shadow-white/10 rounded-full px-6 text-sm font-semibold hover:scale-105 transition-all">
+                            <Button className="bg-white text-black hover:bg-white/90 shadow-lg shadow-white/15 rounded-full px-6 text-sm font-bold hover:scale-110 transition-all duration-300">
                                 Get Started
                             </Button>
                         </Link>
@@ -162,62 +162,61 @@ export default function Page() {
             </nav>
 
             {/* =============================================
-                HERO SECTION
+                HERO SECTION — LEGENDARY DESIGN
                ============================================= */}
             <motion.section
-                className="relative pt-36 pb-24 md:pt-52 md:pb-40 px-6"
+                className="relative pt-40 pb-32 md:pt-64 md:pb-48 px-6"
                 style={{ opacity: heroOpacity, scale: heroScale }}
             >
-                <div className="max-w-5xl mx-auto text-center relative z-10">
-
-                    <RevealText delay={0.1}>
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl mb-8">
+                <div className="max-w-6xl mx-auto relative z-10">
+                    {/* Hero Badge */}
+                    <RevealText delay={0.1} className="flex justify-center mb-12">
+                        <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-emerald-500/30 bg-gradient-to-r from-emerald-500/[0.08] to-emerald-500/[0.02] backdrop-blur-xl">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
-                            <span className="text-xs font-medium text-muted-foreground tracking-wider uppercase">Powered by LLaMA 3.3 & Groq</span>
+                            <span className="text-xs font-semibold text-emerald-300 tracking-wider uppercase">Powered by Groq LLaMA 3.3</span>
                         </div>
                     </RevealText>
 
-                    <RevealText delay={0.2}>
-                        <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight mb-8 leading-[1.05]">
-                            Understand code
-                            <br />
-                            <span className="gradient-text">in seconds.</span>
+                    {/* Main Headline */}
+                    <RevealText delay={0.2} className="text-center mb-10">
+                        <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black tracking-tight leading-[0.95] mb-6">
+                            <span className="text-white">Understand</span><br />
+                            <span className="gradient-text">Any Code. Instantly.</span>
                         </h1>
                     </RevealText>
 
-                    <RevealText delay={0.35}>
-                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-14 leading-relaxed font-light">
-                            Paste any code snippet and get instant AI-powered explanations,
-                            complexity analysis, and performance optimizations.
+                    {/* Subheading */}
+                    <RevealText delay={0.35} className="text-center mb-16 max-w-3xl mx-auto">
+                        <p className="text-xl md:text-2xl text-foreground/70 font-light leading-relaxed">
+                            AI-powered code explanations, complexity analysis, and optimizations. Paste. Analyze. Master.
                         </p>
                     </RevealText>
 
-                    <RevealText delay={0.45}>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Link href="/auth">
-                                <Button size="lg" className="h-14 px-8 rounded-full bg-white text-black hover:bg-white/90 text-base font-semibold shadow-xl shadow-white/10 hover:shadow-white/20 transition-all hover:scale-[1.03] active:scale-[0.98]">
-                                    Start Analyzing
-                                    <ArrowRight className="w-5 h-5 ml-2" />
-                                </Button>
-                            </Link>
-                            <Link href="https://github.com/ask8962/automated-code-explanation-system" target="_blank">
-                                <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] backdrop-blur-md text-base font-medium transition-all hover:scale-[1.03] active:scale-[0.98]">
-                                    <Github className="w-5 h-5 mr-2" />
-                                    View on GitHub
-                                </Button>
-                            </Link>
-                        </div>
+                    {/* CTA Buttons */}
+                    <RevealText delay={0.45} className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-20">
+                        <Link href="/auth">
+                            <Button size="lg" className="h-16 px-10 rounded-full bg-white text-black hover:bg-white/90 text-base font-bold shadow-2xl shadow-white/20 hover:shadow-white/30 transition-all hover:scale-[1.05] active:scale-[0.97]">
+                                Start Analyzing
+                                <ArrowRight className="w-5 h-5 ml-2.5" />
+                            </Button>
+                        </Link>
+                        <Link href="https://github.com/ask8962/automated-code-explanation-system" target="_blank">
+                            <Button size="lg" variant="outline" className="h-16 px-10 rounded-full border border-white/20 bg-white/[0.05] hover:bg-white/[0.08] hover:border-white/30 backdrop-blur-md text-base font-semibold transition-all hover:scale-[1.05] active:scale-[0.97]">
+                                <Github className="w-5 h-5 mr-2.5" />
+                                GitHub
+                            </Button>
+                        </Link>
                     </RevealText>
                 </div>
 
                 {/* Hero Visual — Dashboard Preview */}
-                <RevealText delay={0.6} className="mt-28 max-w-6xl mx-auto relative z-10">
-                    <div className="rounded-2xl border border-white/[0.06] bg-black/30 backdrop-blur-xl shadow-2xl shadow-violet-500/5 p-1.5 relative overflow-hidden group">
-                        {/* Animated glow */}
-                        <div className="absolute -inset-1 bg-gradient-to-r from-violet-600/20 via-indigo-600/10 to-cyan-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+                <RevealText delay={0.6} className="mt-32 max-w-6xl mx-auto relative z-10">
+                    <div className="rounded-3xl border border-white/[0.1] bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-2xl shadow-2xl shadow-violet-600/10 p-2 relative overflow-hidden group">
+                        {/* Animated premium glow */}
+                        <div className="absolute -inset-2 bg-gradient-to-r from-violet-600/30 via-indigo-600/20 to-cyan-500/30 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
 
                         {/* Browser Chrome */}
                         <div className="relative h-10 border-b border-white/[0.06] bg-white/[0.02] flex items-center px-4 gap-2 rounded-t-xl">
@@ -300,28 +299,31 @@ export default function Page() {
             </motion.section>
 
             {/* =============================================
-                FEATURES — Bento Grid
+                FEATURES — Premium Bento Grid
                ============================================= */}
-            <section id="features" className="py-32 relative z-10">
+            <section id="features" className="py-40 relative z-10 border-t border-white/[0.04]">
                 <div className="max-w-6xl mx-auto px-6">
-                    <RevealText className="text-center max-w-3xl mx-auto mb-20">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">Features</p>
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
-                            Everything you need to<br />
-                            <span className="gradient-text">master your code.</span>
+                    <RevealText className="text-center max-w-3xl mx-auto mb-24">
+                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-6">Capabilities</p>
+                        <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8 tracking-tight leading-[1.1]">
+                            Built for<br />
+                            <span className="gradient-text">Every Developer.</span>
                         </h2>
-                        <p className="text-muted-foreground text-lg font-light">Powerful AI analysis meets beautiful developer experience.</p>
+                        <p className="text-foreground/60 text-lg font-light">Powerful analysis. Beautiful experience.</p>
                     </RevealText>
 
-                    <div className="grid md:grid-cols-3 gap-4">
+                    <div className="grid md:grid-cols-3 gap-6">
                         {features.map((f, i) => (
-                            <FloatingCard key={i} delay={0.1 * i} className={`${f.span}`}>
-                                <div className="glass-card h-full p-7 rounded-2xl group cursor-default">
-                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                                        <f.icon className="w-5 h-5 text-primary" />
+                            <FloatingCard key={i} delay={0.12 * i} className={`${f.span}`}>
+                                <div className="relative h-full p-8 rounded-3xl border border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] hover:border-white/[0.12] hover:from-white/[0.05] hover:to-white/[0.02] backdrop-blur-lg transition-all duration-300 group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                                    <div className="relative">
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500/20 to-violet-500/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                            <f.icon className="w-6 h-6 text-violet-400" />
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-3 tracking-tight text-white">{f.title}</h3>
+                                        <p className="text-sm text-foreground/60 leading-relaxed">{f.desc}</p>
                                     </div>
-                                    <h3 className="text-lg font-semibold mb-2 tracking-tight">{f.title}</h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
                                 </div>
                             </FloatingCard>
                         ))}
@@ -330,32 +332,35 @@ export default function Page() {
             </section>
 
             {/* =============================================
-                HOW IT WORKS
+                HOW IT WORKS — Premium Steps
                ============================================= */}
-            <section id="how-it-works" className="py-32 relative z-10">
-                <div className="max-w-5xl mx-auto px-6">
-                    <RevealText className="text-center mb-20">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">How it Works</p>
-                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-                            Three steps to<br />
-                            <span className="gradient-text">total clarity.</span>
+            <section id="how-it-works" className="py-40 relative z-10">
+                <div className="max-w-6xl mx-auto px-6">
+                    <RevealText className="text-center mb-24">
+                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-6">Process</p>
+                        <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1]">
+                            Three Simple Steps<br />
+                            <span className="gradient-text">to Code Mastery.</span>
                         </h2>
                     </RevealText>
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { step: "01", title: "Paste Your Code", desc: "Drop any code snippet — Python, Java, JS, C, or C++. Select your preferred language.", icon: Terminal },
-                            { step: "02", title: "Choose a Mode", desc: "Beginner, Exam, or Interview — get explanations tailored to your exact needs.", icon: Layers },
-                            { step: "03", title: "Get AI Insights", desc: "Receive step-by-step breakdown, complexity analysis, key concepts, and optimization.", icon: Sparkles },
+                            { step: "01", title: "Paste Your Code", desc: "Drop any snippet from Python, Java, JavaScript, C, or C++. The AI instantly recognizes the language.", icon: Terminal },
+                            { step: "02", title: "Pick Your Mode", desc: "Choose Beginner for analogies, Exam for concepts, or Interview for approach & complexity.", icon: Layers },
+                            { step: "03", title: "Get Deep Insights", desc: "Receive step-by-step breakdown, complexity analysis, key concepts, optimization tips & more.", icon: Sparkles },
                         ].map((item, i) => (
                             <FloatingCard key={i} delay={0.15 * i}>
-                                <div className="relative glass-card p-8 rounded-2xl h-full">
-                                    <div className="text-6xl font-black text-white/[0.03] absolute top-4 right-6 select-none">{item.step}</div>
-                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-6">
-                                        <item.icon className="w-5 h-5 text-primary" />
+                                <div className="relative p-8 rounded-3xl h-full border border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] hover:border-white/[0.12] hover:from-white/[0.05] hover:to-white/[0.02] backdrop-blur-lg transition-all duration-300 group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                                    <div className="text-8xl font-black text-white/[0.05] absolute -top-8 right-4 select-none">{item.step}</div>
+                                    <div className="relative">
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                                            <item.icon className="w-6 h-6 text-blue-400" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold mb-3 tracking-tight text-white">{item.title}</h3>
+                                        <p className="text-sm text-foreground/60 leading-relaxed">{item.desc}</p>
                                     </div>
-                                    <h3 className="text-xl font-bold mb-3 tracking-tight">{item.title}</h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                                 </div>
                             </FloatingCard>
                         ))}
@@ -364,27 +369,27 @@ export default function Page() {
             </section>
 
             {/* =============================================
-                LEARNING MODES
+                LEARNING MODES — Premium Display
                ============================================= */}
-            <section id="modes" className="py-32 relative z-10">
-                <div className="max-w-5xl mx-auto px-6">
-                    <RevealText className="text-center mb-20">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">Learning Modes</p>
-                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-                            Tailored to your<br />
-                            <span className="gradient-text">learning style.</span>
+            <section id="modes" className="py-40 relative z-10 border-t border-white/[0.04]">
+                <div className="max-w-6xl mx-auto px-6">
+                    <RevealText className="text-center mb-24">
+                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-400 mb-6">Three Modes</p>
+                        <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1]">
+                            Learn Your Way<br />
+                            <span className="gradient-text">Beginner to Pro.</span>
                         </h2>
                     </RevealText>
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {modes.map((mode, i) => (
-                            <FloatingCard key={i} delay={0.1 * i}>
-                                <div className={`relative p-8 rounded-2xl border ${mode.border} bg-gradient-to-b ${mode.color} backdrop-blur-xl h-full group hover:scale-[1.02] transition-all duration-300`}>
-                                    <div className={`w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                            <FloatingCard key={i} delay={0.12 * i}>
+                                <div className={`relative p-8 rounded-3xl border border-white/[0.08] bg-gradient-to-br ${mode.color} backdrop-blur-xl h-full group hover:border-white/[0.12] transition-all duration-300`}>
+                                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                                         <mode.icon className={`w-6 h-6 ${mode.accent}`} />
                                     </div>
-                                    <h3 className="text-xl font-bold mb-2">{mode.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{mode.desc}</p>
+                                    <h3 className="text-2xl font-bold mb-3 text-white">{mode.title}</h3>
+                                    <p className="text-sm text-foreground/60">{mode.desc}</p>
                                 </div>
                             </FloatingCard>
                         ))}
@@ -393,23 +398,26 @@ export default function Page() {
             </section>
 
             {/* =============================================
-                STATS
+                STATS — Premium Metrics
                ============================================= */}
-            <section className="py-24 relative z-10 border-y border-white/[0.04]">
-                <div className="max-w-5xl mx-auto px-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <section className="py-32 relative z-10 border-y border-white/[0.04]">
+                <div className="max-w-6xl mx-auto px-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {[
-                            { value: 5, suffix: '+', label: 'Languages' },
-                            { value: 3, suffix: '', label: 'Learning Modes' },
-                            { value: 99, suffix: '%', label: 'Accuracy' },
-                            { value: 500, suffix: 'ms', label: 'Avg Response' },
+                            { value: 5, suffix: '+', label: 'Languages', icon: Code2, color: 'from-violet-500/20 to-violet-500/5' },
+                            { value: 3, suffix: '', label: 'Learning Modes', icon: Brain, color: 'from-blue-500/20 to-blue-500/5' },
+                            { value: 99, suffix: '%', label: 'Accuracy', icon: Zap, color: 'from-emerald-500/20 to-emerald-500/5' },
+                            { value: 500, suffix: 'ms', label: 'Avg Response', icon: Terminal, color: 'from-cyan-500/20 to-cyan-500/5' },
                         ].map((stat, i) => (
-                            <RevealText key={i} delay={0.1 * i}>
-                                <div className="space-y-2">
-                                    <div className="text-4xl md:text-5xl font-black tracking-tight gradient-text">
+                            <RevealText key={i} delay={0.12 * i}>
+                                <div className="p-6 rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-lg text-center group hover:border-white/[0.12] transition-all duration-300">
+                                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform`}>
+                                        <stat.icon className="w-5 h-5 text-white/60" />
+                                    </div>
+                                    <div className="text-4xl md:text-5xl font-black tracking-tight gradient-text mb-2">
                                         <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                                     </div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-[0.2em] font-medium">{stat.label}</div>
+                                    <div className="text-xs text-foreground/60 uppercase tracking-[0.15em] font-semibold">{stat.label}</div>
                                 </div>
                             </RevealText>
                         ))}
@@ -418,26 +426,26 @@ export default function Page() {
             </section>
 
             {/* =============================================
-                CTA
+                CTA — Final Call to Action
                ============================================= */}
-            <section className="py-40 relative z-10 overflow-hidden">
+            <section className="py-48 relative z-10 overflow-hidden border-t border-white/[0.04]">
                 <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-violet-600/10 blur-[120px]" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-to-r from-violet-600/15 via-indigo-600/10 to-cyan-500/15 blur-[160px]" />
                 </div>
-                <div className="max-w-4xl mx-auto px-6 text-center relative z-20">
+                <div className="max-w-5xl mx-auto px-6 text-center relative z-20">
                     <RevealText>
-                        <h2 className="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-[1.1]">
-                            Ready to level
+                        <h2 className="text-6xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight mb-10 leading-[1.05]">
+                            Start Mastering
                             <br />
-                            <span className="gradient-text">up?</span>
+                            <span className="gradient-text">Code Today</span>
                         </h2>
-                        <p className="text-xl text-muted-foreground mb-14 font-light max-w-xl mx-auto">
-                            Join developers using AI Code Explain to write better, faster code.
+                        <p className="text-xl md:text-2xl text-foreground/60 mb-16 font-light max-w-2xl mx-auto leading-relaxed">
+                            Join thousands of developers who are already writing better code with AI Code Explain. It&apos;s free. No credit card required.
                         </p>
                         <Link href="/auth">
-                            <Button size="lg" className="h-16 px-12 rounded-full bg-white text-black hover:bg-white/90 text-lg font-bold shadow-2xl shadow-violet-500/15 hover:scale-[1.03] active:scale-[0.98] transition-all">
-                                Get Started — It&apos;s Free
-                                <ArrowRight className="w-5 h-5 ml-3" />
+                            <Button size="lg" className="h-18 px-14 rounded-full bg-white text-black hover:bg-white/90 text-lg font-bold shadow-2xl shadow-white/20 hover:shadow-white/30 hover:scale-[1.05] active:scale-[0.97] transition-all">
+                                Get Started Free
+                                <ArrowRight className="w-6 h-6 ml-3" />
                             </Button>
                         </Link>
                     </RevealText>
@@ -445,18 +453,18 @@ export default function Page() {
             </section>
 
             {/* =============================================
-                FOOTER
+                PREMIUM FOOTER
                ============================================= */}
-            <footer className="border-t border-white/[0.04] py-10 relative z-10">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center">
-                            <Terminal className="w-3.5 h-3.5 text-white" />
+            <footer className="border-t border-white/[0.05] py-12 relative z-10 bg-gradient-to-b from-white/[0.01] to-transparent">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 via-indigo-600 to-cyan-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                            <Terminal className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-semibold text-foreground/80">AI Code Explain</span>
+                        <span className="text-sm font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">AI Code Explain</span>
                     </div>
-                    <p className="text-xs text-muted-foreground text-center md:text-right">
-                        © 2024 GLA University Mini Project • Built by Anukalp, Nishant, Prince, Utpal, Jatin
+                    <p className="text-xs text-foreground/50 text-center md:text-right font-light">
+                        © 2024 GLA University • Built with passion by Anukalp, Nishant, Prince, Utpal, Jatin
                     </p>
                 </div>
             </footer>
