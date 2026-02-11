@@ -5,98 +5,174 @@ import { PointMaterial, Float } from '@react-three/drei';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
-function ParticleField(props: any) {
+/* =============================================
+   PARTICLE FIELD — Dual Layer System
+   ============================================= */
+function ParticleField({ count = 5000, radius = 4 }: { count?: number; radius?: number }) {
     const ref = useRef<THREE.Points>(null!);
+    const time = useRef(0);
 
-    const [positions, colors] = useMemo(() => {
-        const count = 4000;
+    const [positions, colors, sizes] = useMemo(() => {
         const positions = new Float32Array(count * 3);
         const colors = new Float32Array(count * 3);
+        const sizes = new Float32Array(count);
 
-        const color1 = new THREE.Color('#8b5cf6'); // Violet
-        const color2 = new THREE.Color('#6366f1'); // Indigo
-        const color3 = new THREE.Color('#d946ef'); // Fuchsia
+        const palette = [
+            new THREE.Color('#8b5cf6'), // Violet
+            new THREE.Color('#6366f1'), // Indigo
+            new THREE.Color('#a78bfa'), // Light violet
+            new THREE.Color('#818cf8'), // Light indigo
+            new THREE.Color('#c084fc'), // Purple
+            new THREE.Color('#22d3ee'), // Cyan accent
+        ];
 
         for (let i = 0; i < count; i++) {
-            // Spherical distribution with variation
-            const r = 3 + Math.random() * 2;
+            // Spherical + gaussian distribution for organic feel
+            const r = radius * (0.5 + Math.random() * 0.8);
             const theta = 2 * Math.PI * Math.random();
             const phi = Math.acos(2 * Math.random() - 1);
 
-            const x = r * Math.sin(phi) * Math.cos(theta);
-            const y = r * Math.sin(phi) * Math.sin(theta);
-            const z = r * Math.cos(phi);
+            positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+            positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+            positions[i * 3 + 2] = r * Math.cos(phi);
 
-            positions[i * 3] = x;
-            positions[i * 3 + 1] = y;
-            positions[i * 3 + 2] = z;
+            // Color from palette with randomized blend
+            const baseColor = palette[Math.floor(Math.random() * palette.length)];
+            const mixColor = palette[Math.floor(Math.random() * palette.length)];
+            const mixed = baseColor.clone().lerp(mixColor, Math.random() * 0.5);
 
-            const mixedColor = color1.clone().lerp(color2, Math.random()).lerp(color3, Math.random());
+            colors[i * 3] = mixed.r;
+            colors[i * 3 + 1] = mixed.g;
+            colors[i * 3 + 2] = mixed.b;
 
-            colors[i * 3] = mixedColor.r;
-            colors[i * 3 + 1] = mixedColor.g;
-            colors[i * 3 + 2] = mixedColor.b;
+            // Varied sizes for depth
+            sizes[i] = Math.random() * 0.015 + 0.003;
         }
 
-        return [positions, colors];
+        return [positions, colors, sizes];
+    }, [count, radius]);
+
+    useFrame((state, delta) => {
+        if (!ref.current) return;
+        time.current += delta;
+        ref.current.rotation.y += delta * 0.03;
+        ref.current.rotation.x += delta * 0.01;
+
+        // Gentle breathing scale
+        const breathe = 1 + Math.sin(time.current * 0.3) * 0.02;
+        ref.current.scale.setScalar(breathe);
+    });
+
+    return (
+        <points ref={ref}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={positions.length / 3}
+                    array={positions}
+                    itemSize={3}
+                />
+                <bufferAttribute
+                    attach="attributes-color"
+                    count={colors.length / 3}
+                    array={colors}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <PointMaterial
+                transparent
+                vertexColors
+                size={0.018}
+                sizeAttenuation={true}
+                depthWrite={false}
+                blending={THREE.AdditiveBlending}
+                opacity={0.8}
+            />
+        </points>
+    );
+}
+
+/* =============================================
+   AMBIENT DUST — Subtle background particles
+   ============================================= */
+function AmbientDust() {
+    const ref = useRef<THREE.Points>(null!);
+
+    const positions = useMemo(() => {
+        const count = 1500;
+        const pos = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+            pos[i * 3] = (Math.random() - 0.5) * 15;
+            pos[i * 3 + 1] = (Math.random() - 0.5) * 15;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * 15;
+        }
+        return pos;
     }, []);
 
     useFrame((state, delta) => {
         if (ref.current) {
-            ref.current.rotation.x -= delta / 15;
-            ref.current.rotation.y -= delta / 20;
+            ref.current.rotation.y += delta * 0.005;
+            ref.current.rotation.x += delta * 0.003;
         }
     });
 
     return (
-        <group rotation={[0, 0, Math.PI / 4]}>
-            <points ref={ref} {...props}>
-                <bufferGeometry>
-                    <bufferAttribute
-                        attach="attributes-position"
-                        count={positions.length / 3}
-                        array={positions}
-                        itemSize={3}
-                    />
-                    <bufferAttribute
-                        attach="attributes-color"
-                        count={colors.length / 3}
-                        array={colors}
-                        itemSize={3}
-                    />
-                </bufferGeometry>
-                <PointMaterial
-                    transparent
-                    vertexColors
-                    size={0.02}
-                    sizeAttenuation={true}
-                    depthWrite={false}
-                    blending={THREE.AdditiveBlending}
+        <points ref={ref}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={positions.length / 3}
+                    array={positions}
+                    itemSize={3}
                 />
-            </points>
-        </group>
+            </bufferGeometry>
+            <PointMaterial
+                transparent
+                color="#6366f1"
+                size={0.005}
+                sizeAttenuation={true}
+                depthWrite={false}
+                blending={THREE.AdditiveBlending}
+                opacity={0.3}
+            />
+        </points>
     );
 }
 
+/* =============================================
+   MOUSE RIG — Smooth camera follow
+   ============================================= */
 function MouseRig() {
-    const { camera, mouse } = useThree();
-    const vec = new THREE.Vector3();
+    const { camera } = useThree();
+    const target = useRef(new THREE.Vector3(0, 0, 5));
 
-    useFrame(() => {
-        camera.position.lerp(vec.set(mouse.x * 0.5, mouse.y * 0.5, camera.position.z), 0.05);
+    useFrame((state) => {
+        const x = state.mouse.x * 0.4;
+        const y = state.mouse.y * 0.3;
+        target.current.set(x, y, 5);
+        camera.position.lerp(target.current, 0.03);
         camera.lookAt(0, 0, 0);
     });
+
     return null;
 }
 
+/* =============================================
+   SCENE — Main export
+   ============================================= */
 export default function Scene() {
     return (
         <div className="absolute inset-0 z-0 h-full w-full">
-            <Canvas camera={{ position: [0, 0, 5], fov: 50 }} gl={{ antialias: true, alpha: true }}>
-                <ambientLight intensity={0.5} />
-                <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-                    <ParticleField />
+            <Canvas
+                camera={{ position: [0, 0, 5], fov: 50 }}
+                gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+                dpr={[1, 1.5]}
+            >
+                <ambientLight intensity={0.3} />
+                <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.4}>
+                    <ParticleField count={5000} radius={3.5} />
                 </Float>
+                <AmbientDust />
                 <MouseRig />
             </Canvas>
         </div>

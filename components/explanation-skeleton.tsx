@@ -1,71 +1,81 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
 export function ExplanationSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse">
-            {/* Overview Skeleton */}
-            <Card className="border-l-4 border-l-primary/30 bg-card/50 border-y border-r border-border shadow-lg">
-                <CardHeader className="pb-2">
-                    <div className="h-6 w-32 bg-muted rounded" />
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-2">
-                        <div className="h-4 w-full bg-muted rounded" />
-                        <div className="h-4 w-3/4 bg-muted rounded" />
-                        <div className="h-4 w-5/6 bg-muted rounded" />
-                    </div>
-                </CardContent>
-            </Card>
+        <div className="space-y-4 animate-in fade-in duration-500">
+            {/* Header skeleton */}
+            <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg skeleton-shimmer" />
+                <div className="h-4 w-28 rounded skeleton-shimmer" />
+            </div>
 
-            {/* Steps Skeleton */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-2 space-y-4">
-                    <div className="h-6 w-36 bg-muted rounded" />
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="bg-secondary/30 rounded-lg p-4 border border-border/50">
-                            <div className="flex gap-3">
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted" />
-                                <div className="flex-1 space-y-2">
-                                    <div className="h-4 w-1/3 bg-muted rounded" />
-                                    <div className="h-3 w-full bg-muted rounded" />
-                                    <div className="h-3 w-2/3 bg-muted rounded" />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+            {/* Overview skeleton */}
+            <div className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                <div className="flex items-center gap-2 mb-3">
+                    <div className="w-3.5 h-3.5 rounded skeleton-shimmer" />
+                    <div className="h-3 w-16 rounded skeleton-shimmer" />
                 </div>
+                <div className="space-y-2">
+                    <div className="h-3 w-full rounded skeleton-shimmer" />
+                    <div className="h-3 w-5/6 rounded skeleton-shimmer" />
+                    <div className="h-3 w-4/6 rounded skeleton-shimmer" />
+                </div>
+            </div>
 
-                {/* Key Concepts Skeleton */}
-                <div className="space-y-4">
-                    <div className="h-6 w-32 bg-muted rounded" />
-                    {[1, 2, 3].map((i) => (
-                        <Card key={i} className="bg-card border-border shadow-sm">
-                            <CardContent className="p-4 space-y-2">
-                                <div className="h-4 w-1/2 bg-muted rounded" />
-                                <div className="h-3 w-full bg-muted rounded" />
-                            </CardContent>
-                        </Card>
+            {/* Steps skeleton */}
+            <div className="space-y-2">
+                <div className="flex items-center gap-2 px-1 mb-1">
+                    <div className="w-3.5 h-3.5 rounded skeleton-shimmer" />
+                    <div className="h-3 w-20 rounded skeleton-shimmer" />
+                </div>
+                {[0, 1, 2].map((i) => (
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: i * 0.1 }}
+                        className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 rounded-lg skeleton-shimmer flex-shrink-0" />
+                            <div className="h-3.5 w-40 rounded skeleton-shimmer" />
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+
+            {/* Key Concepts skeleton */}
+            <div className="p-5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                <div className="flex items-center gap-2 mb-4">
+                    <div className="w-3.5 h-3.5 rounded skeleton-shimmer" />
+                    <div className="h-3 w-24 rounded skeleton-shimmer" />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {[0, 1, 2, 3].map((i) => (
+                        <div key={i} className="h-7 rounded-lg skeleton-shimmer" style={{ width: `${60 + i * 15}px` }} />
                     ))}
                 </div>
             </div>
 
-            {/* Complexity Skeleton */}
-            <div className="grid grid-cols-2 gap-4">
-                <Card className="bg-card border-border">
-                    <CardContent className="p-4 space-y-2">
-                        <div className="h-4 w-24 bg-muted rounded" />
-                        <div className="h-8 w-16 bg-muted rounded" />
-                    </CardContent>
-                </Card>
-                <Card className="bg-card border-border">
-                    <CardContent className="p-4 space-y-2">
-                        <div className="h-4 w-24 bg-muted rounded" />
-                        <div className="h-8 w-16 bg-muted rounded" />
-                    </CardContent>
-                </Card>
+            {/* Complexity skeleton */}
+            <div className="grid grid-cols-2 gap-3">
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] text-center">
+                    <div className="flex items-center justify-center gap-1.5 mb-2">
+                        <div className="w-3 h-3 rounded skeleton-shimmer" />
+                        <div className="h-2.5 w-8 rounded skeleton-shimmer" />
+                    </div>
+                    <div className="h-6 w-16 mx-auto rounded skeleton-shimmer" />
+                </div>
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] text-center">
+                    <div className="flex items-center justify-center gap-1.5 mb-2">
+                        <div className="w-3 h-3 rounded skeleton-shimmer" />
+                        <div className="h-2.5 w-8 rounded skeleton-shimmer" />
+                    </div>
+                    <div className="h-6 w-16 mx-auto rounded skeleton-shimmer" />
+                </div>
             </div>
         </div>
     );

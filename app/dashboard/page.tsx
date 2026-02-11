@@ -4,33 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useGenerateExplanation } from '@/hooks/use-generate-explanation';
 import { useOptimizeCode } from '@/hooks/use-optimize-code';
 import CodeExplanationPanel from '@/components/code-explanation-panel';
 import OptimizationPanel from '@/components/optimization-panel';
 import { CodeInput } from '@/components/code-input';
 import { Navbar } from '@/components/navbar';
-import { Loader2, Zap } from 'lucide-react';
+import { Loader2, Zap, Sparkles, Code2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ExplanationSkeleton } from '@/components/explanation-skeleton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export type ExplanationMode = 'beginner' | 'exam' | 'interview';
 export type Language = 'python' | 'javascript' | 'java' | 'cpp' | 'c';
-
-const LANGUAGES = [
-  { id: 'python', name: 'Python' },
-  { id: 'javascript', name: 'JavaScript' },
-  { id: 'java', name: 'Java' },
-  { id: 'cpp', name: 'C++' },
-  { id: 'c', name: 'C' },
-];
-
-const MODES = [
-  { id: 'beginner', name: 'Beginner Friendly' },
-  { id: 'exam', name: 'Exam Preparation' },
-  { id: 'interview', name: 'Technical Interview' },
-];
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -51,21 +37,30 @@ export default function DashboardPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center animate-pulse">
+              <Code2 className="w-5 h-5 text-white" />
+            </div>
+            <div className="absolute inset-0 rounded-xl bg-violet-500/20 animate-ping" />
+          </div>
+          <p className="text-xs text-muted-foreground">Loading workspace...</p>
+        </div>
       </div>
     );
   }
 
   if (!user) return null;
 
-  const handleExplain = async (codeInput: string) => {
+  const handleExplain = async (codeInput: string, lang: string, m: string) => {
     setCode(codeInput);
-    setShowOptimization(false); // Reset optimization view on new explanation
-
+    setLanguage(lang as Language);
+    setMode(m as ExplanationMode);
+    setShowOptimization(false);
     await generateExplanation({
       code: codeInput,
-      language: language,
-      mode: mode,
+      language: lang,
+      mode: m as ExplanationMode,
       userId: user.uid,
     });
   };
@@ -85,7 +80,7 @@ export default function DashboardPage() {
         .map((s, i) => `${i + 1}. ${s.title}: ${s.description}`)
         .join('\n')}`;
       navigator.clipboard.writeText(text);
-      toast.success('Explanation copied to clipboard!');
+      toast.success('Copied to clipboard');
     }
   };
 
@@ -93,103 +88,96 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* Explain Code Section */}
+      {/* Subtle ambient glow */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-violet-600/[0.04] rounded-full blur-[120px] pointer-events-none" />
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8"
+        >
+          <h1 className="text-2xl font-bold tracking-tight mb-1">Code Workspace</h1>
+          <p className="text-sm text-muted-foreground">
+            Paste your code below to get AI-powered explanations and optimizations.
+          </p>
+        </motion.div>
+
         <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground">Explain Code</h2>
-              <p className="text-muted-foreground">
-                Paste your code snippet below to get an AI-powered explanation.
-              </p>
-            </div>
-          </div>
+          {/* Code Input */}
+          <CodeInput onExplain={handleExplain} isLoading={isLoading} />
 
-          <div className="bg-card border border-border rounded-lg p-6 space-y-6 shadow-sm">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
-                  Language
-                </label>
-                <Select
-                  value={language}
-                  onValueChange={(val) => setLanguage(val as Language)}
-                >
-                  <SelectTrigger className="w-full bg-input border-border text-foreground">
-                    <SelectValue placeholder="Select Language" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border-border text-popover-foreground">
-                    {LANGUAGES.map((lang) => (
-                      <SelectItem key={lang.id} value={lang.id}>
-                        {lang.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+          {/* Loading State */}
+          <AnimatePresence>
+            {isLoading && !explanationData && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ExplanationSkeleton />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">
-                  Explanation Mode
-                </label>
-                <Select
-                  value={mode}
-                  onValueChange={(val) => setMode(val as ExplanationMode)}
-                >
-                  <SelectTrigger className="w-full bg-input border-border text-foreground">
-                    <SelectValue placeholder="Select Mode" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover border-border text-popover-foreground">
-                    {MODES.map((m) => (
-                      <SelectItem key={m.id} value={m.id}>
-                        {m.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Code Input Section */}
-
-            <CodeInput onExplain={handleExplain} isLoading={isLoading} />
-
-            {/* Loading Skeleton */}
-            {isLoading && !explanationData && <ExplanationSkeleton />}
-
-            {/* Actions Bar */}
+          {/* Optimize Action */}
+          <AnimatePresence>
             {!isLoading && explanationData && (
-              <div className="flex justify-end pt-2">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="flex justify-end"
+              >
                 <Button
                   onClick={handleOptimize}
                   disabled={isOptimizing}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold shadow-lg shadow-yellow-500/20 transition-all hover:scale-105"
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-9 px-5 text-sm"
                 >
                   {isOptimizing ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
                   ) : (
-                    <Zap className="w-4 h-4 mr-2" />
+                    <Zap className="w-3.5 h-3.5 mr-2" />
                   )}
-                  Make it Faster (Optimize)
+                  Optimize Code
                 </Button>
-              </div>
+              </motion.div>
             )}
+          </AnimatePresence>
 
-            {/* Optimization Output */}
+          {/* Optimization Panel */}
+          <AnimatePresence>
             {!isLoading && showOptimization && optimizationData && (
-              <OptimizationPanel data={optimizationData} />
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4 }}
+              >
+                <OptimizationPanel data={optimizationData} />
+              </motion.div>
             )}
+          </AnimatePresence>
 
-            {/* Explanation Output */}
+          {/* Explanation Panel */}
+          <AnimatePresence>
             {!isLoading && explanationData && !showOptimization && (
-              <CodeExplanationPanel
-                data={explanationData}
-                onCopy={handleCopyExplanation}
-              />
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4 }}
+              >
+                <CodeExplanationPanel
+                  data={explanationData}
+                  onCopy={handleCopyExplanation}
+                />
+              </motion.div>
             )}
-
-            {/* Show both if optimized? Or toggle? Let's show optimize panel ABOVE explanation if active */}
-          </div>
+          </AnimatePresence>
         </div>
       </main>
     </div>
