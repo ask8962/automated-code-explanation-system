@@ -24,6 +24,7 @@ import {
     Briefcase,
 } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const Scene = dynamic(() => import('@/components/Scene'), { ssr: false });
 
@@ -149,6 +150,7 @@ export default function Page() {
                     </div>
 
                     <div className="flex items-center gap-3">
+                        <ThemeToggle />
                         <Link href="/auth">
                             <Button variant="ghost" className="text-sm font-medium hover:bg-white/5 rounded-full">Sign In</Button>
                         </Link>

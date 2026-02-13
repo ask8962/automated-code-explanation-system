@@ -100,8 +100,10 @@ export default function FlowchartPanel({ data, onRegenerate, isRegenerating }: F
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
-        const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(svgBlob);
+
+        // Use base64 data URL instead of blob URL to avoid tainted canvas
+        const svgBase64 = btoa(unescape(encodeURIComponent(svgData)));
+        const dataUrl = `data:image/svg+xml;base64,${svgBase64}`;
 
         img.onload = () => {
             canvas.width = img.width * 2;
@@ -116,10 +118,9 @@ export default function FlowchartPanel({ data, onRegenerate, isRegenerating }: F
             a.href = pngUrl;
             a.download = 'flowchart.png';
             a.click();
-            URL.revokeObjectURL(url);
             toast.success('PNG downloaded!');
         };
-        img.src = url;
+        img.src = dataUrl;
     };
 
     return (

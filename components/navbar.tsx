@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { Menu, X, LogOut, Code2, History, User, Terminal, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -40,8 +41,8 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     className={`text-sm h-8 px-3 rounded-lg transition-all ${isActive
-                        ? 'text-foreground bg-white/[0.06]'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                      ? 'text-foreground bg-white/[0.06]'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
                       }`}
                   >
                     <link.icon className="w-3.5 h-3.5 mr-1.5" />
@@ -53,7 +54,8 @@ export function Navbar() {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             {user && (
               <span className="hidden md:block text-xs text-muted-foreground truncate max-w-[160px]">
                 {user.email}
@@ -106,6 +108,10 @@ export function Navbar() {
               })}
               <div className="pt-2 border-t border-white/[0.04] mt-2">
                 {user && <p className="px-4 py-1.5 text-xs text-muted-foreground">{user.email}</p>}
+                <div className="flex items-center gap-2 px-4 py-1">
+                  <ThemeToggle />
+                  <span className="text-xs text-muted-foreground">Toggle theme</span>
+                </div>
                 <Button
                   onClick={logout}
                   variant="ghost"
