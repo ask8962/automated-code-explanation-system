@@ -164,6 +164,11 @@ export default function Page() {
     return (
         <div className="min-h-screen bg-background text-foreground relative overflow-hidden selection:bg-primary/30 selection:text-white">
 
+            {/* Skip to content — accessibility */}
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:font-medium focus:text-sm">
+                Skip to main content
+            </a>
+
             {/* Scroll Progress */}
             <motion.div
                 className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
@@ -271,6 +276,8 @@ export default function Page() {
             <motion.section
                 className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 px-6"
                 style={{ scale: heroScale }}
+                id="main-content"
+                role="main"
             >
                 <div className="max-w-5xl mx-auto text-center relative z-10">
 
@@ -544,8 +551,8 @@ export default function Page() {
                                 key={i}
                                 onClick={() => setActiveMode(i)}
                                 className={`flex items-center gap-2 px-5 py-3 rounded-xl border transition-all duration-300 text-sm font-medium ${activeMode === i
-                                        ? `${mode.border} bg-gradient-to-b ${mode.color} ${mode.accent} scale-105 shadow-lg`
-                                        : 'border-white/[0.06] bg-white/[0.02] text-muted-foreground hover:bg-white/[0.04]'
+                                    ? `${mode.border} bg-gradient-to-b ${mode.color} ${mode.accent} scale-105 shadow-lg`
+                                    : 'border-white/[0.06] bg-white/[0.02] text-muted-foreground hover:bg-white/[0.04]'
                                     }`}
                             >
                                 <mode.icon className="w-4 h-4" />
