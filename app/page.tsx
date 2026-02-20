@@ -404,6 +404,42 @@ export default function Page() {
             </motion.section>
 
             {/* =============================================
+                LANGUAGE SHOWCASE STRIP
+               ============================================= */}
+            <section className="relative z-10 py-12 overflow-hidden border-y border-white/[0.04]">
+                <div className="max-w-6xl mx-auto px-6 mb-6 text-center">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Supported Languages</p>
+                </div>
+                <div className="relative">
+                    <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                    <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+                    <div className="animate-marquee flex gap-12 items-center whitespace-nowrap">
+                        {[...Array(2)].map((_, setIndex) => (
+                            <div key={setIndex} className="flex gap-12 items-center">
+                                {[
+                                    { name: 'Python', color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
+                                    { name: 'JavaScript', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+                                    { name: 'Java', color: 'text-orange-400', bg: 'bg-orange-500/10' },
+                                    { name: 'C', color: 'text-blue-400', bg: 'bg-blue-500/10' },
+                                    { name: 'C++', color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+                                    { name: 'TypeScript', color: 'text-blue-500', bg: 'bg-blue-600/10' },
+                                    { name: 'Go', color: 'text-teal-400', bg: 'bg-teal-500/10' },
+                                    { name: 'Rust', color: 'text-orange-500', bg: 'bg-orange-600/10' },
+                                ].map((lang, i) => (
+                                    <div key={i} className="flex items-center gap-3 group">
+                                        <div className={`w-10 h-10 rounded-xl ${lang.bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                                            <Code2 className={`w-5 h-5 ${lang.color}`} />
+                                        </div>
+                                        <span className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors">{lang.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* =============================================
                 FEATURES — Bento Grid
                ============================================= */}
             <section id="features" className="py-32 relative z-10">
