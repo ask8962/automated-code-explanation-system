@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,8 @@ import {
     Brain,
     GraduationCap,
     Briefcase,
+    Menu,
+    X,
 } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -93,6 +95,14 @@ export default function Page() {
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
     const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
 
     const features = [
         { icon: Code2, title: "Multi-Language", desc: "Python, JavaScript, Java, C, C++ — all supported out of the box.", span: "md:col-span-1" },
@@ -132,7 +142,10 @@ export default function Page() {
             {/* =============================================
                 NAVIGATION
                ============================================= */}
-            <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.04] bg-background/50 backdrop-blur-2xl">
+            <nav className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${scrolled
+                    ? 'border-white/[0.08] bg-background/80 backdrop-blur-3xl shadow-lg shadow-black/5'
+                    : 'border-white/[0.04] bg-background/50 backdrop-blur-2xl'
+                }`}>
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group">
                         <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-all duration-300 group-hover:scale-105">
@@ -143,23 +156,70 @@ export default function Page() {
                     </Link>
 
                     <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-                        <Link href="#features" className="hover:text-foreground transition-colors duration-200">Features</Link>
-                        <Link href="#how-it-works" className="hover:text-foreground transition-colors duration-200">How it Works</Link>
-                        <Link href="#modes" className="hover:text-foreground transition-colors duration-200">Modes</Link>
+                        {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'How it Works' }, { href: '#modes', label: 'Modes' }].map((link) => (
+                            <Link key={link.href} href={link.href} className="relative hover:text-foreground transition-colors duration-200 py-1 group">
+                                {link.label}
+                                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full transition-all duration-300 group-hover:w-full" />
+                            </Link>
+                        ))}
                     </div>
 
                     <div className="flex items-center gap-3">
                         <ThemeToggle />
-                        <Link href="/auth">
+                        <Link href="/auth" className="hidden sm:block">
                             <Button variant="ghost" className="text-sm font-medium hover:bg-white/5 rounded-full">Sign In</Button>
                         </Link>
-                        <Link href="/auth">
+                        <Link href="/auth" className="hidden sm:block">
                             <Button className="bg-white text-black hover:bg-white/90 shadow-lg shadow-white/10 rounded-full px-6 text-sm font-semibold hover:scale-105 transition-all">
                                 Get Started
                             </Button>
                         </Link>
+                        {/* Mobile menu toggle */}
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="md:hidden p-2 rounded-xl hover:bg-white/[0.06] transition-colors"
+                            aria-label="Toggle mobile menu"
+                        >
+                            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
                     </div>
                 </div>
+
+                {/* Mobile Menu */}
+                <AnimatePresence>
+                    {mobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+                            className="md:hidden border-t border-white/[0.06] overflow-hidden"
+                        >
+                            <div className="px-6 py-4 space-y-1">
+                                {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'How it Works' }, { href: '#modes', label: 'Modes' }].map((link) => (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="block px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/[0.04] rounded-xl transition-all"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))}
+                                <div className="pt-3 border-t border-white/[0.06] mt-3 flex flex-col gap-2">
+                                    <Link href="/auth" onClick={() => setMobileMenuOpen(false)}>
+                                        <Button variant="ghost" className="w-full justify-center text-sm rounded-xl">Sign In</Button>
+                                    </Link>
+                                    <Link href="/auth" onClick={() => setMobileMenuOpen(false)}>
+                                        <Button className="w-full justify-center bg-white text-black hover:bg-white/90 rounded-xl text-sm font-semibold">
+                                            Get Started
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
             {/* =============================================
