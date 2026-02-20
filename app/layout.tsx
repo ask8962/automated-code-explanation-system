@@ -9,9 +9,40 @@ const _inter = Inter({ subsets: ['latin'] })
 const _mono = JetBrains_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AI Code Explainer - Learn Code Better',
-  description: 'Understand any code with AI-powered explanations. Perfect for beginners, exams, and interviews.',
+  title: 'AI Code Explain — Understand Code in Seconds with AI',
+  description:
+    'Paste any code snippet and get instant AI-powered explanations, complexity analysis, and performance optimizations. Supports Python, JavaScript, Java, C, and C++.',
   generator: 'Anukalp',
+  keywords: [
+    'AI code explainer',
+    'code explanation',
+    'code analysis',
+    'complexity analysis',
+    'code optimization',
+    'Python',
+    'JavaScript',
+    'Java',
+    'C++',
+    'LLaMA',
+    'Groq',
+  ],
+  authors: [{ name: 'Anukalp, Nishant, Prince, Utpal, Jatin' }],
+  openGraph: {
+    title: 'AI Code Explain — Understand Code in Seconds',
+    description:
+      'Paste any code and get instant AI-powered explanations, complexity analysis, and optimizations.',
+    url: 'https://gla-code-aa.vercel.app',
+    siteName: 'AI Code Explain',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Code Explain — Understand Code in Seconds',
+    description:
+      'Paste any code and get instant AI-powered explanations, complexity analysis, and optimizations.',
+  },
+  metadataBase: new URL('https://gla-code-aa.vercel.app'),
 }
 
 export const viewport: Viewport = {
