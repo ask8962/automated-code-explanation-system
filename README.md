@@ -87,4 +87,4 @@ Follow these steps to run the project locally.
 
 
 ---
-Developed with ❤️ by the **GLA University Mini Project Team**
+Developed with ❤️ by the **Anukalp Gupta , Nishant Singh , Prince Kumar , Utpal Kumar, Jatin Chauhan**

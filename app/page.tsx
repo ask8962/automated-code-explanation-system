@@ -24,6 +24,14 @@ import {
     Briefcase,
     Menu,
     X,
+    ChevronUp,
+    ChevronDown,
+    Linkedin,
+    Twitter,
+    Users,
+    Clock,
+    Globe,
+    Heart,
 } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -130,6 +138,8 @@ export default function Page() {
     const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [activeMode, setActiveMode] = useState(0);
+    const [openFaq, setOpenFaq] = useState<number | null>(null);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -517,12 +527,9 @@ export default function Page() {
                 </div>
             </section>
 
-            {/* =============================================
-                LEARNING MODES
-               ============================================= */}
             <section id="modes" className="py-32 relative z-10">
                 <div className="max-w-5xl mx-auto px-6">
-                    <RevealText className="text-center mb-20">
+                    <RevealText className="text-center mb-16">
                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">Learning Modes</p>
                         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
                             Tailored to your<br />
@@ -530,36 +537,83 @@ export default function Page() {
                         </h2>
                     </RevealText>
 
-                    <div className="grid md:grid-cols-3 gap-6">
+                    {/* Mode Tabs */}
+                    <div className="flex justify-center gap-4 mb-12">
                         {modes.map((mode, i) => (
-                            <FloatingCard key={i} delay={0.1 * i}>
-                                <div className={`relative p-8 rounded-2xl border ${mode.border} bg-gradient-to-b ${mode.color} backdrop-blur-xl h-full group hover:scale-[1.02] transition-all duration-300`}>
-                                    <div className={`w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                                        <mode.icon className={`w-6 h-6 ${mode.accent}`} />
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-2">{mode.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{mode.desc}</p>
-                                </div>
-                            </FloatingCard>
+                            <button
+                                key={i}
+                                onClick={() => setActiveMode(i)}
+                                className={`flex items-center gap-2 px-5 py-3 rounded-xl border transition-all duration-300 text-sm font-medium ${activeMode === i
+                                        ? `${mode.border} bg-gradient-to-b ${mode.color} ${mode.accent} scale-105 shadow-lg`
+                                        : 'border-white/[0.06] bg-white/[0.02] text-muted-foreground hover:bg-white/[0.04]'
+                                    }`}
+                            >
+                                <mode.icon className="w-4 h-4" />
+                                {mode.title}
+                            </button>
                         ))}
                     </div>
+
+                    {/* Mode Preview Card */}
+                    <motion.div
+                        key={activeMode}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="max-w-2xl mx-auto"
+                    >
+                        <div className={`glass-card p-8 rounded-2xl border ${modes[activeMode].border}`}>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${modes[activeMode].color} flex items-center justify-center`}>
+                                    {React.createElement(modes[activeMode].icon, { className: `w-5 h-5 ${modes[activeMode].accent}` })}
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg">{modes[activeMode].title} Mode</h3>
+                                    <p className="text-sm text-muted-foreground">{modes[activeMode].desc}</p>
+                                </div>
+                            </div>
+                            <div className="p-4 rounded-xl bg-black/30 border border-white/[0.06] font-mono text-sm leading-relaxed">
+                                {activeMode === 0 && (
+                                    <div className="space-y-2 text-muted-foreground">
+                                        <p><span className="text-emerald-400">Think of it like:</span> A recipe with step-by-step instructions</p>
+                                        <p><span className="text-emerald-400">What it does:</span> Takes a number and returns Fibonacci value</p>
+                                        <p><span className="text-emerald-400">Analogy:</span> Like counting rabbits each generation 🐰</p>
+                                    </div>
+                                )}
+                                {activeMode === 1 && (
+                                    <div className="space-y-2 text-muted-foreground">
+                                        <p><span className="text-blue-400">Key Concept:</span> Recursion — function calling itself</p>
+                                        <p><span className="text-blue-400">Time Complexity:</span> O(2^n) — exponential</p>
+                                        <p><span className="text-blue-400">Important:</span> Base case prevents infinite recursion</p>
+                                    </div>
+                                )}
+                                {activeMode === 2 && (
+                                    <div className="space-y-2 text-muted-foreground">
+                                        <p><span className="text-amber-400">Approach:</span> Recursive decomposition with overlapping subproblems</p>
+                                        <p><span className="text-amber-400">Optimization:</span> Memoization reduces to O(n) time</p>
+                                        <p><span className="text-amber-400">Follow-up:</span> Iterative approach uses O(1) space</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
             </section>
 
-            {/* =============================================
-                STATS
-               ============================================= */}
             <section className="py-24 relative z-10 border-y border-white/[0.04]">
                 <div className="max-w-5xl mx-auto px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                         {[
-                            { value: 5, suffix: '+', label: 'Languages' },
-                            { value: 3, suffix: '', label: 'Learning Modes' },
-                            { value: 99, suffix: '%', label: 'Accuracy' },
-                            { value: 500, suffix: 'ms', label: 'Avg Response' },
+                            { value: 5, suffix: '+', label: 'Languages', icon: Globe },
+                            { value: 3, suffix: '', label: 'Learning Modes', icon: BookOpen },
+                            { value: 99, suffix: '%', label: 'Accuracy', icon: Cpu },
+                            { value: 500, suffix: 'ms', label: 'Avg Response', icon: Clock },
                         ].map((stat, i) => (
                             <RevealText key={i} delay={0.1 * i}>
-                                <div className="space-y-2">
+                                <div className="space-y-3">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center mx-auto mb-2">
+                                        <stat.icon className="w-5 h-5 text-primary" />
+                                    </div>
                                     <div className="text-4xl md:text-5xl font-black tracking-tight gradient-text">
                                         <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                                     </div>
@@ -571,15 +625,22 @@ export default function Page() {
                 </div>
             </section>
 
-            {/* =============================================
-                CTA
-               ============================================= */}
             <section className="py-40 relative z-10 overflow-hidden">
                 <div className="absolute inset-0 pointer-events-none">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-violet-600/10 blur-[120px]" />
                 </div>
                 <div className="max-w-4xl mx-auto px-6 text-center relative z-20">
                     <RevealText>
+                        {/* Social proof */}
+                        <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl mb-10">
+                            <div className="flex -space-x-2">
+                                {[...'🧑‍💻👩‍💻👨‍💻'].map((e, i) => (
+                                    <span key={i} className="text-lg">{e}</span>
+                                ))}
+                            </div>
+                            <span className="text-xs text-muted-foreground">Trusted by students at GLA University</span>
+                        </div>
+
                         <h2 className="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-[1.1]">
                             Ready to level
                             <br />
@@ -599,19 +660,110 @@ export default function Page() {
             </section>
 
             {/* =============================================
+                FAQ
+               ============================================= */}
+            <section id="faq" className="py-32 relative z-10">
+                <div className="max-w-3xl mx-auto px-6">
+                    <RevealText className="text-center mb-16">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">FAQ</p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            Common <span className="gradient-text">questions.</span>
+                        </h2>
+                    </RevealText>
+
+                    <div className="space-y-3">
+                        {[
+                            { q: 'What programming languages are supported?', a: 'We support Python, JavaScript, Java, C, and C++ with more languages coming soon.' },
+                            { q: 'Is the tool free to use?', a: 'Yes! AI Code Explain is completely free for students and developers. Sign up and start analyzing code immediately.' },
+                            { q: 'How accurate are the AI explanations?', a: 'Our AI is powered by LLaMA 3.3 via Groq, providing highly accurate explanations with 99%+ accuracy on standard code patterns.' },
+                            { q: 'Can I use it for exam preparation?', a: 'Absolutely! The Exam Prep mode is specifically designed to highlight key concepts, definitions, and important patterns commonly asked in exams.' },
+                            { q: 'How does the optimization feature work?', a: 'Our AI analyzes your code and suggests refactored versions with improved time/space complexity, cleaner syntax, and best practices.' },
+                        ].map((faq, i) => (
+                            <div key={i} className="glass-card rounded-xl overflow-hidden">
+                                <button
+                                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                                    className="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-colors"
+                                    aria-expanded={openFaq === i}
+                                >
+                                    <span className="font-medium text-sm pr-4">{faq.q}</span>
+                                    {openFaq === i ? (
+                                        <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                    ) : (
+                                        <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                    )}
+                                </button>
+                                <AnimatePresence>
+                                    {openFaq === i && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+                                                {faq.a}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* =============================================
                 FOOTER
                ============================================= */}
-            <footer className="border-t border-white/[0.04] py-10 relative z-10">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center">
-                            <Terminal className="w-3.5 h-3.5 text-white" />
+            <footer className="border-t border-white/[0.04] py-16 relative z-10">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="grid md:grid-cols-4 gap-10 mb-12">
+                        {/* Brand */}
+                        <div className="md:col-span-1">
+                            <div className="flex items-center gap-2.5 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center">
+                                    <Terminal className="w-4 h-4 text-white" />
+                                </div>
+                                <span className="text-base font-bold">AI Code Explain</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Understand any code with AI-powered explanations. Built for students and developers.
+                            </p>
                         </div>
-                        <span className="text-sm font-semibold text-foreground/80">AI Code Explain</span>
+                        {/* Links */}
+                        {[
+                            { title: 'Product', links: [{ label: 'Features', href: '#features' }, { label: 'How it Works', href: '#how-it-works' }, { label: 'Modes', href: '#modes' }] },
+                            { title: 'Resources', links: [{ label: 'FAQ', href: '#faq' }, { label: 'GitHub', href: 'https://github.com/ask8962/automated-code-explanation-system' }] },
+                            { title: 'Team', links: [{ label: 'Anukalp', href: '#' }, { label: 'Nishant', href: '#' }, { label: 'Prince', href: '#' }, { label: 'Utpal', href: '#' }, { label: 'Jatin', href: '#' }] },
+                        ].map((col, i) => (
+                            <div key={i}>
+                                <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/70 mb-4">{col.title}</h4>
+                                <ul className="space-y-2.5">
+                                    {col.links.map((link, j) => (
+                                        <li key={j}>
+                                            <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                                {link.label}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
                     </div>
-                    <p className="text-xs text-muted-foreground text-center md:text-right">
-                        © 2024 GLA University Mini Project • Built by Anukalp, Nishant, Prince, Utpal, Jatin
-                    </p>
+                    {/* Bottom bar */}
+                    <div className="border-t border-white/[0.04] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-xs text-muted-foreground">
+                            © 2024 GLA University Mini Project • Built with <Heart className="w-3 h-3 inline text-red-400" /> by the team
+                        </p>
+                        <button
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label="Scroll to top"
+                        >
+                            Back to top
+                            <ChevronUp className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
                 </div>
             </footer>
         </div>
