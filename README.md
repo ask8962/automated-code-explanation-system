@@ -36,6 +36,7 @@ This project was developed as a Mini Project for the B.Tech CSE program at **GLA
 | **Nishant Singh** | 47 | 2315001492 | AA |
 | **Prince Kumar** | 54 | 2315001678 | AA |
 | **Utpal Kumar** | 69 | 2315002369 | AA |
+| **Jatin Chauhan** | 37 | 2315001014 | AA |
 
 ## 🚀 Getting Started
 
