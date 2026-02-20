@@ -88,6 +88,39 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
     return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
 }
 
+function TypewriterText({ words, className }: { words: string[]; className?: string }) {
+    const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    const [displayText, setDisplayText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const currentWord = words[currentWordIndex];
+        const timeout = setTimeout(() => {
+            if (!isDeleting) {
+                setDisplayText(currentWord.slice(0, displayText.length + 1));
+                if (displayText.length === currentWord.length) {
+                    setTimeout(() => setIsDeleting(true), 2000);
+                    return;
+                }
+            } else {
+                setDisplayText(currentWord.slice(0, displayText.length - 1));
+                if (displayText.length === 0) {
+                    setIsDeleting(false);
+                    setCurrentWordIndex((prev) => (prev + 1) % words.length);
+                }
+            }
+        }, isDeleting ? 50 : 100);
+        return () => clearTimeout(timeout);
+    }, [displayText, isDeleting, currentWordIndex, words]);
+
+    return (
+        <span className={className}>
+            {displayText}
+            <span className="animate-pulse">|</span>
+        </span>
+    );
+}
+
 /* =============================================
    MAIN LANDING PAGE
    ============================================= */
@@ -143,8 +176,8 @@ export default function Page() {
                 NAVIGATION
                ============================================= */}
             <nav className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${scrolled
-                    ? 'border-white/[0.08] bg-background/80 backdrop-blur-3xl shadow-lg shadow-black/5'
-                    : 'border-white/[0.04] bg-background/50 backdrop-blur-2xl'
+                ? 'border-white/[0.08] bg-background/80 backdrop-blur-3xl shadow-lg shadow-black/5'
+                : 'border-white/[0.04] bg-background/50 backdrop-blur-2xl'
                 }`}>
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group">
@@ -245,15 +278,25 @@ export default function Page() {
                         <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight mb-8 leading-[1.05]">
                             Understand code
                             <br />
-                            <span className="gradient-text">in seconds.</span>
+                            <TypewriterText
+                                words={['in seconds.', 'with AI.', 'effortlessly.']}
+                                className="gradient-text"
+                            />
                         </h1>
                     </RevealText>
 
                     <RevealText delay={0.35}>
-                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-14 leading-relaxed font-light">
+                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed font-light">
                             Paste any code snippet and get instant AI-powered explanations,
                             complexity analysis, and performance optimizations.
                         </p>
+                    </RevealText>
+
+                    <RevealText delay={0.4}>
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] mb-8">
+                            <kbd className="px-2 py-0.5 rounded bg-white/[0.08] text-[11px] font-mono font-medium text-muted-foreground">⌘V</kbd>
+                            <span className="text-xs text-muted-foreground">Paste your code to get started</span>
+                        </div>
                     </RevealText>
 
                     <RevealText delay={0.45}>
