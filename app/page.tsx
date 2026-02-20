@@ -486,23 +486,33 @@ export default function Page() {
                         </h2>
                     </RevealText>
 
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {[
-                            { step: "01", title: "Paste Your Code", desc: "Drop any code snippet — Python, Java, JS, C, or C++. Select your preferred language.", icon: Terminal },
-                            { step: "02", title: "Choose a Mode", desc: "Beginner, Exam, or Interview — get explanations tailored to your exact needs.", icon: Layers },
-                            { step: "03", title: "Get AI Insights", desc: "Receive step-by-step breakdown, complexity analysis, key concepts, and optimization.", icon: Sparkles },
-                        ].map((item, i) => (
-                            <FloatingCard key={i} delay={0.15 * i}>
-                                <div className="relative glass-card p-8 rounded-2xl h-full">
-                                    <div className="text-6xl font-black text-white/[0.03] absolute top-4 right-6 select-none">{item.step}</div>
-                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-6">
-                                        <item.icon className="w-5 h-5 text-primary" />
+                    <div className="relative">
+                        {/* Connecting line (desktop only) */}
+                        <div className="hidden md:block absolute top-[3.25rem] left-[calc(16.67%+1.25rem)] right-[calc(16.67%+1.25rem)] h-px bg-gradient-to-r from-violet-500/30 via-indigo-500/30 to-cyan-500/30" />
+
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {[
+                                { step: "01", title: "Paste Your Code", desc: "Drop any code snippet — Python, Java, JS, C, or C++. Select your preferred language.", icon: Terminal, color: "from-violet-500 to-violet-600" },
+                                { step: "02", title: "Choose a Mode", desc: "Beginner, Exam, or Interview — get explanations tailored to your exact needs.", icon: Layers, color: "from-indigo-500 to-indigo-600" },
+                                { step: "03", title: "Get AI Insights", desc: "Receive step-by-step breakdown, complexity analysis, key concepts, and optimization.", icon: Sparkles, color: "from-cyan-500 to-cyan-600" },
+                            ].map((item, i) => (
+                                <FloatingCard key={i} delay={0.15 * i}>
+                                    <div className="relative glass-card p-8 rounded-2xl h-full text-center">
+                                        {/* Step number badge */}
+                                        <div className="relative mx-auto mb-6">
+                                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto shadow-lg`}>
+                                                <item.icon className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                                                <span className="text-[10px] font-bold text-primary">{item.step}</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-3 tracking-tight">{item.title}</h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                                     </div>
-                                    <h3 className="text-xl font-bold mb-3 tracking-tight">{item.title}</h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                                </div>
-                            </FloatingCard>
-                        ))}
+                                </FloatingCard>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
