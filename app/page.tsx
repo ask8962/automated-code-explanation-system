@@ -138,11 +138,11 @@ export default function Page() {
     }, []);
 
     const features = [
-        { icon: Code2, title: "Multi-Language", desc: "Python, JavaScript, Java, C, C++ — all supported out of the box.", span: "md:col-span-1" },
-        { icon: Zap, title: "Instant Analysis", desc: "Get step-by-step explanations with time and space complexity in seconds.", span: "md:col-span-1" },
-        { icon: Sparkles, title: "AI Optimization", desc: "Auto-refactor your code for better performance with one click.", span: "md:col-span-1" },
-        { icon: BookOpen, title: "Three Learning Modes", desc: "Beginner-friendly, exam prep, or technical interview — pick your style.", span: "md:col-span-2" },
-        { icon: Share2, title: "Export & Share", desc: "Download explanations as PDF or copy to clipboard instantly.", span: "md:col-span-1" },
+        { icon: Code2, title: "Multi-Language", desc: "Python, JavaScript, Java, C, C++ — all supported out of the box.", span: "md:col-span-1", iconBg: "from-blue-500/20 to-blue-500/5", iconColor: "text-blue-400" },
+        { icon: Zap, title: "Instant Analysis", desc: "Get step-by-step explanations with time and space complexity in seconds.", span: "md:col-span-1", iconBg: "from-amber-500/20 to-amber-500/5", iconColor: "text-amber-400" },
+        { icon: Sparkles, title: "AI Optimization", desc: "Auto-refactor your code for better performance with one click.", span: "md:col-span-1", iconBg: "from-violet-500/20 to-violet-500/5", iconColor: "text-violet-400" },
+        { icon: BookOpen, title: "Three Learning Modes", desc: "Beginner-friendly, exam prep, or technical interview — pick your style.", span: "md:col-span-2", iconBg: "from-emerald-500/20 to-emerald-500/5", iconColor: "text-emerald-400" },
+        { icon: Share2, title: "Export & Share", desc: "Download explanations as PDF or copy to clipboard instantly.", span: "md:col-span-1", iconBg: "from-cyan-500/20 to-cyan-500/5", iconColor: "text-cyan-400" },
     ];
 
     const modes = [
@@ -456,12 +456,16 @@ export default function Page() {
                     <div className="grid md:grid-cols-3 gap-4">
                         {features.map((f, i) => (
                             <FloatingCard key={i} delay={0.1 * i} className={`${f.span}`}>
-                                <div className="glass-card h-full p-7 rounded-2xl group cursor-default">
-                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                                        <f.icon className="w-5 h-5 text-primary" />
+                                <div className="glass-card gradient-border h-full p-7 rounded-2xl group cursor-default relative overflow-hidden">
+                                    {/* Shimmer overlay */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent animate-shimmer" />
                                     </div>
-                                    <h3 className="text-lg font-semibold mb-2 tracking-tight">{f.title}</h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+                                    <div className={`relative w-11 h-11 rounded-xl bg-gradient-to-br ${f.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                                        <f.icon className={`w-5 h-5 ${f.iconColor}`} />
+                                    </div>
+                                    <h3 className="relative text-lg font-semibold mb-2 tracking-tight">{f.title}</h3>
+                                    <p className="relative text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
                                 </div>
                             </FloatingCard>
                         ))}
