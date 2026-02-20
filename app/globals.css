@@ -489,3 +489,74 @@ html {
     grid-template-columns: 1fr;
   }
 }
+
+/* =============================================
+   LIGHT MODE OVERRIDES
+   ============================================= */
+.light .glass {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.light .glass-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow:
+    0 0 30px rgba(139, 92, 246, 0.08),
+    0 10px 40px -10px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.light .glass-input {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.light .glass-input:focus {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12), 0 0 15px rgba(139, 92, 246, 0.08);
+}
+
+.light .gradient-text {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 30%, #4f46e5 60%, #7c3aed 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 6s ease-in-out infinite;
+}
+
+.light .glow-sm {
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.08), 0 0 20px rgba(139, 92, 246, 0.04);
+}
+
+.light .glow-md {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.1), 0 0 40px rgba(139, 92, 246, 0.06);
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.light ::selection {
+  background: hsl(252 87% 55% / 0.2);
+  color: #1a1a2e;
+}
+
+.light .skeleton-shimmer {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.light .skeleton-shimmer::after {
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.08), transparent);
+}
