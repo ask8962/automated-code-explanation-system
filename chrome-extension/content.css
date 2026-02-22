@@ -1,0 +1,195 @@
+/* content.css */
+
+.ai-explain-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    /* Adjust if it conflicts with GitHub's own copy button */
+    background-color: #6366f1;
+    /* Indigo from Tailwind */
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color 0.2s;
+    font-family: inherit;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.ai-explain-btn:hover {
+    background-color: #4f46e5;
+}
+
+.ai-explain-btn:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Modal Styling */
+#ai-explain-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.ai-modal-content {
+    background-color: #0f172a;
+    /* Slate-900 */
+    color: #f1f5f9;
+    margin: 5% auto;
+    padding: 24px;
+    border: 1px solid #334155;
+    width: 65%;
+    max-width: 850px;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    max-height: 85vh;
+    overflow-y: auto;
+    font-family: system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+}
+
+.ai-modal-header h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #818cf8;
+    /* Indigo-400 */
+    border-bottom: 1px solid #334155;
+    padding-bottom: 15px;
+}
+
+/* Custom Card Styling matching Next.js App */
+.ai-overview-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+.ai-overview-card h4 {
+    margin: 0 0 8px 0;
+    color: #f8fafc;
+}
+
+.ai-overview-card p {
+    margin: 0;
+    color: #cbd5e1;
+}
+
+.ai-steps-container h4,
+.ai-concepts-container h4 {
+    margin: 0 0 16px 0;
+    color: #e2e8f0;
+}
+
+.ai-step-card {
+    background: #1e293b;
+    border-left: 4px solid #6366f1;
+    /* Indigo brand line */
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    border-radius: 4px 8px 8px 4px;
+}
+
+.ai-step-header {
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+}
+
+.ai-step-body {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.ai-concepts-container {
+    margin-bottom: 24px;
+}
+
+.ai-concept-item {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+.ai-concept-item strong {
+    color: #818cf8;
+}
+
+.ai-complexity-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ai-complexity-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.ai-complexity-card.time {
+    border-top: 3px solid #f59e0b;
+    /* Amber */
+}
+
+.ai-complexity-card.space {
+    border-top: 3px solid #10b981;
+    /* Emerald */
+}
+
+.ai-comp-title {
+    color: #94a3b8;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.ai-comp-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #f8fafc;
+    margin-bottom: 4px;
+    font-family: monospace;
+}
+
+.ai-comp-desc {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.ai-close-btn {
+    color: #94a3b8;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    margin-top: -5px;
+}
+
+.ai-close-btn:hover,
+.ai-close-btn:focus {
+    color: #f8fafc;
+    text-decoration: none;
+    cursor: pointer;
+}
