@@ -108,7 +108,7 @@ export default function DashboardPage() {
       {/* Subtle ambient glow */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-violet-600/[0.04] rounded-full blur-[120px] pointer-events-none" />
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -122,109 +122,133 @@ export default function DashboardPage() {
           </p>
         </motion.div>
 
-        <div className="space-y-6">
-          {/* Code Input */}
-          <CodeInput onExplain={handleExplain} isLoading={isLoading} />
+        <div className="grid lg:grid-cols-2 gap-8 items-start">
+          {/* Left Column: Code Input & Actions */}
+          <div className="space-y-6 sticky top-24">
+            {/* Code Input */}
+            <CodeInput onExplain={handleExplain} isLoading={isLoading} />
 
-          {/* Loading State */}
-          <AnimatePresence>
-            {isLoading && !explanationData && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ExplanationSkeleton />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Optimize Action */}
-          <AnimatePresence>
-            {!isLoading && explanationData && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="flex justify-end"
-              >
-                <Button
-                  onClick={handleVisualize}
-                  disabled={isGeneratingFlowchart}
-                  className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-9 px-5 text-sm"
+            {/* Optimize / Visualize Actions */}
+            <AnimatePresence>
+              {!isLoading && (explanationData || optimizationData || flowchartData) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex justify-end gap-3"
                 >
-                  {isGeneratingFlowchart ? (
-                    <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                  ) : (
-                    <GitBranch className="w-3.5 h-3.5 mr-2" />
-                  )}
-                  Visualize Flow
-                </Button>
-                <Button
-                  onClick={handleOptimize}
-                  disabled={isOptimizing}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-9 px-5 text-sm"
+                  <Button
+                    onClick={handleVisualize}
+                    disabled={isGeneratingFlowchart}
+                    className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-10 px-5 text-sm w-full"
+                  >
+                    {isGeneratingFlowchart ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <GitBranch className="w-4 h-4 mr-2" />
+                    )}
+                    Visualize Flow
+                  </Button>
+                  <Button
+                    onClick={handleOptimize}
+                    disabled={isOptimizing}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-semibold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-10 px-5 text-sm w-full"
+                  >
+                    {isOptimizing ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Zap className="w-4 h-4 mr-2" />
+                    )}
+                    Optimize Code
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Right Column: Results Panel */}
+          <div className="space-y-6">
+            {/* Empty State */}
+            <AnimatePresence>
+              {!isLoading && !explanationData && !optimizationData && !flowchartData && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="h-[500px] flex items-center justify-center border border-white/[0.04] rounded-2xl bg-white/[0.01] border-dashed"
                 >
-                  {isOptimizing ? (
-                    <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                  ) : (
-                    <Zap className="w-3.5 h-3.5 mr-2" />
-                  )}
-                  Optimize Code
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <div className="text-center text-muted-foreground">
+                    <Sparkles className="w-10 h-10 mx-auto mb-4 opacity-20" />
+                    <p className="font-medium text-foreground/50">AI output will appear here</p>
+                    <p className="text-xs mt-1 opacity-60">Paste code and click Explain to start</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Flowchart Panel */}
-          <AnimatePresence>
-            {!isLoading && showFlowchart && flowchartData && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-              >
-                <FlowchartPanel
-                  data={flowchartData}
-                  onRegenerate={() => generateFlowchart(code, language)}
-                  isRegenerating={isGeneratingFlowchart}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {/* Loading State */}
+            <AnimatePresence>
+              {isLoading && !explanationData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ExplanationSkeleton />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Optimization Panel */}
-          <AnimatePresence>
-            {!isLoading && showOptimization && optimizationData && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-              >
-                <OptimizationPanel data={optimizationData} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {/* Flowchart Panel */}
+            <AnimatePresence>
+              {!isLoading && showFlowchart && flowchartData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <FlowchartPanel
+                    data={flowchartData}
+                    onRegenerate={() => generateFlowchart(code, language)}
+                    isRegenerating={isGeneratingFlowchart}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Explanation Panel */}
-          <AnimatePresence>
-            {!isLoading && explanationData && !showOptimization && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4 }}
-              >
-                <CodeExplanationPanel
-                  data={explanationData}
-                  onCopy={handleCopyExplanation}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {/* Optimization Panel */}
+            <AnimatePresence>
+              {!isLoading && showOptimization && optimizationData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <OptimizationPanel data={optimizationData} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Explanation Panel */}
+            <AnimatePresence>
+              {!isLoading && explanationData && !showOptimization && !showFlowchart && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <CodeExplanationPanel
+                    data={explanationData}
+                    onCopy={handleCopyExplanation}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </main>
     </div>

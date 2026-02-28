@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Explainer</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            width: 350px;
+            padding: 15px;
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px;
+            font-family: monospace;
+            box-sizing: border-box;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #4f46e5;
+        }
+        button:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #1e293b;
+            border-radius: 6px;
+            font-size: 13px;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h2>✨ Code Explainer</h2>
+    <p style="font-size: 13px; color: #94a3b8; margin-top: -5px;">Paste code here or click the button injected on GitHub.</p>
+    
+    <textarea id="codeInput" placeholder="Paste your code snippet here..."></textarea>
+    
+    <button id="explainBtn">Explain Code</button>
+    
+    <div id="result"></div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

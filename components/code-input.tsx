@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Copy, Check, Code2, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Editor from '@monaco-editor/react';
 
 interface CodeInputProps {
   onExplain: (code: string, language: string, mode: string) => void;
@@ -30,11 +31,9 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
   const [language, setLanguage] = useState('python');
   const [mode, setMode] = useState('beginner');
   const [copied, setCopied] = useState(false);
-  const [lineCount, setLineCount] = useState(1);
 
   const handleCodeChange = (value: string) => {
     setCode(value);
-    setLineCount(value.split('\n').length);
   };
 
   const handleExplain = () => {
@@ -118,30 +117,30 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
         </div>
 
         {/* Code Editor Area */}
-        <div className="flex">
-          {/* Line Numbers */}
-          <div className="py-4 px-3 text-right select-none border-r border-white/[0.04] bg-white/[0.01] min-w-[3rem]">
-            {Array.from({ length: Math.max(lineCount, 12) }, (_, i) => (
-              <div key={i} className="text-[11px] font-mono text-white/10 leading-[1.7]">
-                {i + 1}
-              </div>
-            ))}
-          </div>
-
-          {/* Textarea */}
-          <textarea
+        <div className="h-[400px] w-full border-y border-white/[0.04] bg-[#1e1e1e]">
+          <Editor
+            height="100%"
+            language={language}
+            theme="vs-dark"
             value={code}
-            onChange={(e) => handleCodeChange(e.target.value)}
-            placeholder="// Paste your code here..."
-            spellCheck={false}
-            className="flex-1 min-h-[280px] px-4 py-4 bg-transparent text-foreground font-mono text-sm leading-[1.7] focus:outline-none resize-none placeholder:text-white/10"
+            onChange={(value) => handleCodeChange(value || '')}
+            options={{
+              minimap: { enabled: false },
+              fontSize: 14,
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              padding: { top: 16, bottom: 16 },
+              scrollBeyondLastLine: false,
+              smoothScrolling: true,
+              cursorBlinking: 'smooth',
+            }}
+            loading={<div className="flex items-center justify-center h-full text-white/50 text-sm">Loading editor...</div>}
           />
         </div>
 
         {/* Action Bar */}
         <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.04] bg-white/[0.02]">
           <div className="text-[10px] text-muted-foreground font-mono">
-            {code.length > 0 ? `${lineCount} lines · ${code.length} chars` : 'Ready'}
+            {code.length > 0 ? `${code.split('\n').length} lines · ${code.length} chars` : 'Ready'}
           </div>
 
           <Button
