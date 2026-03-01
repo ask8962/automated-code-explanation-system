@@ -1,5 +1,5 @@
 import React from 'react';
-import { db } from '@/lib/firebase';
+import { initializeFirebase } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -11,6 +11,13 @@ export const revalidate = 60; // Revalidate cache every minute if needed
 
 async function getExplanation(id: string) {
     try {
+        const { db } = await initializeFirebase();
+
+        if (!db) {
+            console.error("Firebase DB not initialized.");
+            return null;
+        }
+
         const docRef = doc(db, 'codeExplanations', id);
         const docSnap = await getDoc(docRef);
 
