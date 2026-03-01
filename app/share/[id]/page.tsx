@@ -1,5 +1,5 @@
 import React from 'react';
-import { initializeFirebase } from '@/lib/firebase';
+import { getServerDb } from '@/lib/firebase-server';
 import { doc, getDoc } from 'firebase/firestore';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -11,7 +11,7 @@ export const revalidate = 60; // Revalidate cache every minute if needed
 
 async function getExplanation(id: string) {
     try {
-        const { db } = await initializeFirebase();
+        const db = getServerDb();
 
         if (!db) {
             console.error("Firebase DB not initialized.");
