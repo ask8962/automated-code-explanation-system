@@ -12,7 +12,7 @@ import { ExplanationData } from '@/hooks/use-generate-explanation';
 
 interface Props {
   data: ExplanationData;
-  onCopy: () => void;
+  onCopy?: () => void;
   docId?: string | null;
 }
 
@@ -32,7 +32,7 @@ export default function CodeExplanationPanel({ data, onCopy, docId }: Props) {
   };
 
   const handleCopy = () => {
-    onCopy();
+    if (onCopy) onCopy();
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

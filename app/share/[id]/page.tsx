@@ -112,7 +112,6 @@ export default async function SharedExplanationPage({ params }: { params: { id: 
                     <div className="space-y-6">
                         <CodeExplanationPanel
                             data={data.explanationData}
-                            onCopy={() => { }}
                         />
                     </div>
 
