@@ -26,7 +26,7 @@ export default function DashboardPage() {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState<Language>('python');
   const [mode, setMode] = useState<ExplanationMode>('beginner');
-  const { generateExplanation, isLoading, explanationData } = useGenerateExplanation();
+  const { generateExplanation, isLoading, explanationData, currentDocId } = useGenerateExplanation();
   const { optimizeCode, isOptimizing, optimizationData } = useOptimizeCode();
   const { generateFlowchart, isGenerating: isGeneratingFlowchart, flowchartData, clearFlowchart } = useGenerateFlowchart();
   const [showOptimization, setShowOptimization] = useState(false);
@@ -244,6 +244,7 @@ export default function DashboardPage() {
                   <CodeExplanationPanel
                     data={explanationData}
                     onCopy={handleCopyExplanation}
+                    docId={currentDocId}
                   />
                 </motion.div>
               )}

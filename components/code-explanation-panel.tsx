@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Copy, Check, Download, ChevronDown, ChevronUp, Sparkles,
-  Clock, HardDrive, BookOpen, Code2, Lightbulb, Layers
+  Clock, HardDrive, BookOpen, Code2, Lightbulb, Layers, Share2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,11 +13,13 @@ import { ExplanationData } from '@/hooks/use-generate-explanation';
 interface Props {
   data: ExplanationData;
   onCopy: () => void;
+  docId?: string | null;
 }
 
-export default function CodeExplanationPanel({ data, onCopy }: Props) {
+export default function CodeExplanationPanel({ data, onCopy, docId }: Props) {
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set([0]));
   const [copied, setCopied] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   const toggleStep = (index: number) => {
     const newSet = new Set(expandedSteps);
@@ -105,6 +107,22 @@ export default function CodeExplanationPanel({ data, onCopy }: Props) {
             <Download className="w-3 h-3 mr-1" />
             PDF
           </Button>
+          {docId && (
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/share/${docId}`);
+                setShareCopied(true);
+                toast.success('Share link copied!');
+                setTimeout(() => setShareCopied(false), 2000);
+              }}
+              variant="ghost"
+              size="sm"
+              className="h-7 text-[11px] text-violet-400 hover:text-violet-300 hover:bg-violet-500/10 rounded-lg border border-violet-500/20"
+            >
+              {shareCopied ? <Check className="w-3 h-3 mr-1" /> : <Share2 className="w-3 h-3 mr-1" />}
+              {shareCopied ? 'Copied' : 'Share'}
+            </Button>
+          )}
         </div>
       </div>
 

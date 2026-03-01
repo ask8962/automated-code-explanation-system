@@ -24,6 +24,7 @@ const modes = [
   { id: 'beginner', name: 'Beginner', emoji: '🎓' },
   { id: 'exam', name: 'Exam Prep', emoji: '📝' },
   { id: 'interview', name: 'Interview', emoji: '💼' },
+  { id: 'roast', name: 'Roast My Code', emoji: '🧐' },
 ];
 
 export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
@@ -158,7 +159,7 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
       <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
         <Code2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
         <p className="text-xs text-muted-foreground leading-relaxed">
-          <span className="text-foreground/60 font-medium">Tip:</span> Beginner mode uses analogies, Exam mode highlights key concepts, and Interview mode focuses on approach & complexity.
+          <span className="text-foreground/60 font-medium">Tip:</span> Beginner mode uses analogies, Interview mode focuses on approach. Try <span className="text-amber-400 font-semibold">Roast My Code</span> for a brutally honest Senior Engineer code review.
         </p>
       </div>
     </motion.div>

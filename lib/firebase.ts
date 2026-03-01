@@ -15,13 +15,13 @@ export const initializeFirebase = async () => {
 
       // ✅ DIRECT FIREBASE CONFIG
       const firebaseConfig = {
-        apiKey: "AIzaSyCh-3D0NleJNxnQ-UnM0GP2QkKTvXHTjFU",
-        authDomain: "lifeos-ai-f1557.firebaseapp.com",
-        projectId: "lifeos-ai-f1557",
-        storageBucket: "lifeos-ai-f1557.firebasestorage.app",
-        messagingSenderId: "540508248849",
-        appId: "1:540508248849:web:4180820c777ed661500ab0",
-        measurementId: "G-WC1HQ5LQMN"
+        apiKey: "AIzaSyB8gA0wRI1YyKwnQk-usRjh-KbpGnBOxu4",
+        authDomain: "gla-code-explain.firebaseapp.com",
+        projectId: "gla-code-explain",
+        storageBucket: "gla-code-explain.firebasestorage.app",
+        messagingSenderId: "448137426080",
+        appId: "1:448137426080:web:50cf6851892ec8cc2a05c5",
+        measurementId: "G-NL8DV1VW35"
       };
 
       const app = initializeApp(firebaseConfig);

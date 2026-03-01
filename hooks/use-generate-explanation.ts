@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { db } from '@/lib/firebase';
+import { initializeFirebase } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface GenerateExplanationParams {
@@ -23,6 +23,7 @@ export interface ExplanationData {
 export function useGenerateExplanation() {
   const [isLoading, setIsLoading] = useState(false);
   const [explanationData, setExplanationData] = useState<ExplanationData | null>(null);
+  const [currentDocId, setCurrentDocId] = useState<string | null>(null);
 
   const generateExplanation = async (params: GenerateExplanationParams) => {
     setIsLoading(true);
@@ -48,14 +49,18 @@ export function useGenerateExplanation() {
 
       // Save to Firestore history
       try {
-        await addDoc(collection(db, 'codeExplanations'), {
-          userId: params.userId,
-          code: params.code,
-          language: params.language,
-          mode: params.mode,
-          explanationData: data, // Store the full object
-          createdAt: serverTimestamp(),
-        });
+        const { db } = await initializeFirebase();
+        if (db) {
+          const docRef = await addDoc(collection(db, 'codeExplanations'), {
+            userId: params.userId,
+            code: params.code,
+            language: params.language,
+            mode: params.mode,
+            explanationData: data, // Store the full object
+            createdAt: serverTimestamp(),
+          });
+          setCurrentDocId(docRef.id);
+        }
       } catch (error) {
         console.error('Failed to save to history:', error);
       }
@@ -73,5 +78,6 @@ export function useGenerateExplanation() {
     generateExplanation,
     isLoading,
     explanationData,
+    currentDocId,
   };
 }

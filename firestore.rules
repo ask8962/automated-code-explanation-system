@@ -17,8 +17,11 @@ service cloud.firestore {
       // Allow create if authenticated and the userId matches the auth uid
       allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
       
-      // Allow read, update, delete if the document belongs to the user
-      allow read, update, delete: if isAuthenticated() && isOwner(resource.data.userId);
+      // Allow anyone to read a specific document (for public shared links)
+      allow get: if true;
+      
+      // Allow listing, updating, and deleting only if the document belongs to the user
+      allow list, update, delete: if isAuthenticated() && isOwner(resource.data.userId);
     }
 
     // Default deny for all other collections

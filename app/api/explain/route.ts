@@ -6,6 +6,7 @@ const modePrompts = {
   beginner: 'Explain this code in a simple, beginner-friendly way as if teaching a school student.',
   exam: 'Explain this code focusing on definitions, logic, and key concepts suitable for exam preparation.',
   interview: 'Explain this code focusing on the approach, reasoning, time/space complexity, and problem-solving strategy for interview preparation.',
+  roast: 'ACT AS A STRICT, SENIOR ENGINEER CODE REVIEWER. Brutally roast this code for any bad variable names, inefficient loops, code smells, lack of error handling, or security vulnerabilities. Do not be polite. Be highly critical but provide actionable feedback.',
 };
 
 export async function POST(request: NextRequest) {
