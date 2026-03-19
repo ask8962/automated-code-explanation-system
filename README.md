@@ -106,6 +106,44 @@ The system is available as a **web application**, a **Chrome browser extension**
 └─────────────────────────┴───────────────────────────────────────┘
 ```
 
+## 🌐 Chrome Extension
+
+The Chrome extension brings AI code explanations directly into your browser. It works seamlessly on popular developer websites.
+
+### Supported Websites
+- **GitHub** — Explain code in repositories, pull requests, and gists
+- **LeetCode** — Understand problem solutions and editorial code
+- **StackOverflow** — Get explanations for code snippets in answers
+
+### How It Works
+1. Navigate to any supported website with code blocks
+2. An **"Explain with AI"** button appears next to detected code blocks
+3. Click it to send the code to your hosted backend API
+4. View the explanation in a clean, floating panel right on the page
+
+### Installation (Developer Mode)
+```bash
+# 1. Open Chrome and go to:
+chrome://extensions/
+
+# 2. Enable "Developer mode" (top-right toggle)
+
+# 3. Click "Load unpacked" and select the chrome-extension/ folder
+
+# 4. The extension icon will appear in your toolbar
+```
+
+### Extension Structure
+```
+chrome-extension/
+├── manifest.json      # Chrome Manifest V3 configuration
+├── background.js      # Service worker for API communication
+├── content.js         # Injects "Explain" buttons into web pages
+├── content.css        # Styling for injected UI elements
+├── popup.html         # Extension popup interface
+└── popup.js           # Popup interaction logic
+```
+
 ---
 
 Developed with ❤️ at **GLA University**
