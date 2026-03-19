@@ -186,6 +186,65 @@ vscode-extension/
 4. A **Webview panel** opens beside your code with the AI-generated explanation
 5. Results include structured breakdown, complexity analysis, and optimization tips
 
+## 🚀 Getting Started
+
+Follow these steps to run the project locally.
+
+### Prerequisites
+- **Node.js** v18 or higher
+- **npm** or **yarn** package manager
+- A **Firebase Project** ([Create one here](https://console.firebase.google.com/))
+- A **Groq API Key** ([Get one here](https://console.groq.com/keys))
+
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/ask8962/automated-code-explanation-system.git
+cd automated-code-explanation-system
+```
+
+### Step 2: Install Dependencies
+```bash
+npm install
+# or
+yarn install
+```
+
+### Step 3: Set Up Environment Variables
+Create a `.env.local` file in the root directory by copying the example:
+```bash
+cp .env.example .env.local
+```
+
+Then fill in your credentials:
+```env
+# Firebase Configuration (from Firebase Console > Project Settings)
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+# AI Provider API Key (choose one)
+GROQ_API_KEY=your_groq_api_key
+# OPENAI_API_KEY=your_openai_api_key
+# GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
+```
+
+### Step 4: Configure Firebase
+1. Go to [Firebase Console](https://console.firebase.google.com/) → Your Project
+2. Enable **Authentication** → Sign-in method → **Google**
+3. Create a **Firestore Database** in production mode
+4. Go to **Firestore Database → Rules** tab and paste the contents of `firestore.rules`
+
+### Step 5: Run the Development Server
+```bash
+npm run dev
+```
+
+### Step 6: Open in Browser
+Visit [http://localhost:3000](http://localhost:3000) to see the application running.
+
 ---
 
 Developed with ❤️ at **GLA University**
