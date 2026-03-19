@@ -245,6 +245,118 @@ npm run dev
 ### Step 6: Open in Browser
 Visit [http://localhost:3000](http://localhost:3000) to see the application running.
 
+## 📡 API Endpoints
+
+The web app exposes three main API routes. These are also used by the Chrome and VS Code extensions.
+
+### `POST /api/explain`
+Generates a detailed AI explanation of the provided code.
+
+**Request Body:**
+```json
+{
+  "code": "def bubble_sort(arr):\n  for i in range(len(arr)):\n    for j in range(len(arr)-1):\n      if arr[j] > arr[j+1]:\n        arr[j], arr[j+1] = arr[j+1], arr[j]",
+  "language": "python"
+}
+```
+
+**Response:** Streamed text with structured explanation including purpose, line-by-line breakdown, complexity analysis, and key concepts.
+
+---
+
+### `POST /api/optimize`
+Provides an optimized version of the code with complexity comparison.
+
+**Request Body:**
+```json
+{
+  "code": "<your code here>",
+  "language": "python"
+}
+```
+
+**Response:** Streamed text with optimized code, before/after complexity comparison, and explanation of improvements.
+
+---
+
+### `POST /api/flowchart`
+Generates a Mermaid.js flowchart diagram from the code logic.
+
+**Request Body:**
+```json
+{
+  "code": "<your code here>",
+  "language": "python"
+}
+```
+
+**Response:** Streamed Mermaid diagram syntax that can be rendered as a visual flowchart.
+
+## 📁 Project Structure
+
+```
+automated-code-explanation-system/
+│
+├── app/                          # Next.js App Router
+│   ├── page.tsx                  # Main landing page with code input
+│   ├── layout.tsx                # Root layout with providers
+│   ├── globals.css               # Global styles and Tailwind utilities
+│   ├── providers.tsx             # Theme and context providers
+│   ├── error.tsx                 # Error boundary page
+│   ├── not-found.tsx             # Custom 404 page
+│   ├── api/
+│   │   ├── explain/              # AI code explanation endpoint
+│   │   ├── optimize/             # AI code optimization endpoint
+│   │   └── flowchart/            # AI flowchart generation endpoint
+│   ├── auth/                     # Authentication pages
+│   ├── dashboard/                # User dashboard with history
+│   └── share/                    # Public shared explanation pages
+│
+├── components/                   # Reusable React components
+│   ├── code-input.tsx            # Monaco-based code editor
+│   ├── code-explanation-panel.tsx # Explanation display with markdown
+│   ├── optimization-panel.tsx    # Side-by-side optimization view
+│   ├── flowchart-panel.tsx       # Mermaid flowchart renderer
+│   ├── history-panel.tsx         # Explanation history sidebar
+│   ├── navbar.tsx                # Navigation bar with auth
+│   ├── Scene.tsx                 # 3D hero scene (React Three Fiber)
+│   ├── syntax-highlighter.tsx    # Code syntax highlighting
+│   ├── theme-provider.tsx        # Dark/light mode provider
+│   ├── theme-toggle.tsx          # Theme switcher button
+│   ├── explanation-skeleton.tsx  # Loading skeleton UI
+│   └── ui/                      # Shadcn UI base components
+│
+├── lib/                          # Utility libraries
+│   ├── firebase.ts               # Firebase client initialization
+│   ├── firebase-server.ts        # Firebase admin (server-side)
+│   ├── auth-context.tsx          # Authentication context provider
+│   └── utils.ts                  # Helper utilities (cn, etc.)
+│
+├── hooks/                        # Custom React hooks
+│
+├── chrome-extension/             # Chrome browser extension
+│   ├── manifest.json             # Manifest V3 config
+│   ├── background.js             # Service worker
+│   ├── content.js                # Content script (injects buttons)
+│   ├── content.css               # Content script styles
+│   ├── popup.html                # Extension popup UI
+│   └── popup.js                  # Popup logic
+│
+├── vscode-extension/             # VS Code editor extension
+│   ├── package.json              # Extension manifest
+│   ├── src/extension.ts          # Extension source code
+│   └── dist/extension.js         # Compiled extension
+│
+├── public/                       # Static assets
+├── styles/                       # Additional stylesheets
+├── .env.example                  # Environment variable template
+├── firestore.rules               # Firestore security rules
+├── next.config.mjs               # Next.js configuration
+├── tailwind.config.ts            # Tailwind CSS configuration
+├── tsconfig.json                 # TypeScript configuration
+└── package.json                  # Dependencies and scripts
+```
+
 ---
 
 Developed with ❤️ at **GLA University**
