@@ -7,6 +7,8 @@
 ![Tech](https://img.shields.io/badge/Built%20With-Next.js%2014-black)
 ![AI](https://img.shields.io/badge/AI-Llama%203.3-purple)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+![Node](https://img.shields.io/badge/Node.js-18%2B-339933)
+![Firebase](https://img.shields.io/badge/Firebase-Firestore%20%7C%20Auth-FFCA28)
 
 ---
 
@@ -357,6 +359,49 @@ automated-code-explanation-system/
 └── package.json                  # Dependencies and scripts
 ```
 
+## 👥 Meet the Team
+
+This project was built by a team of B.Tech CSE students at **GLA University** as part of the 3rd Year Mini Project.
+
+| Name | Class Roll No | University Roll No | Section |
+| :--- | :---: | :---: | :---: |
+| **Anukalp Gupta** | 12 | 2315000373 | AA |
+| **Nishant Singh** | 47 | 2315001492 | AA |
+| **Prince Kumar** | 54 | 2315001678 | AA |
+| **Utpal Kumar** | 69 | 2315002369 | AA |
+| **Jatin Chauhan** | 37 | 2315001014 | AA |
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Tips
+- Run `npm run lint` to check for code style issues
+- Test API routes locally before pushing
+- Follow the existing component patterns in `components/`
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **GLA University** — For providing the platform and guidance for this Mini Project
+- **Groq** — For ultra-fast LLM inference with the Llama 3.3 model
+- **Vercel** — For seamless deployment and hosting
+- **Firebase** — For authentication and database services
+- **Shadcn UI** — For the beautiful, accessible component library
+
 ---
 
-Developed with ❤️ at **GLA University**
+<p align="center">
+  Developed with ❤️ by <strong>Anukalp Gupta, Nishant Singh, Prince Kumar, Utpal Kumar, Jatin Chauhan</strong>
+  <br/>
+  <strong>GLA University</strong> • B.Tech CSE • 2025
+</p>
