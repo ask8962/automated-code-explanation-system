@@ -144,6 +144,48 @@ chrome-extension/
 └── popup.js           # Popup interaction logic
 ```
 
+## 💻 VS Code Extension
+
+The VS Code extension lets you explain and optimize code without leaving your editor.
+
+### Commands
+| Command | Description |
+|:--------|:------------|
+| `Explain Code with AI` | Select code → Right-click → Get a detailed AI explanation in a side panel |
+| `Optimize Code with AI` | Select code → Right-click → Get an optimized version with complexity comparison |
+
+### Installation (Development)
+```bash
+# 1. Navigate to the extension directory
+cd vscode-extension
+
+# 2. Install dependencies
+npm install
+
+# 3. Compile TypeScript
+npm run compile
+
+# 4. Press F5 in VS Code to launch the Extension Development Host
+```
+
+### Extension Structure
+```
+vscode-extension/
+├── package.json       # Extension manifest with commands & menus
+├── tsconfig.json      # TypeScript configuration
+├── src/
+│   └── extension.ts   # Main extension logic (activate, commands)
+└── dist/
+    └── extension.js   # Compiled output
+```
+
+### How It Works
+1. **Select** any code in your editor
+2. **Right-click** to open the context menu
+3. Choose **"Explain Code with AI"** or **"Optimize Code with AI"**
+4. A **Webview panel** opens beside your code with the AI-generated explanation
+5. Results include structured breakdown, complexity analysis, and optimization tips
+
 ---
 
 Developed with ❤️ at **GLA University**
