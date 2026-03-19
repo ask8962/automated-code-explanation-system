@@ -1,0 +1,778 @@
+'use client';
+
+import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import { Button } from '@/components/ui/button';
+import {
+    ArrowRight,
+    Code2,
+    Zap,
+    BookOpen,
+    Sparkles,
+    Terminal,
+    ChevronRight,
+    Github,
+    Share2,
+    Lock,
+    Cpu,
+    BarChart3,
+    Layers,
+    Play,
+    Brain,
+    GraduationCap,
+    Briefcase,
+    Menu,
+    X,
+    ChevronUp,
+    ChevronDown,
+    Linkedin,
+    Twitter,
+    Users,
+    Clock,
+    Globe,
+    Heart,
+} from 'lucide-react';
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
+import { ThemeToggle } from '@/components/theme-toggle';
+
+const Scene = dynamic(() => import('@/components/Scene'), { ssr: false });
+
+/* =============================================
+   ANIMATED COMPONENTS
+   ============================================= */
+function RevealText({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+    return (
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 30, filter: 'blur(12px)' }}
+            animate={isInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+            transition={{ duration: 0.9, delay, ease: [0.25, 0.4, 0.25, 1] }}
+            className={className}
+        >
+            {children}
+        </motion.div>
+    );
+}
+
+function FloatingCard({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7, delay, ease: [0.25, 0.4, 0.25, 1] }}
+            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+            className={className}
+        >
+            {children}
+        </motion.div>
+    );
+}
+
+function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: string }) {
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true });
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        if (!isInView) return;
+        let start = 0;
+        const duration = 2000;
+        const startTime = Date.now();
+        const step = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * target));
+            if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    }, [isInView, target]);
+
+    return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+}
+
+function TypewriterText({ words, className }: { words: string[]; className?: string }) {
+    const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    const [displayText, setDisplayText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const currentWord = words[currentWordIndex];
+        const timeout = setTimeout(() => {
+            if (!isDeleting) {
+                setDisplayText(currentWord.slice(0, displayText.length + 1));
+                if (displayText.length === currentWord.length) {
+                    setTimeout(() => setIsDeleting(true), 2000);
+                    return;
+                }
+            } else {
+                setDisplayText(currentWord.slice(0, displayText.length - 1));
+                if (displayText.length === 0) {
+                    setIsDeleting(false);
+                    setCurrentWordIndex((prev) => (prev + 1) % words.length);
+                }
+            }
+        }, isDeleting ? 50 : 100);
+        return () => clearTimeout(timeout);
+    }, [displayText, isDeleting, currentWordIndex, words]);
+
+    return (
+        <span className={className}>
+            {displayText}
+            <span className="animate-pulse">|</span>
+        </span>
+    );
+}
+
+/* =============================================
+   MAIN LANDING PAGE
+   ============================================= */
+export default function Page() {
+    const { scrollYProgress } = useScroll();
+    const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+    const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [activeMode, setActiveMode] = useState(0);
+    const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
+    const features = [
+        { icon: Code2, title: "Multi-Language", desc: "Python, JavaScript, Java, C, C++ — all supported out of the box.", span: "md:col-span-1", iconBg: "from-blue-500/20 to-blue-500/5", iconColor: "text-blue-400" },
+        { icon: Zap, title: "Instant Analysis", desc: "Get step-by-step explanations with time and space complexity in seconds.", span: "md:col-span-1", iconBg: "from-amber-500/20 to-amber-500/5", iconColor: "text-amber-400" },
+        { icon: Sparkles, title: "AI Optimization", desc: "Auto-refactor your code for better performance with one click.", span: "md:col-span-1", iconBg: "from-violet-500/20 to-violet-500/5", iconColor: "text-violet-400" },
+        { icon: BookOpen, title: "Three Learning Modes", desc: "Beginner-friendly, exam prep, or technical interview — pick your style.", span: "md:col-span-2", iconBg: "from-emerald-500/20 to-emerald-500/5", iconColor: "text-emerald-400" },
+        { icon: Share2, title: "Export & Share", desc: "Download explanations as PDF or copy to clipboard instantly.", span: "md:col-span-1", iconBg: "from-cyan-500/20 to-cyan-500/5", iconColor: "text-cyan-400" },
+    ];
+
+    const modes = [
+        { icon: GraduationCap, title: "Beginner", desc: "Simple language with analogies", color: "from-emerald-500/20 to-emerald-500/5", accent: "text-emerald-400", border: "border-emerald-500/20" },
+        { icon: Brain, title: "Exam Prep", desc: "Key concepts & definitions", color: "from-blue-500/20 to-blue-500/5", accent: "text-blue-400", border: "border-blue-500/20" },
+        { icon: Briefcase, title: "Interview", desc: "Approach & complexity focus", color: "from-amber-500/20 to-amber-500/5", accent: "text-amber-400", border: "border-amber-500/20" },
+    ];
+
+    return (
+        <div className="min-h-screen bg-background text-foreground relative overflow-hidden selection:bg-primary/30 selection:text-white">
+
+            {/* Skip to content — accessibility */}
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:font-medium focus:text-sm">
+                Skip to main content
+            </a>
+
+            {/* Scroll Progress */}
+            <motion.div
+                className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
+                style={{
+                    scaleX,
+                    background: 'linear-gradient(90deg, #8b5cf6, #6366f1, #22d3ee)',
+                }}
+            />
+
+            {/* 3D Background */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <Suspense fallback={null}>
+                    <Scene />
+                </Suspense>
+                <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px]" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
+            </div>
+
+            {/* =============================================
+                NAVIGATION
+               ============================================= */}
+            <nav className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${scrolled
+                ? 'border-white/[0.08] bg-background/80 backdrop-blur-3xl shadow-lg shadow-black/5'
+                : 'border-white/[0.04] bg-background/50 backdrop-blur-2xl'
+                }`}>
+                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                    <Link href="/" className="flex items-center gap-3 group">
+                        <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-all duration-300 group-hover:scale-105">
+                            <Terminal className="w-4 h-4 text-white" />
+                            <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                        <span className="font-bold text-lg tracking-tight">AI Code Explain</span>
+                    </Link>
+
+                    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+                        {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'How it Works' }, { href: '#modes', label: 'Modes' }].map((link) => (
+                            <Link key={link.href} href={link.href} className="relative hover:text-foreground transition-colors duration-200 py-1 group">
+                                {link.label}
+                                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full transition-all duration-300 group-hover:w-full" />
+                            </Link>
+                        ))}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        <ThemeToggle />
+                        <Link href="/auth" className="hidden sm:block">
+                            <Button variant="ghost" className="text-sm font-medium hover:bg-white/5 rounded-full">Sign In</Button>
+                        </Link>
+                        <Link href="/auth" className="hidden sm:block">
+                            <Button className="bg-white text-black hover:bg-white/90 shadow-lg shadow-white/10 rounded-full px-6 text-sm font-semibold hover:scale-105 transition-all">
+                                Get Started
+                            </Button>
+                        </Link>
+                        {/* Mobile menu toggle */}
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="md:hidden p-2 rounded-xl hover:bg-white/[0.06] transition-colors"
+                            aria-label="Toggle mobile menu"
+                        >
+                            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Menu */}
+                <AnimatePresence>
+                    {mobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
+                            className="md:hidden border-t border-white/[0.06] overflow-hidden"
+                        >
+                            <div className="px-6 py-4 space-y-1">
+                                {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'How it Works' }, { href: '#modes', label: 'Modes' }].map((link) => (
+                                    <Link
+                                        key={link.href}
+                                        href={link.href}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="block px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/[0.04] rounded-xl transition-all"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))}
+                                <div className="pt-3 border-t border-white/[0.06] mt-3 flex flex-col gap-2">
+                                    <Link href="/auth" onClick={() => setMobileMenuOpen(false)}>
+                                        <Button variant="ghost" className="w-full justify-center text-sm rounded-xl">Sign In</Button>
+                                    </Link>
+                                    <Link href="/auth" onClick={() => setMobileMenuOpen(false)}>
+                                        <Button className="w-full justify-center bg-white text-black hover:bg-white/90 rounded-xl text-sm font-semibold">
+                                            Get Started
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </nav>
+
+            {/* =============================================
+                HERO SECTION
+               ============================================= */}
+            <motion.section
+                className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 px-6"
+                style={{ scale: heroScale }}
+                id="main-content"
+                role="main"
+            >
+                <div className="max-w-5xl mx-auto text-center relative z-10">
+
+                    <RevealText delay={0.1}>
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl mb-8">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span className="text-xs font-medium text-muted-foreground tracking-wider uppercase">Powered by LLaMA 3.3 & Groq</span>
+                        </div>
+                    </RevealText>
+
+                    <RevealText delay={0.2}>
+                        <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight mb-8 leading-[1.05]">
+                            Understand code
+                            <br />
+                            <TypewriterText
+                                words={['in seconds.', 'with AI.', 'effortlessly.']}
+                                className="gradient-text"
+                            />
+                        </h1>
+                    </RevealText>
+
+                    <RevealText delay={0.35}>
+                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                            Paste any code snippet and get instant AI-powered explanations,
+                            complexity analysis, and performance optimizations.
+                        </p>
+                    </RevealText>
+
+                    <RevealText delay={0.4}>
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] mb-8">
+                            <kbd className="px-2 py-0.5 rounded bg-white/[0.08] text-[11px] font-mono font-medium text-muted-foreground">⌘V</kbd>
+                            <span className="text-xs text-muted-foreground">Paste your code to get started</span>
+                        </div>
+                    </RevealText>
+
+                    <RevealText delay={0.45}>
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <Link href="/auth">
+                                <Button size="lg" className="h-14 px-8 rounded-full bg-white text-black hover:bg-white/90 text-base font-semibold shadow-xl shadow-white/10 hover:shadow-white/20 transition-all hover:scale-[1.03] active:scale-[0.98]">
+                                    Start Analyzing
+                                    <ArrowRight className="w-5 h-5 ml-2" />
+                                </Button>
+                            </Link>
+                            <Link href="https://github.com/ask8962/automated-code-explanation-system" target="_blank">
+                                <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] backdrop-blur-md text-base font-medium transition-all hover:scale-[1.03] active:scale-[0.98]">
+                                    <Github className="w-5 h-5 mr-2" />
+                                    View on GitHub
+                                </Button>
+                            </Link>
+                        </div>
+                    </RevealText>
+                </div>
+
+                {/* Hero Visual — Dashboard Preview (Static - Forced Dark Theme) */}
+                <div className="mt-28 w-full max-w-6xl mx-auto relative z-10">
+                    <div className="rounded-2xl border border-white/10 bg-[#0a0a0a] shadow-2xl shadow-violet-500/10 p-1.5 relative overflow-hidden group">
+                        {/* Static glow */}
+                        <div className="absolute -inset-1 bg-gradient-to-r from-violet-600/20 via-indigo-600/10 to-cyan-500/20 rounded-2xl blur-xl opacity-100 pointer-events-none" />
+
+                        {/* Browser Chrome */}
+                        <div className="relative h-10 border-b border-white/10 bg-white/[0.03] flex items-center px-4 gap-2 rounded-t-xl">
+                            <div className="flex gap-1.5">
+                                <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                            </div>
+                            <div className="ml-4 h-5 flex-1 max-w-md rounded-md bg-white/[0.05] hidden md:flex items-center px-3">
+                                <span className="text-[10px] text-gray-400 font-mono">gla-code-aa.vercel.app/dashboard</span>
+                            </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="relative p-6 md:p-8 grid md:grid-cols-2 gap-8 text-white">
+                            {/* Code Side */}
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between text-xs font-mono text-gray-400">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                                        <span className="text-gray-300">fibonacci.py</span>
+                                    </div>
+                                    <span className="px-2 py-0.5 rounded bg-white/10 text-[10px] text-gray-300">Python 3.10</span>
+                                </div>
+                                <div className="p-5 rounded-xl bg-black border border-white/10 font-mono text-sm leading-[1.8] overflow-x-auto shadow-inner">
+                                    <div className="flex">
+                                        <div className="pr-4 text-white/20 select-none text-right text-xs leading-[1.8]">
+                                            1<br />2<br />3<br />4
+                                        </div>
+                                        <div>
+                                            <span className="text-purple-400">def</span> <span className="text-blue-300">fibonacci</span><span className="text-white/60">(</span><span className="text-orange-300">n</span><span className="text-white/60">):</span><br />
+                                            &nbsp;&nbsp;<span className="text-purple-400">if</span> n <span className="text-white/60">{"<="}</span> <span className="text-emerald-300">1</span><span className="text-white/60">:</span><br />
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">return</span> n<br />
+                                            &nbsp;&nbsp;<span className="text-purple-400">return</span> fibonacci(n<span className="text-white/60">-</span><span className="text-emerald-300">1</span>) <span className="text-white/60">+</span> fibonacci(n<span className="text-white/60">-</span><span className="text-emerald-300">2</span>)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+                                        <div className="text-xl font-bold text-red-400 font-mono">O(2^n)</div>
+                                        <div className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Time</div>
+                                    </div>
+                                    <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-center">
+                                        <div className="text-xl font-bold text-emerald-400 font-mono">O(n)</div>
+                                        <div className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Space</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Analysis Side */}
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                                    </div>
+                                    <h3 className="text-sm font-semibold text-white">AI Analysis</h3>
+                                    <div className="ml-auto px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                                        <span className="text-[10px] text-emerald-400 font-medium">Live</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
+                                    <p className="text-white/90">Recursive Fibonacci implementation with exponential time complexity.</p>
+                                    <div className="p-3 rounded-lg bg-yellow-500/[0.1] border border-yellow-500/20">
+                                        <p className="text-yellow-300 text-xs font-medium mb-1">⚠ Performance Warning</p>
+                                        <p className="text-xs text-yellow-100/70">Redundant calculations grow exponentially. Not suitable for n {'>'} 30.</p>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-emerald-500/[0.1] border border-emerald-500/20">
+                                        <p className="text-emerald-300 text-xs font-medium mb-1">✦ Optimization Available</p>
+                                        <p className="text-xs text-emerald-100/70">Memoization reduces complexity to O(n) time, O(n) space.</p>
+                                    </div>
+                                </div>
+                                <Button className="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-sm rounded-xl h-10 transition-all hover:border-violet-500/50 hover:shadow-lg hover:shadow-violet-500/20">
+                                    <Zap className="w-3.5 h-3.5 mr-2 text-yellow-400" />
+                                    Auto-Optimize Code
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </motion.section>
+
+            {/* =============================================
+                LANGUAGE SHOWCASE STRIP
+               ============================================= */}
+            <section className="relative z-10 py-12 overflow-hidden border-y border-white/[0.04]">
+                <div className="max-w-6xl mx-auto px-6 mb-6 text-center">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Supported Languages</p>
+                </div>
+                <div className="relative">
+                    <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                    <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+                    <div className="animate-marquee flex gap-12 items-center whitespace-nowrap">
+                        {[...Array(2)].map((_, setIndex) => (
+                            <div key={setIndex} className="flex gap-12 items-center">
+                                {[
+                                    { name: 'Python', color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
+                                    { name: 'JavaScript', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+                                    { name: 'Java', color: 'text-orange-400', bg: 'bg-orange-500/10' },
+                                    { name: 'C', color: 'text-blue-400', bg: 'bg-blue-500/10' },
+                                    { name: 'C++', color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+                                    { name: 'TypeScript', color: 'text-blue-500', bg: 'bg-blue-600/10' },
+                                    { name: 'Go', color: 'text-teal-400', bg: 'bg-teal-500/10' },
+                                    { name: 'Rust', color: 'text-orange-500', bg: 'bg-orange-600/10' },
+                                ].map((lang, i) => (
+                                    <div key={i} className="flex items-center gap-3 group">
+                                        <div className={`w-10 h-10 rounded-xl ${lang.bg} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                                            <Code2 className={`w-5 h-5 ${lang.color}`} />
+                                        </div>
+                                        <span className="text-sm font-semibold text-muted-foreground group-hover:text-foreground transition-colors">{lang.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* =============================================
+                FEATURES — Bento Grid
+               ============================================= */}
+            <section id="features" className="py-32 relative z-10">
+                <div className="max-w-6xl mx-auto px-6">
+                    <RevealText className="text-center max-w-3xl mx-auto mb-20">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">Features</p>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
+                            Everything you need to<br />
+                            <span className="gradient-text">master your code.</span>
+                        </h2>
+                        <p className="text-muted-foreground text-lg font-light">Powerful AI analysis meets beautiful developer experience.</p>
+                    </RevealText>
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                        {features.map((f, i) => (
+                            <FloatingCard key={i} delay={0.1 * i} className={`${f.span}`}>
+                                <div className="glass-card gradient-border h-full p-7 rounded-2xl group cursor-default relative overflow-hidden">
+                                    {/* Shimmer overlay */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent animate-shimmer" />
+                                    </div>
+                                    <div className={`relative w-11 h-11 rounded-xl bg-gradient-to-br ${f.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                                        <f.icon className={`w-5 h-5 ${f.iconColor}`} />
+                                    </div>
+                                    <h3 className="relative text-lg font-semibold mb-2 tracking-tight">{f.title}</h3>
+                                    <p className="relative text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+                                </div>
+                            </FloatingCard>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* =============================================
+                HOW IT WORKS
+               ============================================= */}
+            <section id="how-it-works" className="py-32 relative z-10">
+                <div className="max-w-5xl mx-auto px-6">
+                    <RevealText className="text-center mb-20">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">How it Works</p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            Three steps to<br />
+                            <span className="gradient-text">total clarity.</span>
+                        </h2>
+                    </RevealText>
+
+                    <div className="relative">
+                        {/* Connecting line (desktop only) */}
+                        <div className="hidden md:block absolute top-[3.25rem] left-[calc(16.67%+1.25rem)] right-[calc(16.67%+1.25rem)] h-px bg-gradient-to-r from-violet-500/30 via-indigo-500/30 to-cyan-500/30" />
+
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {[
+                                { step: "01", title: "Paste Your Code", desc: "Drop any code snippet — Python, Java, JS, C, or C++. Select your preferred language.", icon: Terminal, color: "from-violet-500 to-violet-600" },
+                                { step: "02", title: "Choose a Mode", desc: "Beginner, Exam, or Interview — get explanations tailored to your exact needs.", icon: Layers, color: "from-indigo-500 to-indigo-600" },
+                                { step: "03", title: "Get AI Insights", desc: "Receive step-by-step breakdown, complexity analysis, key concepts, and optimization.", icon: Sparkles, color: "from-cyan-500 to-cyan-600" },
+                            ].map((item, i) => (
+                                <FloatingCard key={i} delay={0.15 * i}>
+                                    <div className="relative glass-card p-8 rounded-2xl h-full text-center">
+                                        {/* Step number badge */}
+                                        <div className="relative mx-auto mb-6">
+                                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto shadow-lg`}>
+                                                <item.icon className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                                                <span className="text-[10px] font-bold text-primary">{item.step}</span>
+                                            </div>
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-3 tracking-tight">{item.title}</h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                                    </div>
+                                </FloatingCard>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="modes" className="py-32 relative z-10">
+                <div className="max-w-5xl mx-auto px-6">
+                    <RevealText className="text-center mb-16">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">Learning Modes</p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            Tailored to your<br />
+                            <span className="gradient-text">learning style.</span>
+                        </h2>
+                    </RevealText>
+
+                    {/* Mode Tabs */}
+                    <div className="flex justify-center gap-4 mb-12">
+                        {modes.map((mode, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setActiveMode(i)}
+                                className={`flex items-center gap-2 px-5 py-3 rounded-xl border transition-all duration-300 text-sm font-medium ${activeMode === i
+                                    ? `${mode.border} bg-gradient-to-b ${mode.color} ${mode.accent} scale-105 shadow-lg`
+                                    : 'border-white/[0.06] bg-white/[0.02] text-muted-foreground hover:bg-white/[0.04]'
+                                    }`}
+                            >
+                                <mode.icon className="w-4 h-4" />
+                                {mode.title}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Mode Preview Card */}
+                    <motion.div
+                        key={activeMode}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="max-w-2xl mx-auto"
+                    >
+                        <div className={`glass-card p-8 rounded-2xl border ${modes[activeMode].border}`}>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${modes[activeMode].color} flex items-center justify-center`}>
+                                    {React.createElement(modes[activeMode].icon, { className: `w-5 h-5 ${modes[activeMode].accent}` })}
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg">{modes[activeMode].title} Mode</h3>
+                                    <p className="text-sm text-muted-foreground">{modes[activeMode].desc}</p>
+                                </div>
+                            </div>
+                            <div className="p-4 rounded-xl bg-black/30 border border-white/[0.06] font-mono text-sm leading-relaxed">
+                                {activeMode === 0 && (
+                                    <div className="space-y-2 text-muted-foreground">
+                                        <p><span className="text-emerald-400">Think of it like:</span> A recipe with step-by-step instructions</p>
+                                        <p><span className="text-emerald-400">What it does:</span> Takes a number and returns Fibonacci value</p>
+                                        <p><span className="text-emerald-400">Analogy:</span> Like counting rabbits each generation 🐰</p>
+                                    </div>
+                                )}
+                                {activeMode === 1 && (
+                                    <div className="space-y-2 text-muted-foreground">
+                                        <p><span className="text-blue-400">Key Concept:</span> Recursion — function calling itself</p>
+                                        <p><span className="text-blue-400">Time Complexity:</span> O(2^n) — exponential</p>
+                                        <p><span className="text-blue-400">Important:</span> Base case prevents infinite recursion</p>
+                                    </div>
+                                )}
+                                {activeMode === 2 && (
+                                    <div className="space-y-2 text-muted-foreground">
+                                        <p><span className="text-amber-400">Approach:</span> Recursive decomposition with overlapping subproblems</p>
+                                        <p><span className="text-amber-400">Optimization:</span> Memoization reduces to O(n) time</p>
+                                        <p><span className="text-amber-400">Follow-up:</span> Iterative approach uses O(1) space</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            <section className="py-24 relative z-10 border-y border-white/[0.04]">
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                        {[
+                            { value: 5, suffix: '+', label: 'Languages', icon: Globe },
+                            { value: 3, suffix: '', label: 'Learning Modes', icon: BookOpen },
+                            { value: 99, suffix: '%', label: 'Accuracy', icon: Cpu },
+                            { value: 500, suffix: 'ms', label: 'Avg Response', icon: Clock },
+                        ].map((stat, i) => (
+                            <RevealText key={i} delay={0.1 * i}>
+                                <div className="space-y-3">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center mx-auto mb-2">
+                                        <stat.icon className="w-5 h-5 text-primary" />
+                                    </div>
+                                    <div className="text-4xl md:text-5xl font-black tracking-tight gradient-text">
+                                        <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+                                    </div>
+                                    <div className="text-xs text-muted-foreground uppercase tracking-[0.2em] font-medium">{stat.label}</div>
+                                </div>
+                            </RevealText>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section className="py-40 relative z-10 overflow-hidden">
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-violet-600/10 blur-[120px]" />
+                </div>
+                <div className="max-w-4xl mx-auto px-6 text-center relative z-20">
+                    <RevealText>
+                        {/* Social proof */}
+                        <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl mb-10">
+                            <div className="flex -space-x-2">
+                                {[...'🧑‍💻👩‍💻👨‍💻'].map((e, i) => (
+                                    <span key={i} className="text-lg">{e}</span>
+                                ))}
+                            </div>
+                            <span className="text-xs text-muted-foreground">Trusted by students at GLA University</span>
+                        </div>
+
+                        <h2 className="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-[1.1]">
+                            Ready to level
+                            <br />
+                            <span className="gradient-text">up?</span>
+                        </h2>
+                        <p className="text-xl text-muted-foreground mb-14 font-light max-w-xl mx-auto">
+                            Join developers using AI Code Explain to write better, faster code.
+                        </p>
+                        <Link href="/auth">
+                            <Button size="lg" className="h-16 px-12 rounded-full bg-white text-black hover:bg-white/90 text-lg font-bold shadow-2xl shadow-violet-500/15 hover:scale-[1.03] active:scale-[0.98] transition-all">
+                                Get Started — It&apos;s Free
+                                <ArrowRight className="w-5 h-5 ml-3" />
+                            </Button>
+                        </Link>
+                    </RevealText>
+                </div>
+            </section>
+
+            {/* =============================================
+                FAQ
+               ============================================= */}
+            <section id="faq" className="py-32 relative z-10">
+                <div className="max-w-3xl mx-auto px-6">
+                    <RevealText className="text-center mb-16">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">FAQ</p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                            Common <span className="gradient-text">questions.</span>
+                        </h2>
+                    </RevealText>
+
+                    <div className="space-y-3">
+                        {[
+                            { q: 'What programming languages are supported?', a: 'We support Python, JavaScript, Java, C, and C++ with more languages coming soon.' },
+                            { q: 'Is the tool free to use?', a: 'Yes! AI Code Explain is completely free for students and developers. Sign up and start analyzing code immediately.' },
+                            { q: 'How accurate are the AI explanations?', a: 'Our AI is powered by LLaMA 3.3 via Groq, providing highly accurate explanations with 99%+ accuracy on standard code patterns.' },
+                            { q: 'Can I use it for exam preparation?', a: 'Absolutely! The Exam Prep mode is specifically designed to highlight key concepts, definitions, and important patterns commonly asked in exams.' },
+                            { q: 'How does the optimization feature work?', a: 'Our AI analyzes your code and suggests refactored versions with improved time/space complexity, cleaner syntax, and best practices.' },
+                        ].map((faq, i) => (
+                            <div key={i} className="glass-card rounded-xl overflow-hidden">
+                                <button
+                                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                                    className="w-full flex items-center justify-between p-5 text-left hover:bg-white/[0.02] transition-colors"
+                                    aria-expanded={openFaq === i}
+                                >
+                                    <span className="font-medium text-sm pr-4">{faq.q}</span>
+                                    {openFaq === i ? (
+                                        <ChevronUp className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                    ) : (
+                                        <ChevronDown className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                    )}
+                                </button>
+                                <AnimatePresence>
+                                    {openFaq === i && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <div className="px-5 pb-5 text-sm text-muted-foreground leading-relaxed">
+                                                {faq.a}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* =============================================
+                FOOTER
+               ============================================= */}
+            <footer className="border-t border-white/[0.04] py-16 relative z-10">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="grid md:grid-cols-4 gap-10 mb-12">
+                        {/* Brand */}
+                        <div className="md:col-span-1">
+                            <div className="flex items-center gap-2.5 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center">
+                                    <Terminal className="w-4 h-4 text-white" />
+                                </div>
+                                <span className="text-base font-bold">AI Code Explain</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Understand any code with AI-powered explanations. Built for students and developers.
+                            </p>
+                        </div>
+                        {/* Links */}
+                        {[
+                            { title: 'Product', links: [{ label: 'Features', href: '#features' }, { label: 'How it Works', href: '#how-it-works' }, { label: 'Modes', href: '#modes' }] },
+                            { title: 'Resources', links: [{ label: 'FAQ', href: '#faq' }, { label: 'GitHub', href: 'https://github.com/ask8962/automated-code-explanation-system' }] },
+                            { title: 'Team', links: [{ label: 'Anukalp', href: '#' }, { label: 'Nishant', href: '#' }, { label: 'Prince', href: '#' }, { label: 'Utpal', href: '#' }, { label: 'Jatin', href: '#' }] },
+                        ].map((col, i) => (
+                            <div key={i}>
+                                <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground/70 mb-4">{col.title}</h4>
+                                <ul className="space-y-2.5">
+                                    {col.links.map((link, j) => (
+                                        <li key={j}>
+                                            <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                                {link.label}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                    {/* Bottom bar */}
+                    <div className="border-t border-white/[0.04] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-xs text-muted-foreground">
+                            © 2024 GLA University Mini Project • Built with <Heart className="w-3 h-3 inline text-red-400" /> by the team
+                        </p>
+                        <button
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                            aria-label="Scroll to top"
+                        >
+                            Back to top
+                            <ChevronUp className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    );
+}

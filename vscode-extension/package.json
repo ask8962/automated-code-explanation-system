@@ -1,0 +1,51 @@
+{
+  "name": "automated-code-explanation-system",
+  "displayName": "Automated Code Explanation System",
+  "description": "Empowering students to understand and optimize code instantly using AI.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "automated-code-explanation-system.explainCode",
+        "title": "Explain Code with AI"
+      },
+      {
+        "command": "automated-code-explanation-system.optimizeCode",
+        "title": "Optimize Code with AI"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorHasSelection",
+          "command": "automated-code-explanation-system.explainCode",
+          "group": "navigation@1"
+        },
+        {
+          "when": "editorHasSelection",
+          "command": "automated-code-explanation-system.optimizeCode",
+          "group": "navigation@2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "18.x",
+    "typescript": "^5.1.3"
+  }
+}
