@@ -14,7 +14,7 @@
 
 ## 📖 Overview
 
-The **Automated Code Explanation System** is an AI-powered educational platform designed to help students and developers understand complex code snippets in seconds. By leveraging advanced Large Language Models (LLMs) — specifically **Llama 3.3 70B via Groq** — it provides:
+The **Automate Code Explanation System** is an AI-powered educational platform designed to help students and developers understand complex code snippets in seconds. By leveraging advanced Large Language Models (LLMs) — specifically **Llama 3.3 70B via Groq** — it provides:
 
 - Instant, structured **line-by-line code explanations**
 - **Time & Space complexity analysis** with visual comparison cards
