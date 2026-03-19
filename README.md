@@ -39,6 +39,73 @@ The system is available as a **web application**, a **Chrome browser extension**
 | **📱 Responsive Design** | Fully responsive layout that works beautifully on desktop, tablet, and mobile devices |
 | **📄 Export to PDF** | Download your code explanations as beautifully formatted PDF documents |
 
+## 🛠️ Tech Stack
+
+### Frontend
+| Technology | Purpose |
+|:-----------|:--------|
+| **Next.js 14** | React framework with App Router, SSR, and API routes |
+| **React 18** | Component-based UI library |
+| **Tailwind CSS** | Utility-first CSS framework for rapid styling |
+| **Shadcn UI** | Accessible, customizable UI component library (Radix UI primitives) |
+| **Framer Motion** | Smooth animations and page transitions |
+| **Monaco Editor** | VS Code's editor component for syntax-highlighted code input |
+| **Mermaid.js** | Flowchart and diagram rendering from code logic |
+| **React Three Fiber** | 3D scene rendering for the landing page hero section |
+| **Lucide Icons** | Beautiful, consistent icon library |
+
+### Backend & AI
+| Technology | Purpose |
+|:-----------|:--------|
+| **Groq API** | Ultra-fast LLM inference (Llama 3.3 70B Versatile) |
+| **Vercel AI SDK** | Streaming AI responses with React hooks |
+| **Next.js API Routes** | `/api/explain`, `/api/optimize`, `/api/flowchart` endpoints |
+
+### Database & Auth
+| Technology | Purpose |
+|:-----------|:--------|
+| **Firebase Firestore** | NoSQL database for storing explanation history |
+| **Firebase Auth** | Google OAuth authentication |
+| **Firestore Security Rules** | Role-based access control for user data |
+
+### Deployment
+| Technology | Purpose |
+|:-----------|:--------|
+| **Vercel** | Production hosting with edge functions |
+| **GitHub** | Source control and CI/CD integration |
+
+## 🏗️ System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        CLIENT LAYER                             │
+├──────────────┬──────────────────┬───────────────────────────────┤
+│  Web App     │ Chrome Extension │   VS Code Extension           │
+│  (Next.js)   │ (Manifest V3)    │   (TypeScript)                │
+└──────┬───────┴────────┬─────────┴──────────┬────────────────────┘
+       │                │                    │
+       ▼                ▼                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     API LAYER (Next.js Routes)                  │
+├──────────────┬──────────────────┬───────────────────────────────┤
+│ /api/explain │  /api/optimize   │   /api/flowchart              │
+└──────┬───────┴────────┬─────────┴──────────┬────────────────────┘
+       │                │                    │
+       ▼                ▼                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      AI LAYER (Groq)                            │
+│              Llama 3.3 70B Versatile Model                      │
+└─────────────────────────────────────────────────────────────────┘
+       │
+       ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    DATA LAYER (Firebase)                         │
+├─────────────────────────┬───────────────────────────────────────┤
+│   Firestore Database    │       Firebase Auth                   │
+│   (Explanation History) │       (Google OAuth)                  │
+└─────────────────────────┴───────────────────────────────────────┘
+```
+
 ---
 
 Developed with ❤️ at **GLA University**
