@@ -1,6 +1,7 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Toaster } from 'sonner'
 
 import './globals.css'
 import { Providers } from './providers'
@@ -23,6 +24,9 @@ export const metadata: Metadata = {
     'JavaScript',
     'Java',
     'C++',
+    'Go',
+    'Rust',
+    'TypeScript',
     'LLaMA',
     'Groq',
   ],
@@ -61,8 +65,10 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <Providers>
           {children}
+          <Toaster richColors position="bottom-right" />
         </Providers>
       </body>
     </html>
   )
 }
+
