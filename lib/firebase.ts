@@ -13,15 +13,15 @@ export const initializeFirebase = async () => {
       const { getAuth, setPersistence, browserLocalPersistence } = await import('firebase/auth');
       const { getFirestore } = await import('firebase/firestore');
 
-      // ✅ DIRECT FIREBASE CONFIG
+      // ✅ Firebase config from environment variables
       const firebaseConfig = {
-        apiKey: "AIzaSyB8gA0wRI1YyKwnQk-usRjh-KbpGnBOxu4",
-        authDomain: "gla-code-explain.firebaseapp.com",
-        projectId: "gla-code-explain",
-        storageBucket: "gla-code-explain.firebasestorage.app",
-        messagingSenderId: "448137426080",
-        appId: "1:448137426080:web:50cf6851892ec8cc2a05c5",
-        measurementId: "G-NL8DV1VW35"
+        apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+        authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+        measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
       };
 
       const app = initializeApp(firebaseConfig);
