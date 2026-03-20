@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Copy, Check, Code2, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -18,7 +18,23 @@ const languages = [
   { id: 'cpp', name: 'C++', color: 'text-blue-400' },
   { id: 'c', name: 'C', color: 'text-cyan-400' },
   { id: 'typescript', name: 'TypeScript', color: 'text-blue-400' },
+  { id: 'go', name: 'Go', color: 'text-sky-400' },
+  { id: 'rust', name: 'Rust', color: 'text-orange-400' },
 ];
+
+// Simple heuristic to auto-detect programming language from code
+function detectLanguage(code: string): string | null {
+  const trimmed = code.trim();
+  if (/^(import\s+\w+|from\s+\w+\s+import|def\s+\w+|class\s+\w+.*:|if\s+__name__\s*==)/.test(trimmed)) return 'python';
+  if (/^(package\s+main|func\s+\w+|import\s+"fmt")/.test(trimmed)) return 'go';
+  if (/^(fn\s+\w+|let\s+mut\s+|use\s+std::)/.test(trimmed)) return 'rust';
+  if (/^(import\s+.*from\s+['"]|const\s+\w+\s*=\s*require|export\s+(default|const|function))/.test(trimmed)) return 'javascript';
+  if (/(interface\s+\w+|:\s*(string|number|boolean)\b|<\w+>)/.test(trimmed) && /^(import|export|const|let|function|class)/.test(trimmed)) return 'typescript';
+  if (/(public\s+static\s+void\s+main|System\.out\.println|import\s+java\.)/.test(trimmed)) return 'java';
+  if (/(#include\s*<.*>|using\s+namespace\s+std|cout\s*<<|cin\s*>>)/.test(trimmed)) return 'cpp';
+  if (/(#include\s*<(stdio|stdlib)\.h>|printf\s*\(|scanf\s*\()/.test(trimmed)) return 'c';
+  return null;
+}
 
 const modes = [
   { id: 'beginner', name: 'Beginner', emoji: '🎓' },
@@ -35,13 +51,31 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
 
   const handleCodeChange = (value: string) => {
     setCode(value);
+
+    // Auto-detect language when code changes significantly
+    if (value.trim().length > 20) {
+      const detected = detectLanguage(value);
+      if (detected) setLanguage(detected);
+    }
   };
 
-  const handleExplain = () => {
+  const handleExplain = useCallback(() => {
     if (code.trim()) {
       onExplain(code, language, mode);
     }
-  };
+  }, [code, language, mode, onExplain]);
+
+  // Ctrl+Enter keyboard shortcut to trigger explanation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleExplain();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleExplain]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(code);
@@ -159,7 +193,7 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
       <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
         <Code2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
         <p className="text-xs text-muted-foreground leading-relaxed">
-          <span className="text-foreground/60 font-medium">Tip:</span> Beginner mode uses analogies, Interview mode focuses on approach. Try <span className="text-amber-400 font-semibold">Roast My Code</span> for a brutally honest Senior Engineer code review.
+          <span className="text-foreground/60 font-medium">Tip:</span> Press <span className="text-violet-400 font-semibold">Ctrl+Enter</span> to explain instantly. Language is auto-detected. Try <span className="text-amber-400 font-semibold">Roast My Code</span> for a brutal code review.
         </p>
       </div>
     </motion.div>
