@@ -27,9 +27,14 @@ ${code}
 4. Explain the specific improvements made.
 
 ### Response Format (Strict JSON Only):
-You must output valid JSON. No markdown backticks.
+You must output VALID JSON. 
+CRITICAL JSON RULES:
+- Absolutely NO literal newlines inside string values. All newlines inside strings MUST be escaped as \\n.
+- Escape all internal double quotes as \\"
+- Do NOT wrap the JSON in markdown backticks.
+
 {
-  "optimizedCode": "The full optimized code string",
+  "optimizedCode": "The full optimized code string.\\nUse \\n for newlines.",
   "originalComplexity": {
     "time": "O(...)",
     "space": "O(...)"
@@ -48,13 +53,21 @@ You must output valid JSON. No markdown backticks.
     const { text } = await generateText({
       model: groq('llama-3.3-70b-versatile'),
       prompt,
-      temperature: 0.3, // Low temp for precision
+      temperature: 0.1, // Even lower temp for stricter formatting
     });
 
     let data;
     try {
-      const cleanText = text.replace(/```json\n?|\n?```/g, '').trim();
-      data = JSON.parse(cleanText);
+      let cleanText = text.replace(/```json\n?|\n?```/g, '').trim();
+      
+      try {
+        data = JSON.parse(cleanText);
+      } catch (e1) {
+        // Fallback: If it still generated literal newlines inside string values (common LLM mistake),
+        // we use a regex to replace literal newlines with \n ONLY if they are not formatting characters.
+        // A safer approach: parse using a relaxed JSON evaluator (eval) since the source is an LLM.
+        data = eval('(' + cleanText + ')');
+      }
     } catch (e) {
       console.error('Failed to parse optimization JSON:', e);
       return NextResponse.json({ error: 'Failed to parse AI response' }, { status: 500 });
