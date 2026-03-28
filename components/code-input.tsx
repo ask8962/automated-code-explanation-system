@@ -9,6 +9,7 @@ import Editor from '@monaco-editor/react';
 interface CodeInputProps {
   onExplain: (code: string, language: string, mode: string) => void;
   isLoading: boolean;
+  onCodeChange?: (code: string, language: string) => void;
 }
 
 const languages = [
@@ -43,7 +44,7 @@ const modes = [
   { id: 'roast', name: 'Roast My Code', emoji: '🧐' },
 ];
 
-export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
+export function CodeInput({ onExplain, isLoading, onCodeChange }: CodeInputProps) {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('python');
   const [mode, setMode] = useState('beginner');
@@ -53,10 +54,17 @@ export function CodeInput({ onExplain, isLoading }: CodeInputProps) {
     setCode(value);
 
     // Auto-detect language when code changes significantly
+    let currentLang = language;
     if (value.trim().length > 20) {
       const detected = detectLanguage(value);
-      if (detected) setLanguage(detected);
+      if (detected) {
+        setLanguage(detected);
+        currentLang = detected;
+      }
     }
+
+    // Sync code to parent so Run/Step-Through always use latest code
+    onCodeChange?.(value, currentLang);
   };
 
   const handleExplain = useCallback(() => {

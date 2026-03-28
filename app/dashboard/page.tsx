@@ -158,7 +158,14 @@ export default function DashboardPage() {
           {/* Left Column: Code Input & Actions */}
           <div className="space-y-6 sticky top-24">
             {/* Code Input */}
-            <CodeInput onExplain={handleExplain} isLoading={isLoading} />
+            <CodeInput
+              onExplain={handleExplain}
+              isLoading={isLoading}
+              onCodeChange={(newCode, newLang) => {
+                setCode(newCode);
+                setLanguage(newLang as Language);
+              }}
+            />
 
             {/* Action Buttons Grid */}
             <AnimatePresence>

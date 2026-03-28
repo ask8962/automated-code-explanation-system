@@ -1,15 +1,16 @@
 import { NextResponse } from 'next/server';
 
-// Map our app's language IDs to Piston-compatible names and versions
-const LANGUAGE_MAP: Record<string, { language: string; version: string }> = {
-  python: { language: 'python', version: '3.10.0' },
-  javascript: { language: 'javascript', version: '18.15.0' },
-  typescript: { language: 'typescript', version: '5.0.3' },
-  java: { language: 'java', version: '15.0.2' },
-  cpp: { language: 'c++', version: '10.2.0' },
-  c: { language: 'c', version: '10.2.0' },
-  go: { language: 'go', version: '1.16.2' },
-  rust: { language: 'rust', version: '1.68.2' },
+// JDoodle language identifiers and version indices
+// Docs: https://docs.jdoodle.com/integrating-compiler-ide-to-your-application/compiler-api
+const LANGUAGE_MAP: Record<string, { language: string; versionIndex: string }> = {
+  python: { language: 'python3', versionIndex: '5' },
+  javascript: { language: 'nodejs', versionIndex: '4' },
+  typescript: { language: 'typescript', versionIndex: '0' },
+  java: { language: 'java', versionIndex: '4' },
+  cpp: { language: 'cpp17', versionIndex: '1' },
+  c: { language: 'c', versionIndex: '5' },
+  go: { language: 'go', versionIndex: '4' },
+  rust: { language: 'rust', versionIndex: '4' },
 };
 
 export async function POST(req: Request) {
@@ -20,24 +21,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Code is required' }, { status: 400 });
     }
 
-    const langConfig = LANGUAGE_MAP[language] || LANGUAGE_MAP['python'];
+    const clientId = process.env.JDOODLE_CLIENT_ID;
+    const clientSecret = process.env.JDOODLE_CLIENT_SECRET;
 
+    if (!clientId || !clientSecret) {
+      return NextResponse.json(
+        { error: 'JDoodle API not configured. Add JDOODLE_CLIENT_ID and JDOODLE_CLIENT_SECRET to .env.local' },
+        { status: 500 }
+      );
+    }
+
+    const langConfig = LANGUAGE_MAP[language] || LANGUAGE_MAP['python'];
     const startTime = Date.now();
 
-    const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+    const response = await fetch('https://api.jdoodle.com/v1/execute', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        language: langConfig.language,
-        version: langConfig.version,
-        files: [
-          {
-            content: code,
-          },
-        ],
+        clientId,
+        clientSecret,
+        script: code,
         stdin,
-        run_timeout: 10000,    // 10 second max
-        compile_timeout: 10000,
+        language: langConfig.language,
+        versionIndex: langConfig.versionIndex,
       }),
     });
 
@@ -45,7 +51,7 @@ export async function POST(req: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Piston API error:', errorText);
+      console.error('JDoodle API error:', errorText);
       return NextResponse.json(
         { error: 'Code execution service unavailable. Try again.' },
         { status: 502 }
@@ -54,26 +60,39 @@ export async function POST(req: Request) {
 
     const result = await response.json();
 
-    // Extract relevant fields from Piston response
-    const runResult = result.run || {};
-    const compileResult = result.compile || null;
+    // JDoodle returns { output, statusCode, memory, cpuTime }
+    const hasError = result.statusCode !== 200 || (result.output && result.output.includes('JDoodle - Pair not found'));
+    const isCompileError = result.output && (
+      result.output.includes('error:') ||
+      result.output.includes('Error:') ||
+      result.output.includes('SyntaxError') ||
+      result.output.includes('Traceback')
+    );
+
+    // Separate stdout and stderr heuristically
+    let stdout = '';
+    let stderr = '';
+
+    if (hasError) {
+      stderr = result.output || 'Execution failed';
+    } else if (isCompileError) {
+      stderr = result.output || '';
+    } else {
+      stdout = result.output || '';
+    }
 
     return NextResponse.json({
-      stdout: runResult.stdout || '',
-      stderr: runResult.stderr || '',
-      output: runResult.output || '',
-      exitCode: runResult.code ?? -1,
-      signal: runResult.signal || null,
-      compile: compileResult
-        ? {
-            stdout: compileResult.stdout || '',
-            stderr: compileResult.stderr || '',
-            exitCode: compileResult.code ?? 0,
-          }
-        : null,
-      language: result.language,
-      version: result.version,
+      stdout,
+      stderr,
+      output: result.output || '',
+      exitCode: hasError ? 1 : 0,
+      signal: null,
+      compile: isCompileError ? { stdout: '', stderr: result.output || '', exitCode: 1 } : null,
+      language,
+      version: '',
       executionTime,
+      memory: result.memory ? `${result.memory} KB` : null,
+      cpuTime: result.cpuTime ? `${result.cpuTime}s` : null,
     });
   } catch (error) {
     console.error('Error executing code:', error);
