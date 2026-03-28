@@ -7,12 +7,16 @@ import { Button } from '@/components/ui/button';
 import { useGenerateExplanation } from '@/hooks/use-generate-explanation';
 import { useOptimizeCode } from '@/hooks/use-optimize-code';
 import { useGenerateFlowchart } from '@/hooks/use-generate-flowchart';
+import { useExecuteCode } from '@/hooks/use-execute-code';
+import { useVisualizeSteps } from '@/hooks/use-visualize-steps';
 import CodeExplanationPanel from '@/components/code-explanation-panel';
 import OptimizationPanel from '@/components/optimization-panel';
 import FlowchartPanel from '@/components/flowchart-panel';
+import CodeOutputPanel from '@/components/code-output-panel';
+import AlgorithmVisualizer from '@/components/algorithm-visualizer';
 import { CodeInput } from '@/components/code-input';
 import { Navbar } from '@/components/navbar';
-import { Loader2, Zap, Sparkles, Code2, GitBranch } from 'lucide-react';
+import { Loader2, Zap, Sparkles, Code2, GitBranch, Play, Footprints } from 'lucide-react';
 import { toast } from 'sonner';
 import { ExplanationSkeleton } from '@/components/explanation-skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,8 +33,13 @@ export default function DashboardPage() {
   const { generateExplanation, isLoading, explanationData, currentDocId } = useGenerateExplanation();
   const { optimizeCode, isOptimizing, optimizationData } = useOptimizeCode();
   const { generateFlowchart, isGenerating: isGeneratingFlowchart, flowchartData, clearFlowchart } = useGenerateFlowchart();
+  const { executeCode, isExecuting, executionResult, clearResult: clearExecution } = useExecuteCode();
+  const { visualizeSteps, isVisualizing, stepsData, clearSteps } = useVisualizeSteps();
   const [showOptimization, setShowOptimization] = useState(false);
   const [showFlowchart, setShowFlowchart] = useState(false);
+  const [showOutput, setShowOutput] = useState(false);
+  const [showVisualizer, setShowVisualizer] = useState(false);
+  const [activeView, setActiveView] = useState<'explain' | 'optimize' | 'flowchart' | 'output' | 'visualizer'>('explain');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -56,12 +65,19 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
+  const switchView = (view: typeof activeView) => {
+    setActiveView(view);
+    setShowOptimization(view === 'optimize');
+    setShowFlowchart(view === 'flowchart');
+    setShowOutput(view === 'output');
+    setShowVisualizer(view === 'visualizer');
+  };
+
   const handleExplain = async (codeInput: string, lang: string, m: string) => {
     setCode(codeInput);
     setLanguage(lang as Language);
     setMode(m as ExplanationMode);
-    setShowOptimization(false);
-    setShowFlowchart(false);
+    switchView('explain');
     clearFlowchart();
     await generateExplanation({
       code: codeInput,
@@ -76,8 +92,7 @@ export default function DashboardPage() {
       toast.error('Please enter some code first');
       return;
     }
-    setShowOptimization(true);
-    setShowFlowchart(false);
+    switchView('optimize');
     await optimizeCode(code, language);
   };
 
@@ -86,9 +101,26 @@ export default function DashboardPage() {
       toast.error('Please enter some code first');
       return;
     }
-    setShowFlowchart(true);
-    setShowOptimization(false);
+    switchView('flowchart');
     await generateFlowchart(code, language);
+  };
+
+  const handleRunCode = async () => {
+    if (!code) {
+      toast.error('Please enter some code first');
+      return;
+    }
+    switchView('output');
+    await executeCode(code, language);
+  };
+
+  const handleStepThrough = async () => {
+    if (!code) {
+      toast.error('Please enter some code first');
+      return;
+    }
+    switchView('visualizer');
+    await visualizeSteps(code, language);
   };
 
   const handleCopyExplanation = () => {
@@ -128,15 +160,44 @@ export default function DashboardPage() {
             {/* Code Input */}
             <CodeInput onExplain={handleExplain} isLoading={isLoading} />
 
-            {/* Optimize / Visualize Actions */}
+            {/* Action Buttons Grid */}
             <AnimatePresence>
-              {!isLoading && (explanationData || optimizationData || flowchartData) && (
+              {!isLoading && (explanationData || optimizationData || flowchartData || executionResult || stepsData) && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="flex justify-end gap-3"
+                  className="grid grid-cols-2 gap-3"
                 >
+                  {/* Run Code */}
+                  <Button
+                    onClick={handleRunCode}
+                    disabled={isExecuting}
+                    className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-10 px-5 text-sm w-full"
+                  >
+                    {isExecuting ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Play className="w-4 h-4 mr-2" />
+                    )}
+                    {isExecuting ? 'Running...' : '▶ Run Code'}
+                  </Button>
+
+                  {/* Step-Through */}
+                  <Button
+                    onClick={handleStepThrough}
+                    disabled={isVisualizing}
+                    className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] h-10 px-5 text-sm w-full"
+                  >
+                    {isVisualizing ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Footprints className="w-4 h-4 mr-2" />
+                    )}
+                    {isVisualizing ? 'Analyzing...' : '🧩 Step-Through'}
+                  </Button>
+
+                  {/* Visualize Flow */}
                   <Button
                     onClick={handleVisualize}
                     disabled={isGeneratingFlowchart}
@@ -149,6 +210,8 @@ export default function DashboardPage() {
                     )}
                     Visualize Flow
                   </Button>
+
+                  {/* Optimize Code */}
                   <Button
                     onClick={handleOptimize}
                     disabled={isOptimizing}
@@ -170,7 +233,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             {/* Empty State */}
             <AnimatePresence>
-              {!isLoading && !explanationData && !optimizationData && !flowchartData && (
+              {!isLoading && !explanationData && !optimizationData && !flowchartData && !executionResult && !stepsData && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -200,9 +263,41 @@ export default function DashboardPage() {
               )}
             </AnimatePresence>
 
+            {/* Code Output Panel (Run Code) */}
+            <AnimatePresence>
+              {!isLoading && activeView === 'output' && executionResult && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <CodeOutputPanel
+                    data={executionResult}
+                    onRunAgain={handleRunCode}
+                    isRunning={isExecuting}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Algorithm Visualizer (Step-Through) */}
+            <AnimatePresence>
+              {!isLoading && activeView === 'visualizer' && stepsData && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <AlgorithmVisualizer data={stepsData} code={code} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Flowchart Panel */}
             <AnimatePresence>
-              {!isLoading && showFlowchart && flowchartData && (
+              {!isLoading && activeView === 'flowchart' && flowchartData && (
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -220,7 +315,7 @@ export default function DashboardPage() {
 
             {/* Optimization Panel */}
             <AnimatePresence>
-              {!isLoading && showOptimization && optimizationData && (
+              {!isLoading && activeView === 'optimize' && optimizationData && (
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -234,7 +329,7 @@ export default function DashboardPage() {
 
             {/* Explanation Panel */}
             <AnimatePresence>
-              {!isLoading && explanationData && !showOptimization && !showFlowchart && (
+              {!isLoading && activeView === 'explain' && explanationData && (
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
