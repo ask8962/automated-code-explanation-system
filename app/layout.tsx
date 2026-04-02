@@ -1,6 +1,6 @@
 import React from "react"
 import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import { Toaster } from 'sonner'
 
 import './globals.css'
@@ -8,6 +8,7 @@ import { Providers } from './providers'
 
 const _inter = Inter({ subsets: ['latin'] })
 const _mono = JetBrains_Mono({ subsets: ['latin'] })
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' })
 
 export const metadata: Metadata = {
   title: 'AI Code Explain — Understand Code in Seconds with AI',
@@ -62,7 +63,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-sans antialiased">
+      <body className={`font-sans antialiased ${spaceGrotesk.variable}`}>
         <Providers>
           {children}
           <Toaster richColors position="bottom-right" />

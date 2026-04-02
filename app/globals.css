@@ -567,10 +567,107 @@ html {
   color: #1a1a2e;
 }
 
-.light .skeleton-shimmer {
-  background: rgba(0, 0, 0, 0.04);
-}
-
 .light .skeleton-shimmer::after {
   background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.08), transparent);
+}
+
+/* =============================================
+   EXTREME 4D AESTHETICS (Neon Protocol Extension)
+   ============================================= */
+@property --spin-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin-gradient {
+  to {
+    --spin-angle: 360deg;
+  }
+}
+
+.extreme-4d-button {
+  position: relative;
+  border-radius: 0.75rem;
+  background: rgba(13, 13, 25, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform-style: preserve-3d;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.extreme-4d-button::before,
+.extreme-4d-button::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  z-index: -1;
+  background: conic-gradient(from var(--spin-angle), transparent 40%, rgba(6,182,212,0.8), rgba(124,58,237,1), rgba(244,114,182,0.8), transparent 60%);
+  border-radius: inherit;
+  animation: spin-gradient 2.5s linear infinite;
+}
+
+.extreme-4d-button::after {
+  filter: blur(12px);
+  opacity: 0.5;
+}
+
+.extreme-4d-button:hover {
+  transform: translateY(-5px) scale(1.05) perspective(500px) rotateX(10deg);
+  box-shadow: 0 30px 40px -10px rgba(124, 58, 237, 0.4), inset 0 2px 20px rgba(255, 255, 255, 0.1);
+}
+
+.extreme-4d-button:hover::after {
+  opacity: 1;
+  filter: blur(20px);
+}
+
+.glitch-text-4d {
+  position: relative;
+  display: inline-block;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.glitch-text-4d::before,
+.glitch-text-4d::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-text-4d::before {
+  left: 2px;
+  text-shadow: -2px 0 #06B6D4;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  animation: glitch-anim-1 3s infinite linear alternate-reverse;
+}
+
+.glitch-text-4d::after {
+  left: -2px;
+  text-shadow: -2px 0 #7C3AED;
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: polygon(0 20%, 100% 20%, 100% 25%, 0 25%); transform: translateX(0); }
+  20% { clip-path: polygon(0 50%, 100% 50%, 100% 55%, 0 55%); transform: translateX(-2px); }
+  40% { clip-path: polygon(0 10%, 100% 10%, 100% 15%, 0 15%); transform: translateX(2px); }
+  60% { clip-path: polygon(0 80%, 100% 80%, 100% 85%, 0 85%); transform: translateX(-1px); }
+  80% { clip-path: polygon(0 35%, 100% 35%, 100% 40%, 0 40%); transform: translateX(1px); }
+  100% { clip-path: polygon(0 60%, 100% 60%, 100% 65%, 0 65%); transform: translateX(0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: polygon(0 15%, 100% 15%, 100% 20%, 0 20%); transform: translateX(0); }
+  20% { clip-path: polygon(0 70%, 100% 70%, 100% 75%, 0 75%); transform: translateX(2px); }
+  40% { clip-path: polygon(0 40%, 100% 40%, 100% 45%, 0 45%); transform: translateX(-2px); }
+  60% { clip-path: polygon(0 90%, 100% 90%, 100% 95%, 0 95%); transform: translateX(1px); }
+  80% { clip-path: polygon(0 25%, 100% 25%, 100% 30%, 0 30%); transform: translateX(-1px); }
+  100% { clip-path: polygon(0 85%, 100% 85%, 100% 90%, 0 90%); transform: translateX(0); }
 }

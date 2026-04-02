@@ -140,6 +140,8 @@ export default function Page() {
     const [scrolled, setScrolled] = useState(false);
     const [activeMode, setActiveMode] = useState(0);
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+    const [currentVideoPart, setCurrentVideoPart] = useState<1 | 2>(1);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 20);
@@ -178,92 +180,79 @@ export default function Page() {
                 }}
             />
 
-            {/* 3D Background */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
+            {/* 3D Background - Kept intact but color adjusted underneath */}
+            <div className="fixed inset-0 z-0 pointer-events-none bg-[#050510]">
                 <Suspense fallback={null}>
                     <Scene />
                 </Suspense>
-                <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px]" />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
+                {/* Extreme Depth Layers */}
+                <div className="absolute inset-0 bg-[#0d0d19]/80 backdrop-blur-[2px]" />
+                <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#7C3AED]/10 via-[#06B6D4]/5 to-transparent blur-[100px]" />
             </div>
 
             {/* =============================================
-                NAVIGATION
+                NAVIGATION (Neon Protocol)
                ============================================= */}
-            <nav className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ${scrolled
-                ? 'border-white/[0.08] bg-background/80 backdrop-blur-3xl shadow-lg shadow-black/5'
-                : 'border-white/[0.04] bg-background/50 backdrop-blur-2xl'
+            <nav className={`fixed top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl z-50 rounded-2xl transition-all duration-300 ${scrolled
+                ? 'border border-[#4a4455]/30 bg-[#0d0d19]/80 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.5)]'
+                : 'border border-transparent bg-transparent'
                 }`}>
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div className="px-6 h-16 flex items-center justify-between">
+                    {/* Logo Area */}
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:shadow-violet-500/40 transition-all duration-300 group-hover:scale-105">
-                            <Terminal className="w-4 h-4 text-white" />
-                            <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="relative w-9 h-9 rounded-xl border border-[#4a4455]/50 bg-[#1a1a27]/80 flex items-center justify-center overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-[#7C3AED]/40 to-[#06B6D4]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <Terminal className="w-4 h-4 text-[#e3e0f3] z-10" />
                         </div>
-                        <span className="font-bold text-lg tracking-tight">AI Code Explain</span>
+                        <span className="font-bold text-lg tracking-tight text-[#e3e0f3] font-[family-name:var(--font-space-grotesk)]">
+                            AI Code Explain
+                        </span>
                     </Link>
 
-                    <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-                        {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'How it Works' }, { href: '#modes', label: 'Modes' }].map((link) => (
-                            <Link key={link.href} href={link.href} className="relative hover:text-foreground transition-colors duration-200 py-1 group">
+                    {/* Links */}
+                    <div className="hidden md:flex items-center gap-12 text-sm font-medium text-[#ccc3d8]">
+                        {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'Engine' }, { href: '#modes', label: 'Docs' }].map((link) => (
+                            <Link key={link.href} href={link.href} className="relative hover:text-[#e3e0f3] transition-colors duration-200 py-1 group">
                                 {link.label}
-                                <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full transition-all duration-300 group-hover:w-full" />
+                                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-[#06B6D4] rounded-t-full opacity-0 group-hover:opacity-100 group-hover:w-full transition-all duration-300 shadow-[0_0_10px_#06B6D4]" />
                             </Link>
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    {/* Auth & CTA */}
+                    <div className="flex items-center gap-4">
+                        <Link href="https://github.com/ask8962/automated-code-explanation-system" target="_blank" className="hidden sm:flex text-[#ccc3d8] hover:text-[#e3e0f3] transition-colors p-2 rounded-lg hover:bg-[#292936]/50">
+                             <Github className="w-5 h-5" />
+                        </Link>
                         <ThemeToggle />
                         <Link href="/auth" className="hidden sm:block">
-                            <Button variant="ghost" className="text-sm font-medium hover:bg-white/5 rounded-full">Sign In</Button>
-                        </Link>
-                        <Link href="/auth" className="hidden sm:block">
-                            <Button className="bg-white text-black hover:bg-white/90 shadow-lg shadow-white/10 rounded-full px-6 text-sm font-semibold hover:scale-105 transition-all">
-                                Get Started
+                            <Button className="relative bg-gradient-to-br from-[#7c3aed] to-[#5a00c6] text-white hover:from-[#d2bbff] hover:to-[#7c3aed] hover:text-[#25005a] border-none shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.6)] rounded-xl px-6 font-semibold transition-all duration-300 overflow-hidden group">
+                                <span className="relative z-10 flex items-center">
+                                    Get Started Free
+                                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                </span>
                             </Button>
                         </Link>
-                        {/* Mobile menu toggle */}
-                        <button
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="md:hidden p-2 rounded-xl hover:bg-white/[0.06] transition-colors"
-                            aria-label="Toggle mobile menu"
-                        >
+                        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-xl text-[#ccc3d8] hover:text-[#e3e0f3] hover:bg-[#292936]/50">
                             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
                 <AnimatePresence>
                     {mobileMenuOpen && (
                         <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.25, ease: [0.25, 0.4, 0.25, 1] }}
-                            className="md:hidden border-t border-white/[0.06] overflow-hidden"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="md:hidden border-t border-[#4a4455]/30 bg-[#0d0d19]/95 backdrop-blur-3xl absolute top-full left-0 w-full mt-2 rounded-2xl overflow-hidden shadow-2xl"
                         >
                             <div className="px-6 py-4 space-y-1">
-                                {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'How it Works' }, { href: '#modes', label: 'Modes' }].map((link) => (
-                                    <Link
-                                        key={link.href}
-                                        href={link.href}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className="block px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/[0.04] rounded-xl transition-all"
-                                    >
+                                {[{ href: '#features', label: 'Features' }, { href: '#how-it-works', label: 'Engine' }, { href: '#modes', label: 'Docs' }].map((link) => (
+                                    <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 text-sm font-medium text-[#ccc3d8] hover:text-[#e3e0f3] hover:bg-[#292936]/50 rounded-xl">
                                         {link.label}
                                     </Link>
                                 ))}
-                                <div className="pt-3 border-t border-white/[0.06] mt-3 flex flex-col gap-2">
-                                    <Link href="/auth" onClick={() => setMobileMenuOpen(false)}>
-                                        <Button variant="ghost" className="w-full justify-center text-sm rounded-xl">Sign In</Button>
-                                    </Link>
-                                    <Link href="/auth" onClick={() => setMobileMenuOpen(false)}>
-                                        <Button className="w-full justify-center bg-white text-black hover:bg-white/90 rounded-xl text-sm font-semibold">
-                                            Get Started
-                                        </Button>
-                                    </Link>
-                                </div>
                             </div>
                         </motion.div>
                     )}
@@ -271,152 +260,149 @@ export default function Page() {
             </nav>
 
             {/* =============================================
-                HERO SECTION
+                HERO SECTION (Neon Protocol)
                ============================================= */}
             <motion.section
-                className="relative min-h-screen flex flex-col justify-center pt-32 pb-20 px-6"
+                className="relative min-h-[100svh] flex flex-col justify-center pt-32 pb-20 px-6 overflow-hidden"
                 style={{ scale: heroScale }}
                 id="main-content"
-                role="main"
             >
-                <div className="max-w-5xl mx-auto text-center relative z-10">
-
-                    <RevealText delay={0.1}>
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl mb-8">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                            <span className="text-xs font-medium text-muted-foreground tracking-wider uppercase">Powered by LLaMA 3.3 & Groq</span>
-                        </div>
-                    </RevealText>
-
-                    <RevealText delay={0.2}>
-                        <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tight mb-8 leading-[1.05]">
-                            Understand code
-                            <br />
-                            <TypewriterText
-                                words={['in seconds.', 'with AI.', 'effortlessly.']}
-                                className="gradient-text"
-                            />
-                        </h1>
-                    </RevealText>
-
-                    <RevealText delay={0.35}>
-                        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-                            Paste any code snippet and get instant AI-powered explanations,
-                            complexity analysis, and performance optimizations.
-                        </p>
-                    </RevealText>
-
-                    <RevealText delay={0.4}>
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] mb-8">
-                            <kbd className="px-2 py-0.5 rounded bg-white/[0.08] text-[11px] font-mono font-medium text-muted-foreground">⌘V</kbd>
-                            <span className="text-xs text-muted-foreground">Paste your code to get started</span>
-                        </div>
-                    </RevealText>
-
-                    <RevealText delay={0.45}>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Link href="/auth">
-                                <Button size="lg" className="h-14 px-8 rounded-full bg-white text-black hover:bg-white/90 text-base font-semibold shadow-xl shadow-white/10 hover:shadow-white/20 transition-all hover:scale-[1.03] active:scale-[0.98]">
-                                    Start Analyzing
-                                    <ArrowRight className="w-5 h-5 ml-2" />
-                                </Button>
-                            </Link>
-                            <Link href="https://github.com/ask8962/automated-code-explanation-system" target="_blank">
-                                <Button size="lg" variant="outline" className="h-14 px-8 rounded-full border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] backdrop-blur-md text-base font-medium transition-all hover:scale-[1.03] active:scale-[0.98]">
-                                    <Github className="w-5 h-5 mr-2" />
-                                    View on GitHub
-                                </Button>
-                            </Link>
-                        </div>
-                    </RevealText>
-                </div>
-
-                {/* Hero Visual — Dashboard Preview (Static - Forced Dark Theme) */}
-                <div className="mt-28 w-full max-w-6xl mx-auto relative z-10">
-                    <div className="rounded-2xl border border-white/10 bg-[#0a0a0a] shadow-2xl shadow-violet-500/10 p-1.5 relative overflow-hidden group">
-                        {/* Static glow */}
-                        <div className="absolute -inset-1 bg-gradient-to-r from-violet-600/20 via-indigo-600/10 to-cyan-500/20 rounded-2xl blur-xl opacity-100 pointer-events-none" />
-
-                        {/* Browser Chrome */}
-                        <div className="relative h-10 border-b border-white/10 bg-white/[0.03] flex items-center px-4 gap-2 rounded-t-xl">
-                            <div className="flex gap-1.5">
-                                <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
-                                <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
-                                <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-10">
+                    
+                    {/* Left Copy Column */}
+                    <div className="text-left flex flex-col items-start pr-4">
+                        <RevealText delay={0.1}>
+                            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[#4a4455]/40 bg-[#1a1a27]/60 backdrop-blur-xl mb-6 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#06B6D4] opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#03b5d3]"></span>
+                                </span>
+                                <span className="text-xs font-semibold text-[#4cd7f6] tracking-widest uppercase font-[family-name:var(--font-space-grotesk)]">System Protocol Active</span>
                             </div>
-                            <div className="ml-4 h-5 flex-1 max-w-md rounded-md bg-white/[0.05] hidden md:flex items-center px-3">
-                                <span className="text-[10px] text-gray-400 font-mono">gla-code-aa.vercel.app/dashboard</span>
-                            </div>
-                        </div>
+                        </RevealText>
 
-                        {/* Content */}
-                        <div className="relative p-6 md:p-8 grid md:grid-cols-2 gap-8 text-white">
-                            {/* Code Side */}
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between text-xs font-mono text-gray-400">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                                        <span className="text-gray-300">fibonacci.py</span>
-                                    </div>
-                                    <span className="px-2 py-0.5 rounded bg-white/10 text-[10px] text-gray-300">Python 3.10</span>
-                                </div>
-                                <div className="p-5 rounded-xl bg-black border border-white/10 font-mono text-sm leading-[1.8] overflow-x-auto shadow-inner">
-                                    <div className="flex">
-                                        <div className="pr-4 text-white/20 select-none text-right text-xs leading-[1.8]">
-                                            1<br />2<br />3<br />4
-                                        </div>
-                                        <div>
-                                            <span className="text-purple-400">def</span> <span className="text-blue-300">fibonacci</span><span className="text-white/60">(</span><span className="text-orange-300">n</span><span className="text-white/60">):</span><br />
-                                            &nbsp;&nbsp;<span className="text-purple-400">if</span> n <span className="text-white/60">{"<="}</span> <span className="text-emerald-300">1</span><span className="text-white/60">:</span><br />
-                                            &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-purple-400">return</span> n<br />
-                                            &nbsp;&nbsp;<span className="text-purple-400">return</span> fibonacci(n<span className="text-white/60">-</span><span className="text-emerald-300">1</span>) <span className="text-white/60">+</span> fibonacci(n<span className="text-white/60">-</span><span className="text-emerald-300">2</span>)
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-center">
-                                        <div className="text-xl font-bold text-red-400 font-mono">O(2^n)</div>
-                                        <div className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Time</div>
-                                    </div>
-                                    <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-center">
-                                        <div className="text-xl font-bold text-emerald-400 font-mono">O(n)</div>
-                                        <div className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Space</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <RevealText delay={0.2}>
+                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.95] font-[family-name:var(--font-space-grotesk)] text-[#e3e0f3]">
+                                Understand
+                                <br />
+                                Code.
+                                <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C3AED] via-[#d2bbff] to-[#06B6D4] glitch-text-4d" data-text="Instantly.">
+                                    Instantly.
+                                </span>
+                            </h1>
+                        </RevealText>
 
-                            {/* Analysis Side */}
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                                        <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                                    </div>
-                                    <h3 className="text-sm font-semibold text-white">AI Analysis</h3>
-                                    <div className="ml-auto px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-                                        <span className="text-[10px] text-emerald-400 font-medium">Live</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
-                                    <p className="text-white/90">Recursive Fibonacci implementation with exponential time complexity.</p>
-                                    <div className="p-3 rounded-lg bg-yellow-500/[0.1] border border-yellow-500/20">
-                                        <p className="text-yellow-300 text-xs font-medium mb-1">⚠ Performance Warning</p>
-                                        <p className="text-xs text-yellow-100/70">Redundant calculations grow exponentially. Not suitable for n {'>'} 30.</p>
-                                    </div>
-                                    <div className="p-3 rounded-lg bg-emerald-500/[0.1] border border-emerald-500/20">
-                                        <p className="text-emerald-300 text-xs font-medium mb-1">✦ Optimization Available</p>
-                                        <p className="text-xs text-emerald-100/70">Memoization reduces complexity to O(n) time, O(n) space.</p>
-                                    </div>
-                                </div>
-                                <Button className="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-sm rounded-xl h-10 transition-all hover:border-violet-500/50 hover:shadow-lg hover:shadow-violet-500/20">
-                                    <Zap className="w-3.5 h-3.5 mr-2 text-yellow-400" />
-                                    Auto-Optimize Code
+                        <RevealText delay={0.35}>
+                            <p className="text-lg md:text-xl text-[#ccc3d8] mb-10 leading-relaxed max-w-xl">
+                                AI-powered code explanations, live execution, and step-by-step algorithmic visualization — built for developers and students.
+                            </p>
+                        </RevealText>
+
+                        <RevealText delay={0.45}>
+                            <div className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto mt-4">
+                                <Link href="/auth" className="w-full sm:w-auto">
+                                    <Button size="lg" className="w-full h-14 px-8 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#5a00c6] text-white hover:from-[#d2bbff] hover:to-[#7C3AED] hover:text-[#25005a] border-none shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.6)] text-base font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95">
+                                        Get Started Free
+                                    </Button>
+                                </Link>
+                                <Button onClick={() => setIsVideoModalOpen(true)} size="lg" className="extreme-4d-button w-full sm:w-auto h-14 px-8 text-[#e3e0f3] text-base font-bold group border-none">
+                                    <span className="relative z-10 flex items-center">
+                                        <Play className="w-4 h-4 mr-2 text-[#06B6D4] group-hover:scale-110 shadow-black drop-shadow-[0_0_8px_rgba(6,182,212,0.8)] transition-transform" />
+                                        Watch Demo
+                                    </span>
                                 </Button>
                             </div>
-                        </div>
+                        </RevealText>
+                        
+                        <RevealText delay={0.55}>
+                            <div className="mt-12 flex items-center gap-8 border-t border-[#4a4455]/30 pt-6">
+                                <div>
+                                    <div className="text-2xl font-bold text-[#e3e0f3] font-[family-name:var(--font-space-grotesk)]">10,000+</div>
+                                    <div className="text-xs text-[#958da1] uppercase tracking-wider font-semibold mt-1">Users</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold text-[#e3e0f3] font-[family-name:var(--font-space-grotesk)]">8</div>
+                                    <div className="text-xs text-[#958da1] uppercase tracking-wider font-semibold mt-1">Languages</div>
+                                </div>
+                                <div className="hidden sm:block">
+                                    <div className="text-2xl font-bold text-[#06B6D4] font-[family-name:var(--font-space-grotesk)]">500ms</div>
+                                    <div className="text-xs text-[#958da1] uppercase tracking-wider font-semibold mt-1">Response Time</div>
+                                </div>
+                            </div>
+                        </RevealText>
                     </div>
+
+                    {/* Right Visual Column (Extreme 4D Floating Editor) */}
+                    <div className="relative w-full aspect-square md:aspect-[4/3] lg:aspect-auto lg:h-[600px] perspective-[1000px]">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#7C3AED]/30 via-[#03b5d3]/10 to-[#06B6D4]/30 blur-[100px] rounded-full animate-glow-pulse" />
+                        
+                        {/* 4D Editor Card */}
+                        <motion.div 
+                            initial={{ rotateX: 0, rotateY: 0, z: 0 }}
+                            animate={{ 
+                                rotateX: [2, -2, 2], 
+                                rotateY: [-3, 3, -3],
+                                y: [-10, 10, -10],
+                                z: [0, 20, 0]
+                            }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute inset-y-4 right-0 left-4 md:left-12 border border-[#4a4455]/40 bg-[#1a1a27]/50 backdrop-blur-3xl rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.7),inset_0_1px_1px_rgba(255,255,255,0.15)] overflow-hidden flex flex-col transform-style-3d group hover:shadow-[0_40px_80px_rgba(124,58,237,0.3)] duration-700"
+                        >
+                            {/* Editor Header */}
+                            <div className="h-12 border-b border-[#4a4455]/30 bg-[#0d0d19]/80 flex items-center px-4 justify-between">
+                                <div className="flex gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-[#ffb4ab]" />
+                                    <div className="w-3 h-3 rounded-full bg-[#8b5cf6]" />
+                                    <div className="w-3 h-3 rounded-full bg-[#4cd7f6]" />
+                                </div>
+                                <div className="px-3 py-1 rounded border border-[#4a4455]/50 bg-[#292936]/50 text-[#ccc3d8] text-xs font-mono">
+                                    visualizer.ts
+                                </div>
+                            </div>
+                            
+                            {/* Editor Body */}
+                            <div className="flex-1 p-6 font-mono text-sm leading-relaxed overflow-hidden relative">
+                                <div className="text-[#958da1] absolute left-4 select-none text-right w-4">
+                                    1<br/>2<br/>3<br/>4<br/>5
+                                </div>
+                                <div className="pl-8">
+                                    <span className="text-[#ffafd3]">const</span> <span className="text-[#4cd7f6]">optimizeAlgorithm</span> <span className="text-[#ccc3d8]">= (</span><span className="text-[#d2bbff]">data</span><span className="text-[#ccc3d8]">)</span> <span className="text-[#ffafd3]">=&gt;</span> <span className="text-[#ccc3d8]">{'{'}</span><br/>
+                                    &nbsp;&nbsp;<span className="text-[#ffafd3]">return</span> data.<span className="text-[#4cd7f6]">map</span>(node <span className="text-[#ffafd3]">=&gt;</span> <span className="text-[#ccc3d8]">{'{'}</span><br/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-[#ffafd3]">await</span> <span className="text-[#4cd7f6]">resolveComplexity</span>(node);<br/>
+                                    &nbsp;&nbsp;<span className="text-[#ccc3d8]">{'}'}</span>);<br/>
+                                    <span className="text-[#ccc3d8]">{'}'}</span>
+                                </div>
+
+                                {/* Floating AI Overlay (3D Popout) */}
+                                <motion.div 
+                                    initial={{ y: 20, opacity: 0, z: 0, rotateX: 0 }}
+                                    animate={{ 
+                                        y: [0, -5, 0], 
+                                        opacity: 1, 
+                                        z: [50, 60, 50],
+                                        rotateX: [0, 5, 0]
+                                    }}
+                                    transition={{ 
+                                        opacity: { delay: 1, duration: 0.6 },
+                                        y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                                        z: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                                        rotateX: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+                                    }}
+                                    className="absolute bottom-6 right-6 left-12 border border-[#4a4455]/60 bg-[#292936]/80 backdrop-blur-2xl p-4 rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.2)] border-l-4 border-l-[#7C3AED] transform-style-3d translate-z-[50px] group-hover:translate-z-[80px] duration-500"
+                                >
+                                    <div className="flex gap-3 mb-2">
+                                        <Sparkles className="w-4 h-4 text-[#d2bbff] mt-0.5" />
+                                        <div className="text-sm text-[#e3e0f3] font-medium">Optimization Found</div>
+                                    </div>
+                                    <div className="text-xs text-[#ccc3d8] pl-7">
+                                        Time complexity can be reduced from <span className="text-[#ffb4ab]">O(N²)</span> to <span className="text-[#4cd7f6]">O(N)</span> using memoization.
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    </div>
+                    
                 </div>
             </motion.section>
 
@@ -457,32 +443,92 @@ export default function Page() {
             </section>
 
             {/* =============================================
-                FEATURES — Bento Grid
+                VIDEO MODAL (Extreme 4D Player)
+               ============================================= */}
+            <AnimatePresence>
+                {isVideoModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+                        animate={{ opacity: 1, backdropFilter: 'blur(20px)' }}
+                        exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+                        transition={{ duration: 0.4 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-10 bg-[#050510]/80"
+                    >
+                        <div className="absolute inset-0" onClick={() => { setIsVideoModalOpen(false); setCurrentVideoPart(1); }} />
+                        
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0, rotateX: 10, y: 30 }}
+                            animate={{ scale: 1, opacity: 1, rotateX: 0, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, rotateX: -10, y: 30 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="relative w-full max-w-5xl aspect-video extreme-4d-button overflow-hidden rounded-2xl flex items-center justify-center bg-black shadow-[0_0_100px_rgba(6,182,212,0.4)]"
+                        >
+                            <button 
+                                onClick={() => { setIsVideoModalOpen(false); setCurrentVideoPart(1); }}
+                                className="absolute top-4 right-4 z-50 p-2 rounded-full bg-[#1a1a27]/80 border border-[#4a4455]/50 hover:bg-[#292936] text-white transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                            
+                            {/* Two-Part Video Sequence */}
+                            {currentVideoPart === 1 ? (
+                                <video 
+                                    src="/part1.mp4" 
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    autoPlay 
+                                    playsInline
+                                    onEnded={() => setCurrentVideoPart(2)}
+                                />
+                            ) : (
+                                <>
+                                    <video 
+                                        src="/part2.mp4" 
+                                        className="absolute inset-0 w-full h-full object-cover z-10"
+                                        autoPlay 
+                                        playsInline
+                                        loop
+                                        controls
+                                    />
+                                    {/* Cyberpunk BGM for Part 2 */}
+                                    <audio src="/bgm.mp3" autoPlay loop />
+                                </>
+                            )}
+                            
+                            {/* Inner glow mask to make it look like part of our engine */}
+                            <div className="absolute inset-0 shadow-[inset_0_0_100px_#050510] pointer-events-none" />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* =============================================
+                FEATURES — Extreme 4D Bento Grid
                ============================================= */}
             <section id="features" className="py-32 relative z-10">
                 <div className="max-w-6xl mx-auto px-6">
                     <RevealText className="text-center max-w-3xl mx-auto mb-20">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">Features</p>
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#06B6D4] mb-4 font-[family-name:var(--font-space-grotesk)]">System Capabilities</p>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight font-[family-name:var(--font-space-grotesk)] text-[#e3e0f3]">
                             Everything you need to<br />
-                            <span className="gradient-text">master your code.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C3AED] via-[#d2bbff] to-[#06B6D4]">master your code.</span>
                         </h2>
-                        <p className="text-muted-foreground text-lg font-light">Powerful AI analysis meets beautiful developer experience.</p>
+                        <p className="text-[#ccc3d8] text-lg font-light">Powerful AI analysis meets brutalist, hardware-accelerated design.</p>
                     </RevealText>
 
-                    <div className="grid md:grid-cols-3 gap-4">
+                    <div className="grid md:grid-cols-3 gap-6 perspective-[1000px]">
                         {features.map((f, i) => (
                             <FloatingCard key={i} delay={0.1 * i} className={`${f.span}`}>
-                                <div className="glass-card gradient-border h-full p-7 rounded-2xl group cursor-default relative overflow-hidden">
-                                    {/* Shimmer overlay */}
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent animate-shimmer" />
+                                <div className="absolute -inset-[2px] bg-gradient-to-br from-[#7C3AED]/30 via-transparent to-[#06B6D4]/30 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none" />
+                                <div className="relative bg-[#1a1a27]/40 backdrop-blur-3xl border border-[#4a4455]/30 h-full p-8 rounded-2xl group cursor-default overflow-hidden transform-style-3d hover:rotate-x-[2deg] hover:rotate-y-[-2deg] transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]">
+                                    {/* Extreme Shimmer overlay */}
+                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
+                                        <div className="absolute top-0 bottom-0 -left-[100%] w-[50%] bg-gradient-to-r from-transparent via-[#06B6D4]/10 to-transparent skew-x-[-20deg] animate-[shimmer_3s_infinite]" />
                                     </div>
-                                    <div className={`relative w-11 h-11 rounded-xl bg-gradient-to-br ${f.iconBg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                                        <f.icon className={`w-5 h-5 ${f.iconColor}`} />
+                                    <div className={`relative w-14 h-14 rounded-xl border border-[#4a4455]/40 bg-[#0d0d19]/80 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[inset_0_0_10px_rgba(124,58,237,0.2)] group-hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]`}>
+                                        <f.icon className={`w-6 h-6 ${f.iconColor} drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]`} />
                                     </div>
-                                    <h3 className="relative text-lg font-semibold mb-2 tracking-tight">{f.title}</h3>
-                                    <p className="relative text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+                                    <h3 className="relative text-xl font-bold mb-3 tracking-tight text-[#e3e0f3]">{f.title}</h3>
+                                    <p className="relative text-sm text-[#958da1] leading-relaxed font-mono">{f.desc}</p>
                                 </div>
                             </FloatingCard>
                         ))}
@@ -496,36 +542,37 @@ export default function Page() {
             <section id="how-it-works" className="py-32 relative z-10">
                 <div className="max-w-5xl mx-auto px-6">
                     <RevealText className="text-center mb-20">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">How it Works</p>
-                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3AED] mb-4 font-[family-name:var(--font-space-grotesk)]">Execution Engine</p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] text-[#e3e0f3]">
                             Three steps to<br />
-                            <span className="gradient-text">total clarity.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7C3AED] via-[#d2bbff] to-[#06B6D4] glitch-text-4d" data-text="total clarity.">total clarity.</span>
                         </h2>
                     </RevealText>
 
-                    <div className="relative">
-                        {/* Connecting line (desktop only) */}
-                        <div className="hidden md:block absolute top-[3.25rem] left-[calc(16.67%+1.25rem)] right-[calc(16.67%+1.25rem)] h-px bg-gradient-to-r from-violet-500/30 via-indigo-500/30 to-cyan-500/30" />
+                    <div className="relative perspective-[1000px]">
+                        {/* Connecting line (desktop only) - Laser beam */}
+                        <div className="hidden md:block absolute top-[3.25rem] left-[calc(16.67%+1.25rem)] right-[calc(16.67%+1.25rem)] h-[2px] bg-gradient-to-r from-[#7C3AED] via-[#06B6D4] to-[#F472B6] shadow-[0_0_15px_#06B6D4] animate-glow-pulse" />
 
-                        <div className="grid md:grid-cols-3 gap-6">
+                        <div className="grid md:grid-cols-3 gap-8">
                             {[
-                                { step: "01", title: "Paste Your Code", desc: "Drop any code snippet — Python, Java, JS, C, or C++. Select your preferred language.", icon: Terminal, color: "from-violet-500 to-violet-600" },
-                                { step: "02", title: "Choose a Mode", desc: "Beginner, Exam, or Interview — get explanations tailored to your exact needs.", icon: Layers, color: "from-indigo-500 to-indigo-600" },
-                                { step: "03", title: "Get AI Insights", desc: "Receive step-by-step breakdown, complexity analysis, key concepts, and optimization.", icon: Sparkles, color: "from-cyan-500 to-cyan-600" },
+                                { step: "01", title: "Paste Your Code", desc: "Drop any snippet — Python, Java, JS. The Engine detects context.", icon: Terminal, color: "from-[#7C3AED] to-[#5a00c6]", border: "border-[#7C3AED]" },
+                                { step: "02", title: "Choose Protocol", desc: "Beginner, Exam, or Interview — select processing mode.", icon: Layers, color: "from-[#06B6D4] to-[#038b9e]", border: "border-[#06B6D4]" },
+                                { step: "03", title: "Data Extraction", desc: "Instantly receive algorithmic breakdown & O(N) optimizations.", icon: Sparkles, color: "from-[#F472B6] to-[#db2777]", border: "border-[#F472B6]" },
                             ].map((item, i) => (
                                 <FloatingCard key={i} delay={0.15 * i}>
-                                    <div className="relative glass-card p-8 rounded-2xl h-full text-center">
-                                        {/* Step number badge */}
-                                        <div className="relative mx-auto mb-6">
-                                            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto shadow-lg`}>
-                                                <item.icon className="w-6 h-6 text-white" />
+                                    <div className="relative bg-[#1a1a27]/30 backdrop-blur-2xl border border-[#4a4455]/40 hover:border-white/20 p-8 rounded-2xl h-full text-center group transform-style-3d hover:-translate-y-2 hover:rotate-x-2 transition-all duration-500 shadow-xl">
+                                        {/* Step number badge - Extreme Glow */}
+                                        <div className="relative mx-auto mb-8">
+                                            <div className="absolute inset-0 bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] blur-xl opacity-0 group-hover:opacity-50 transition-opacity" />
+                                            <div className={`relative w-16 h-16 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(0,0,0,0.5)] border border-white/20 z-10 group-hover:scale-110 transition-transform duration-300`}>
+                                                <item.icon className="w-7 h-7 text-white drop-shadow-md" />
                                             </div>
-                                            <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-background border-2 border-primary flex items-center justify-center">
-                                                <span className="text-[10px] font-bold text-primary">{item.step}</span>
+                                            <div className={`absolute -top-3 -right-3 w-8 h-8 rounded-xl bg-[#0a0a14] border-2 ${item.border} flex items-center justify-center z-20 shadow-[0_0_15px_rgba(255,255,255,0.1)]`}>
+                                                <span className="text-xs font-bold text-[#e3e0f3] font-mono">{item.step}</span>
                                             </div>
                                         </div>
-                                        <h3 className="text-xl font-bold mb-3 tracking-tight">{item.title}</h3>
-                                        <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                                        <h3 className="text-xl font-bold mb-3 tracking-tight text-[#e3e0f3]">{item.title}</h3>
+                                        <p className="text-sm text-[#958da1] leading-relaxed font-mono">{item.desc}</p>
                                     </div>
                                 </FloatingCard>
                             ))}
@@ -537,68 +584,81 @@ export default function Page() {
             <section id="modes" className="py-32 relative z-10">
                 <div className="max-w-5xl mx-auto px-6">
                     <RevealText className="text-center mb-16">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4">Learning Modes</p>
-                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F472B6] mb-4 font-[family-name:var(--font-space-grotesk)]">Processing Directive</p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight font-[family-name:var(--font-space-grotesk)] text-[#e3e0f3]">
                             Tailored to your<br />
-                            <span className="gradient-text">learning style.</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F472B6] via-[#7C3AED] to-[#06B6D4]">learning style.</span>
                         </h2>
                     </RevealText>
 
-                    {/* Mode Tabs */}
-                    <div className="flex justify-center gap-4 mb-12">
+                    {/* Mode Tabs (Cyber Switches) */}
+                    <div className="flex flex-wrap justify-center gap-4 mb-16 relative z-10">
                         {modes.map((mode, i) => (
                             <button
                                 key={i}
                                 onClick={() => setActiveMode(i)}
-                                className={`flex items-center gap-2 px-5 py-3 rounded-xl border transition-all duration-300 text-sm font-medium ${activeMode === i
-                                    ? `${mode.border} bg-gradient-to-b ${mode.color} ${mode.accent} scale-105 shadow-lg`
-                                    : 'border-white/[0.06] bg-white/[0.02] text-muted-foreground hover:bg-white/[0.04]'
+                                className={`relative flex items-center gap-3 px-6 py-4 rounded-xl transition-all duration-300 text-sm font-bold font-mono overflow-hidden ${activeMode === i
+                                    ? `border-none text-black scale-110 shadow-[0_0_30px_rgba(6,182,212,0.4)]`
+                                    : 'border border-[#4a4455]/50 bg-[#1a1a27]/50 text-[#ccc3d8] hover:bg-[#292936] hover:text-white'
                                     }`}
                             >
-                                <mode.icon className="w-4 h-4" />
-                                {mode.title}
+                                {activeMode === i && (
+                                    <div className="absolute inset-0 bg-gradient-to-r from-[#06B6D4] to-[#7C3AED] animate-shimmer opacity-90" />
+                                )}
+                                <span className="relative z-10 flex items-center gap-2">
+                                    <mode.icon className="w-5 h-5 flex-shrink-0" />
+                                    {mode.title}
+                                </span>
                             </button>
                         ))}
                     </div>
 
-                    {/* Mode Preview Card */}
+                    {/* Mode Preview Card (Hologram Screen) */}
                     <motion.div
                         key={activeMode}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="max-w-2xl mx-auto"
+                        initial={{ opacity: 0, y: 20, rotateX: -10 }}
+                        animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                        transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                        className="max-w-3xl mx-auto perspective-[1200px]"
                     >
-                        <div className={`glass-card p-8 rounded-2xl border ${modes[activeMode].border}`}>
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${modes[activeMode].color} flex items-center justify-center`}>
-                                    {React.createElement(modes[activeMode].icon, { className: `w-5 h-5 ${modes[activeMode].accent}` })}
+                        <div className="relative bg-[#0d0d19]/80 backdrop-blur-3xl p-10 rounded-2xl border border-[#4a4455]/50 shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.1)] transform-style-3d hover:rotate-y-[2deg] hover:rotate-x-[2deg] transition-transform duration-700">
+                            {/* Ambient internal light */}
+                            <div className="absolute inset-x-20 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#06B6D4] to-transparent opacity-50 shadow-[0_0_20px_#06B6D4]" />
+                            
+                            <div className="flex items-start md:items-center gap-4 mb-8">
+                                <div className={`w-14 h-14 rounded-xl flex items-center justify-center border border-white/10 bg-gradient-to-br ${modes[activeMode].color} shadow-lg`}>
+                                    {React.createElement(modes[activeMode].icon, { className: `w-6 h-6 ${modes[activeMode].accent} drop-shadow-md` })}
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-lg">{modes[activeMode].title} Mode</h3>
-                                    <p className="text-sm text-muted-foreground">{modes[activeMode].desc}</p>
+                                    <h3 className="font-bold text-2xl text-[#e3e0f3] tracking-tighter">{modes[activeMode].title} Protocol</h3>
+                                    <p className="text-[#958da1] text-sm font-mono mt-1">{modes[activeMode].desc}</p>
                                 </div>
                             </div>
-                            <div className="p-4 rounded-xl bg-black/30 border border-white/[0.06] font-mono text-sm leading-relaxed">
+                            
+                            {/* Holographic Console */}
+                            <div className="p-6 rounded-xl bg-black/60 border border-[#4a4455]/30 font-mono text-sm leading-relaxed relative overflow-hidden">
+                                {/* Scanline effect */}
+                                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:100%_4px] pointer-events-none opacity-20" />
+                                
                                 {activeMode === 0 && (
-                                    <div className="space-y-2 text-muted-foreground">
-                                        <p><span className="text-emerald-400">Think of it like:</span> A recipe with step-by-step instructions</p>
-                                        <p><span className="text-emerald-400">What it does:</span> Takes a number and returns Fibonacci value</p>
-                                        <p><span className="text-emerald-400">Analogy:</span> Like counting rabbits each generation 🐰</p>
+                                    <div className="space-y-4 text-[#ccc3d8] relative z-10">
+                                        <div className="flex gap-4"><span className="text-[#5eead4] min-w-[120px] font-bold">» DIRECTIVE:</span> A recipe with step-by-step instructions</div>
+                                        <div className="flex gap-4"><span className="text-[#5eead4] min-w-[120px] font-bold">» EXECUTION:</span> Takes a number and returns Fibonacci value</div>
+                                        <div className="flex gap-4"><span className="text-[#5eead4] min-w-[120px] font-bold">» ANALOGY:</span> Like counting rabbits each generation 🐰</div>
                                     </div>
                                 )}
                                 {activeMode === 1 && (
-                                    <div className="space-y-2 text-muted-foreground">
-                                        <p><span className="text-blue-400">Key Concept:</span> Recursion — function calling itself</p>
-                                        <p><span className="text-blue-400">Time Complexity:</span> O(2^n) — exponential</p>
-                                        <p><span className="text-blue-400">Important:</span> Base case prevents infinite recursion</p>
+                                    <div className="space-y-4 text-[#ccc3d8] relative z-10">
+                                        <div className="flex gap-4"><span className="text-[#93c5fd] min-w-[120px] font-bold">» CONCEPT:</span> Recursion — function calling itself</div>
+                                        <div className="flex gap-4"><span className="text-[#93c5fd] min-w-[120px] font-bold">» COMPLEXITY:</span> O(2^n) — exponential overload</div>
+                                        <div className="flex gap-4"><span className="text-[#93c5fd] min-w-[120px] font-bold">» CRITICAL:</span> Base case prevents infinite system crash</div>
                                     </div>
                                 )}
                                 {activeMode === 2 && (
-                                    <div className="space-y-2 text-muted-foreground">
-                                        <p><span className="text-amber-400">Approach:</span> Recursive decomposition with overlapping subproblems</p>
-                                        <p><span className="text-amber-400">Optimization:</span> Memoization reduces to O(n) time</p>
-                                        <p><span className="text-amber-400">Follow-up:</span> Iterative approach uses O(1) space</p>
+                                    <div className="space-y-4 text-[#ccc3d8] relative z-10">
+                                        <div className="flex gap-4"><span className="text-[#fcd34d] min-w-[120px] font-bold">» ARCHITECTURE:</span> Recursive decomposition</div>
+                                        <div className="flex gap-4"><span className="text-[#fcd34d] min-w-[120px] font-bold">» OVERRIDE:</span> Memoization reduces to O(n) compute</div>
+                                        <div className="flex gap-4"><span className="text-[#fcd34d] min-w-[120px] font-bold">» FOLLOW-UP:</span> Iterative approach uses O(1) memory space</div>
                                     </div>
                                 )}
                             </div>
