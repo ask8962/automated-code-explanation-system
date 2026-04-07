@@ -150,14 +150,23 @@ export default function AuthPage() {
           animate={{ opacity: 1, scale: 1, rotateY: 0 }}
           transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
           style={{ transformPerspective: 1000 }}
-          className="w-full max-w-[420px] space-y-6 relative p-8 sm:p-10 rounded-[2.5rem] border border-white/10 bg-[#0a0a14]/60 backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(255,255,255,0.02)] extreme-4d-button"
+          className="w-full max-w-[420px] relative rounded-[2.5rem] border border-white/10 bg-[#0a0a14]/60 backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(255,255,255,0.02)] extreme-4d-button overflow-hidden"
         >
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex justify-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center shadow-[0_0_40px_rgba(139,92,246,0.4)]">
-              <Terminal className="w-7 h-7 text-white" />
-            </div>
+          {/* MacOS Glass Header */}
+          <div className="h-10 bg-white/[0.02] border-b border-white/10 flex items-center px-4 gap-2 backdrop-blur-xl w-full">
+            <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+            <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+            <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+            <span className="ml-4 text-[10px] uppercase font-bold tracking-widest text-[#a855f7]">Security.Auth</span>
           </div>
+
+          <div className="p-8 sm:p-10 space-y-6">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex justify-center mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center shadow-[0_0_40px_rgba(139,92,246,0.4)]">
+                <Terminal className="w-7 h-7 text-white" />
+              </div>
+            </div>
 
           {/* Heading */}
           <div className="text-center mb-8">
@@ -266,7 +275,7 @@ export default function AuthPage() {
               {isSignUp ? 'Re-sync' : 'Initialize'}
             </button>
           </p>
-
+          </div>
         </motion.div>
       </div>
     </div>

@@ -56,6 +56,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
 }
 
+import CursorSpotlight from '@/components/CursorSpotlight'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,6 +67,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased ${spaceGrotesk.variable}`}>
         <Providers>
+          <CursorSpotlight />
           {children}
           <Toaster richColors position="bottom-right" />
         </Providers>

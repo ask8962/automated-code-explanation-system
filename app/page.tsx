@@ -519,7 +519,7 @@ export default function Page() {
                         {features.map((f, i) => (
                             <FloatingCard key={i} delay={0.1 * i} className={`${f.span}`}>
                                 <div className="absolute -inset-[2px] bg-gradient-to-br from-[#7C3AED]/30 via-transparent to-[#06B6D4]/30 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-500 blur-sm pointer-events-none" />
-                                <div className="relative bg-[#1a1a27]/40 backdrop-blur-3xl border border-[#4a4455]/30 h-full p-8 rounded-2xl group cursor-default overflow-hidden transform-style-3d hover:rotate-x-[2deg] hover:rotate-y-[-2deg] transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]">
+                                <div className="relative bg-[#1a1a27]/40 backdrop-blur-3xl border border-[#4a4455]/30 h-full p-8 rounded-2xl group overflow-hidden transform-style-3d transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)] extreme-4d-button hover:!rotate-x-[2deg] hover:!rotate-y-[-2deg]">
                                     {/* Extreme Shimmer overlay */}
                                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
                                         <div className="absolute top-0 bottom-0 -left-[100%] w-[50%] bg-gradient-to-r from-transparent via-[#06B6D4]/10 to-transparent skew-x-[-20deg] animate-[shimmer_3s_infinite]" />
@@ -560,7 +560,7 @@ export default function Page() {
                                 { step: "03", title: "Data Extraction", desc: "Instantly receive algorithmic breakdown & O(N) optimizations.", icon: Sparkles, color: "from-[#F472B6] to-[#db2777]", border: "border-[#F472B6]" },
                             ].map((item, i) => (
                                 <FloatingCard key={i} delay={0.15 * i}>
-                                    <div className="relative bg-[#1a1a27]/30 backdrop-blur-2xl border border-[#4a4455]/40 hover:border-white/20 p-8 rounded-2xl h-full text-center group transform-style-3d hover:-translate-y-2 hover:rotate-x-2 transition-all duration-500 shadow-xl">
+                                    <div className="relative bg-[#1a1a27]/30 backdrop-blur-2xl border border-[#4a4455]/40 hover:border-white/20 p-8 rounded-2xl h-full text-center group transform-style-3d hover:-translate-y-2 hover:!rotate-x-2 transition-all duration-500 shadow-xl extreme-4d-button">
                                         {/* Step number badge - Extreme Glow */}
                                         <div className="relative mx-auto mb-8">
                                             <div className="absolute inset-0 bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] blur-xl opacity-0 group-hover:opacity-50 transition-opacity" />
