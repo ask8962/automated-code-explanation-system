@@ -118,7 +118,10 @@ export function CodeInput({ onExplain, isLoading, onCodeChange }: CodeInputProps
             <div className="relative">
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                onChange={(e) => {
+                  setLanguage(e.target.value);
+                  onCodeChange?.(code, e.target.value);
+                }}
                 className="appearance-none text-xs font-medium px-3 py-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-foreground/80 cursor-pointer hover:bg-white/[0.06] transition-colors pr-7 focus:outline-none focus:ring-1 focus:ring-primary/50"
               >
                 {languages.map((lang) => (
