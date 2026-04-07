@@ -26,14 +26,22 @@ const languages = [
 // Simple heuristic to auto-detect programming language from code
 function detectLanguage(code: string): string | null {
   const trimmed = code.trim();
-  if (/^(import\s+\w+|from\s+\w+\s+import|def\s+\w+|class\s+\w+.*:|if\s+__name__\s*==)/.test(trimmed)) return 'python';
-  if (/^(package\s+main|func\s+\w+|import\s+"fmt")/.test(trimmed)) return 'go';
-  if (/^(fn\s+\w+|let\s+mut\s+|use\s+std::)/.test(trimmed)) return 'rust';
-  if (/^(import\s+.*from\s+['"]|const\s+\w+\s*=\s*require|export\s+(default|const|function))/.test(trimmed)) return 'javascript';
-  if (/(interface\s+\w+|:\s*(string|number|boolean)\b|<\w+>)/.test(trimmed) && /^(import|export|const|let|function|class)/.test(trimmed)) return 'typescript';
+  // Java, C++, C, Go, Rust have strong unique keywords
   if (/(public\s+static\s+void\s+main|System\.out\.println|import\s+java\.)/.test(trimmed)) return 'java';
   if (/(#include\s*<.*>|using\s+namespace\s+std|cout\s*<<|cin\s*>>)/.test(trimmed)) return 'cpp';
   if (/(#include\s*<(stdio|stdlib)\.h>|printf\s*\(|scanf\s*\()/.test(trimmed)) return 'c';
+  if (/^(package\s+main|func\s+\w+|import\s+"fmt")/.test(trimmed)) return 'go';
+  if (/^(fn\s+\w+|let\s+mut\s+|use\s+std::)/.test(trimmed)) return 'rust';
+  
+  // Web languages
+  if (/(interface\s+\w+|:\s*(string|number|boolean)\b|<\w+>)/.test(trimmed) && /^(import|export|const|let|function|class)/.test(trimmed)) return 'typescript';
+  if (/^(import\s+.*from\s+['"]|const\s+\w+\s*=\s*require|export\s+(default|const|function))/.test(trimmed)) return 'javascript';
+  
+  // Python has def, from x import, or simple imports without semicolons
+  if (/(def\s+\w+|class\s+\w+.*:|if\s+__name__\s*==|from\s+\w+\s+import)/.test(trimmed)) return 'python';
+  // Check simple python import without semicolon
+  if (/^import\s+[a-zA-Z0-9_,\s]+$/m.test(trimmed)) return 'python';
+  
   return null;
 }
 
@@ -104,12 +112,7 @@ export function CodeInput({ onExplain, isLoading, onCodeChange }: CodeInputProps
         {/* Editor Toolbar */}
         <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.04] bg-white/[0.02]">
           <div className="flex items-center gap-3">
-            {/* Traffic Lights */}
-            <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
-            </div>
+            {/* Removed duplicated Traffic Lights as they already exist in the Spatial Dashboard Outer Container */}
 
             {/* Language Selector */}
             <div className="relative">
